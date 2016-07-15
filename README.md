@@ -17,7 +17,7 @@ Frontier in Design: The Simulation of Open Engineered Biological Systems
 NUFEB requires GCC/G++ for a successful build. 
 It has been rigorously tested on Ubuntu-14.10 and Fedora-22.
 
-To compile this code, go to The directory:
+To compile this code, go to the /src directory:
 
 $ cd NUFEB/src/
 
