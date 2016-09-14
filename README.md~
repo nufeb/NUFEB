@@ -25,9 +25,13 @@ then execute the following commands to compile code in the /STUBS directory:
 
 $ cd STUBS/
 
+$ make clean
+
 $ make
 
-Now, install the NUFEB and granular packages in /src directory with the following instruction:
+$ cd ..
+
+Now, install the NUFEB and granular packages with the following instruction:
 
 $ make yes-USER-NUFEB
 
