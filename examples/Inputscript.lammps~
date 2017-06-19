@@ -48,7 +48,7 @@ fix zwa all walladh v_kanc zplane  0.000000e-04 1.000000e-04
 ##############Ibm Variable Definitions##############
 
 #Defining affinity variables
-variable KsHET equal 0.004
+variable KsHET equal 0.01
 variable Ko2HET equal 0.0002
 variable Kno2HET equal 0.0003
 variable Kno3HET equal 0.0003

@@ -59,9 +59,11 @@
 #endif
 
 #ifdef FixInclude
+#include "fix_fluid_drag.h"
 #endif
 
 #ifdef FixClass
+FixStyle(fdrag, FixFluidDrag)
 #endif
 
 #ifdef ImproperInclude
