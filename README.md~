@@ -42,4 +42,4 @@ $ make serial
 
 You can run NUFEB by going to /examples directory and run:
 
-$  ../src/./lmp_serial < Inputscript.lammps
+$  ../src/lmp_serial < Inputscript.lammps

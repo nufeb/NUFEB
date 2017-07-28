@@ -62,6 +62,7 @@
 #include "fix_temp_berendsen.h"
 #include "fix_temp_rescale.h"
 #include "fix_tmd.h"
+#include "fix_utilities.h"
 #include "fix_viscous.h"
 #include "fix_walladh.h"
 #include "fix_wall_gran.h"

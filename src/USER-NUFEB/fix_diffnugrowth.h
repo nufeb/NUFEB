@@ -87,6 +87,7 @@ class FixDiffNuGrowth : public Fix {
   double initsub, inito2, initnh4, initno2, initno3;
   double subBC, o2BC, no2BC, no3BC, nh4BC;
   double xlo,xhi,ylo,yhi,zlo,zhi;
+  double shearRate;
   int bflag; // 1 = dirichlet, 2 = neumann, 3 = mixed
   double xstep, ystep, zstep;
   double sumRs, sumRo2, sumRno2, sumRno3, sumRnh4;

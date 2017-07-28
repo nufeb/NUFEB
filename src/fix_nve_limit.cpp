@@ -101,6 +101,8 @@ void FixNVELimit::initial_integrate(int vflag)
         v[i][0] += dtfm * f[i][0];
         v[i][1] += dtfm * f[i][1];
         v[i][2] += dtfm * f[i][2];
+	
+	
 
         vsq = v[i][0]*v[i][0] + v[i][1]*v[i][1] + v[i][2]*v[i][2];
         if (vsq > vlimitsq) {

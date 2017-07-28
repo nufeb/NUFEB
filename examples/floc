@@ -1,0 +1,1214 @@
+ntimestep = 2000 
+Parent floc size = 199 
+ntimestep = 4000 
+Parent floc size = 1010 
+ntimestep = 6000 
+Parent floc size = 2248 
+ntimestep = 8000 
+Parent floc size = 3737 
+ntimestep = 10000 
+Parent floc size = 5378 
+ntimestep = 12000 
+Parent floc size = 7177 
+ntimestep = 14000 
+Parent floc size = 9021 
+ntimestep = 16000 
+Parent floc size = 11032 
+ntimestep = 18000 
+Parent floc size = 13093 
+ntimestep = 20000 
+Parent floc size = 15242 
+ntimestep = 22000 
+Parent floc size = 17494 
+ntimestep = 24000 
+Parent floc size = 19854 
+ntimestep = 26000 
+Parent floc size = 22322 
+ntimestep = 28000 
+Parent floc size = 24860 
+ntimestep = 30000 
+Parent floc size = 27456 
+ntimestep = 32000 
+Parent floc size = 30148 
+ntimestep = 34000 
+Parent floc size = 32958 
+ntimestep = 36000 
+Parent floc size = 35794 
+ntimestep = 38000 
+Parent floc size = 38731 
+ntimestep = 40000 
+Parent floc size = 41763 
+ntimestep = 42000 
+Parent floc size = 41911 
+New floc at ntimestep = 42000 
+  Average position x = 5.070428e-05, y = 1.954845e-05, z = 4.090167e-05 
+  Size = 7 
+  Volume = 4.633727e-18 
+
+ntimestep = 44000 
+Parent floc size = 41909 
+New floc at ntimestep = 44000 
+  Average position x = 8.883724e-05, y = 2.630545e-05, z = 6.848682e-05 
+  Size = 2 
+  Volume = 1.554135e-18 
+
+ntimestep = 46000 
+Parent floc size = 41903 
+New floc at ntimestep = 46000 
+  Average position x = 7.613571e-05, y = 2.077048e-05, z = 5.498548e-05 
+  Size = 6 
+  Volume = 4.537097e-18 
+
+ntimestep = 48000 
+Parent floc size = 41901 
+New floc at ntimestep = 48000 
+  Average position x = 5.986448e-05, y = 1.866347e-05, z = 3.765389e-05 
+  Size = 2 
+  Volume = 1.886148e-18 
+
+ntimestep = 50000 
+Parent floc size = 41898 
+New floc at ntimestep = 50000 
+  Average position x = 1.010061e-04, y = 2.423104e-05, z = 6.237660e-05 
+  Size = 3 
+  Volume = 2.974430e-18 
+
+ntimestep = 52000 
+Parent floc size = 41898 
+ntimestep = 54000 
+Parent floc size = 41898 
+ntimestep = 56000 
+Parent floc size = 41879 
+New floc at ntimestep = 56000 
+  Average position x = 6.566237e-05, y = 1.840971e-05, z = 3.806758e-05 
+  Size = 19 
+  Volume = 1.720239e-17 
+
+ntimestep = 58000 
+Parent floc size = 41879 
+ntimestep = 60000 
+Parent floc size = 41748 
+New floc at ntimestep = 60000 
+  Average position x = 6.621187e-05, y = 2.655414e-05, z = 2.824333e-05 
+  Size = 8 
+  Volume = 6.351580e-18 
+
+New floc at ntimestep = 60000 
+  Average position x = 9.597035e-05, y = 1.763633e-05, z = 4.533094e-05 
+  Size = 31 
+  Volume = 2.943938e-17 
+
+New floc at ntimestep = 60000 
+  Average position x = 8.242709e-05, y = 1.813879e-05, z = 4.384654e-05 
+  Size = 29 
+  Volume = 2.455255e-17 
+
+New floc at ntimestep = 60000 
+  Average position x = 7.103559e-05, y = 2.223380e-05, z = 4.268525e-05 
+  Size = 31 
+  Volume = 2.919689e-17 
+
+New floc at ntimestep = 60000 
+  Average position x = 6.389413e-05, y = 1.668095e-05, z = 4.701850e-05 
+  Size = 23 
+  Volume = 1.716921e-17 
+
+New floc at ntimestep = 60000 
+  Average position x = 7.655606e-05, y = 1.809871e-05, z = 5.024455e-05 
+  Size = 9 
+  Volume = 7.763046e-18 
+
+ntimestep = 62000 
+Parent floc size = 41748 
+ntimestep = 64000 
+Parent floc size = 41747 
+Mixed floc at ntimestep = 64000 
+  Average position x = 7.995954e-05, y = 1.672682e-05, z = 4.734651e-05 
+  Size = 24 
+  Old size = 23 
+  New size = 1 
+  Volume = 1.847054e-17 
+  Old volume = 1.716921e-17 
+  New volume = 1.301327e-18 
+
+ntimestep = 66000 
+Parent floc size = 41747 
+ntimestep = 68000 
+Parent floc size = 41675 
+New floc at ntimestep = 68000 
+  Average position x = 7.814125e-05, y = 2.079626e-05, z = 4.017857e-05 
+  Size = 18 
+  Volume = 1.668405e-17 
+
+New floc at ntimestep = 68000 
+  Average position x = 6.293914e-05, y = 2.048264e-05, z = 4.027895e-05 
+  Size = 54 
+  Volume = 4.041102e-17 
+
+ntimestep = 70000 
+Parent floc size = 41675 
+ntimestep = 72000 
+Parent floc size = 41631 
+Mixed floc at ntimestep = 72000 
+  Average position x = 7.038673e-05, y = 2.087844e-05, z = 4.107611e-05 
+  Size = 58 
+  Old size = 39 
+  New size = 19 
+  Volume = 4.431809e-17 
+  Old volume = 2.584285e-17 
+  New volume = 1.847525e-17 
+
+New floc at ntimestep = 72000 
+  Average position x = 7.798488e-05, y = 1.690230e-05, z = 4.757080e-05 
+  Size = 25 
+  Volume = 1.944806e-17 
+
+ntimestep = 74000 
+Parent floc size = 41626 
+Mixed floc at ntimestep = 74000 
+  Average position x = 7.115345e-05, y = 2.052575e-05, z = 4.116392e-05 
+  Size = 29 
+  Old size = 24 
+  New size = 5 
+  Volume = 1.831622e-17 
+  Old volume = 1.338846e-17 
+  New volume = 4.927761e-18 
+
+ntimestep = 76000 
+Parent floc size = 41622 
+Mixed floc at ntimestep = 76000 
+  Average position x = 9.687354e-05, y = 1.702708e-05, z = 4.939899e-05 
+  Size = 13 
+  Old size = 9 
+  New size = 4 
+  Volume = 8.765814e-18 
+  Old volume = 4.791817e-18 
+  New volume = 3.973997e-18 
+
+ntimestep = 78000 
+Parent floc size = 41604 
+Mixed floc at ntimestep = 78000 
+  Average position x = 9.543996e-05, y = 1.640287e-05, z = 4.710976e-05 
+  Size = 27 
+  Old size = 13 
+  New size = 14 
+  Volume = 2.234538e-17 
+  Old volume = 8.765814e-18 
+  New volume = 1.357956e-17 
+
+New floc at ntimestep = 78000 
+  Average position x = 9.970715e-05, y = 1.924478e-05, z = 5.776264e-05 
+  Size = 4 
+  Volume = 3.463476e-18 
+
+ntimestep = 80000 
+Parent floc size = 41620 
+ntimestep = 82000 
+Parent floc size = 41508 
+New floc at ntimestep = 82000 
+  Average position x = 7.309380e-05, y = 2.636851e-05, z = 3.200616e-05 
+  Size = 15 
+  Volume = 1.556026e-17 
+
+Mixed floc at ntimestep = 82000 
+  Average position x = 8.050065e-05, y = 2.051870e-05, z = 4.253746e-05 
+  Size = 35 
+  Old size = 15 
+  New size = 20 
+  Volume = 2.158077e-17 
+  Old volume = 7.104169e-18 
+  New volume = 1.447660e-17 
+
+New floc at ntimestep = 82000 
+  Average position x = 7.637103e-05, y = 2.326534e-05, z = 4.351938e-05 
+  Size = 17 
+  Volume = 1.662708e-17 
+
+Mixed floc at ntimestep = 82000 
+  Average position x = 8.666724e-05, y = 1.837367e-05, z = 4.449017e-05 
+  Size = 45 
+  Old size = 1 
+  New size = 44 
+  Volume = 3.660380e-17 
+  Old volume = 5.157985e-19 
+  New volume = 3.608801e-17 
+
+ntimestep = 84000 
+Parent floc size = 41500 
+New floc at ntimestep = 84000 
+  Average position x = 9.931446e-05, y = 1.755155e-05, z = 5.164232e-05 
+  Size = 8 
+  Volume = 6.411206e-18 
+
+ntimestep = 86000 
+Parent floc size = 41500 
+ntimestep = 88000 
+Parent floc size = 41499 
+New floc at ntimestep = 88000 
+  Average position x = 2.529204e-04, y = 3.489495e-05, z = 9.906081e-05 
+  Size = 1 
+  Volume = 1.107366e-18 
+
+ntimestep = 90000 
+Parent floc size = 41494 
+New floc at ntimestep = 90000 
+  Average position x = 1.372823e-04, y = 1.984389e-05, z = 5.531828e-05 
+  Size = 5 
+  Volume = 4.454947e-18 
+
+ntimestep = 92000 
+Parent floc size = 41492 
+New floc at ntimestep = 92000 
+  Average position x = 1.679636e-04, y = 3.988595e-05, z = 4.758632e-05 
+  Size = 2 
+  Volume = 1.888553e-18 
+
+ntimestep = 94000 
+Parent floc size = 41464 
+New floc at ntimestep = 94000 
+  Average position x = 9.280747e-05, y = 1.664567e-05, z = 4.796608e-05 
+  Size = 28 
+  Volume = 2.211374e-17 
+
+ntimestep = 96000 
+Parent floc size = 41451 
+New floc at ntimestep = 96000 
+  Average position x = 8.094167e-05, y = 2.709993e-05, z = 3.011667e-05 
+  Size = 13 
+  Volume = 1.194647e-17 
+
+ntimestep = 98000 
+Parent floc size = 41436 
+Mixed floc at ntimestep = 98000 
+  Average position x = 1.019344e-04, y = 1.669275e-05, z = 4.708873e-05 
+  Size = 27 
+  Old size = 12 
+  New size = 15 
+  Volume = 2.149590e-17 
+  Old volume = 7.504749e-18 
+  New volume = 1.399115e-17 
+
+ntimestep = 100000 
+Parent floc size = 41347 
+New floc at ntimestep = 100000 
+  Average position x = 7.266871e-05, y = 2.644792e-05, z = 3.067232e-05 
+  Size = 82 
+  Volume = 6.171265e-17 
+
+Mixed floc at ntimestep = 100000 
+  Average position x = 1.076913e-04, y = 1.678718e-05, z = 4.662681e-05 
+  Size = 34 
+  Old size = 27 
+  New size = 7 
+  Volume = 2.792726e-17 
+  Old volume = 2.149590e-17 
+  New volume = 6.431364e-18 
+
+ntimestep = 102000 
+Parent floc size = 41347 
+ntimestep = 104000 
+Parent floc size = 41325 
+New floc at ntimestep = 104000 
+  Average position x = 1.002889e-04, y = 1.778032e-05, z = 4.759012e-05 
+  Size = 22 
+  Volume = 1.855566e-17 
+
+ntimestep = 106000 
+Parent floc size = 41314 
+New floc at ntimestep = 106000 
+  Average position x = 1.180132e-04, y = 1.831425e-05, z = 4.930770e-05 
+  Size = 11 
+  Volume = 9.140880e-18 
+
+ntimestep = 108000 
+Parent floc size = 41314 
+ntimestep = 110000 
+Parent floc size = 41314 
+ntimestep = 112000 
+Parent floc size = 41282 
+Mixed floc at ntimestep = 112000 
+  Average position x = 1.035551e-04, y = 1.673646e-05, z = 4.466681e-05 
+  Size = 45 
+  Old size = 16 
+  New size = 29 
+  Volume = 3.267749e-17 
+  Old volume = 7.985300e-18 
+  New volume = 2.469219e-17 
+
+New floc at ntimestep = 112000 
+  Average position x = 1.386717e-04, y = 2.225085e-05, z = 6.070110e-05 
+  Size = 3 
+  Volume = 2.636319e-18 
+
+ntimestep = 114000 
+Parent floc size = 41272 
+New floc at ntimestep = 114000 
+  Average position x = 1.144753e-04, y = 1.834003e-05, z = 4.952111e-05 
+  Size = 10 
+  Volume = 8.895396e-18 
+
+ntimestep = 116000 
+Parent floc size = 41269 
+Mixed floc at ntimestep = 116000 
+  Average position x = 1.116872e-04, y = 1.647178e-05, z = 4.460274e-05 
+  Size = 42 
+  Old size = 39 
+  New size = 3 
+  Volume = 2.983728e-17 
+  Old volume = 2.717918e-17 
+  New volume = 2.658097e-18 
+
+ntimestep = 118000 
+Parent floc size = 41251 
+New floc at ntimestep = 118000 
+  Average position x = 1.149729e-04, y = 1.780507e-05, z = 4.838117e-05 
+  Size = 18 
+  Volume = 1.479370e-17 
+
+ntimestep = 120000 
+Parent floc size = 41242 
+New floc at ntimestep = 120000 
+  Average position x = 1.239437e-04, y = 1.894208e-05, z = 4.969320e-05 
+  Size = 9 
+  Volume = 8.287699e-18 
+
+ntimestep = 122000 
+Parent floc size = 41242 
+ntimestep = 124000 
+Parent floc size = 41242 
+ntimestep = 126000 
+Parent floc size = 41242 
+ntimestep = 128000 
+Parent floc size = 41242 
+ntimestep = 130000 
+Parent floc size = 41181 
+New floc at ntimestep = 130000 
+  Average position x = 1.171623e-04, y = 1.753933e-05, z = 4.602099e-05 
+  Size = 61 
+  Volume = 4.809310e-17 
+
+ntimestep = 132000 
+Parent floc size = 41181 
+ntimestep = 134000 
+Parent floc size = 41181 
+ntimestep = 136000 
+Parent floc size = 41109 
+New floc at ntimestep = 136000 
+  Average position x = 1.239782e-04, y = 3.050938e-05, z = 4.616395e-05 
+  Size = 3 
+  Volume = 2.594103e-18 
+
+New floc at ntimestep = 136000 
+  Average position x = 1.093953e-04, y = 1.753076e-05, z = 4.595345e-05 
+  Size = 69 
+  Volume = 4.997414e-17 
+
+ntimestep = 138000 
+Parent floc size = 41093 
+New floc at ntimestep = 138000 
+  Average position x = 9.943848e-05, y = 2.634769e-05, z = 3.922798e-05 
+  Size = 16 
+  Volume = 1.517147e-17 
+
+ntimestep = 140000 
+Parent floc size = 41067 
+Mixed floc at ntimestep = 140000 
+  Average position x = 1.044646e-04, y = 2.698461e-05, z = 3.416007e-05 
+  Size = 23 
+  Old size = 11 
+  New size = 12 
+  Volume = 1.424035e-17 
+  Old volume = 5.131832e-18 
+  New volume = 9.108520e-18 
+
+New floc at ntimestep = 140000 
+  Average position x = 9.421207e-05, y = 2.736117e-05, z = 3.463428e-05 
+  Size = 14 
+  Volume = 1.260585e-17 
+
+ntimestep = 142000 
+Parent floc size = 41067 
+ntimestep = 144000 
+Parent floc size = 41091 
+ntimestep = 146000 
+Parent floc size = 41091 
+ntimestep = 148000 
+Parent floc size = 41091 
+ntimestep = 150000 
+Parent floc size = 41044 
+New floc at ntimestep = 150000 
+  Average position x = 9.009105e-05, y = 2.566835e-05, z = 3.101640e-05 
+  Size = 47 
+  Volume = 3.877220e-17 
+
+ntimestep = 152000 
+Parent floc size = 41025 
+New floc at ntimestep = 152000 
+  Average position x = 9.035445e-05, y = 2.712040e-05, z = 3.347917e-05 
+  Size = 19 
+  Volume = 1.545613e-17 
+
+ntimestep = 154000 
+Parent floc size = 41006 
+Mixed floc at ntimestep = 154000 
+  Average position x = 1.442193e-04, y = 1.780845e-05, z = 4.588203e-05 
+  Size = 45 
+  Old size = 39 
+  New size = 6 
+  Volume = 3.009075e-17 
+  Old volume = 2.334803e-17 
+  New volume = 6.742729e-18 
+
+ntimestep = 156000 
+Parent floc size = 40811 
+Mixed floc at ntimestep = 156000 
+  Average position x = 1.319117e-04, y = 1.697288e-05, z = 4.518346e-05 
+  Size = 190 
+  Old size = 56 
+  New size = 134 
+  Volume = 1.390785e-16 
+  Old volume = 3.512462e-17 
+  New volume = 1.039539e-16 
+
+New floc at ntimestep = 156000 
+  Average position x = 1.093690e-04, y = 1.705608e-05, z = 4.615195e-05 
+  Size = 50 
+  Volume = 3.599601e-17 
+
+ntimestep = 158000 
+Parent floc size = 40811 
+ntimestep = 160000 
+Parent floc size = 40783 
+New floc at ntimestep = 160000 
+  Average position x = 6.715708e-05, y = 1.157275e-05, z = 2.787435e-05 
+  Size = 20 
+  Volume = 1.958095e-17 
+
+New floc at ntimestep = 160000 
+  Average position x = 1.110257e-04, y = 2.202374e-05, z = 4.367843e-05 
+  Size = 8 
+  Volume = 6.252242e-18 
+
+ntimestep = 162000 
+Parent floc size = 40762 
+New floc at ntimestep = 162000 
+  Average position x = 1.011931e-04, y = 2.415194e-05, z = 4.272376e-05 
+  Size = 20 
+  Volume = 1.844562e-17 
+
+New floc at ntimestep = 162000 
+  Average position x = 1.888998e-04, y = 4.702053e-05, z = 8.370700e-05 
+  Size = 1 
+  Volume = 4.437282e-19 
+
+ntimestep = 164000 
+Parent floc size = 40736 
+New floc at ntimestep = 164000 
+  Average position x = 9.284632e-05, y = 2.614196e-05, z = 3.260393e-05 
+  Size = 26 
+  Volume = 2.167920e-17 
+
+ntimestep = 166000 
+Parent floc size = 40708 
+New floc at ntimestep = 166000 
+  Average position x = 1.303004e-04, y = 2.179672e-05, z = 4.285664e-05 
+  Size = 8 
+  Volume = 7.073583e-18 
+
+New floc at ntimestep = 166000 
+  Average position x = 1.190564e-04, y = 1.735463e-05, z = 4.696565e-05 
+  Size = 20 
+  Volume = 1.588390e-17 
+
+ntimestep = 168000 
+Parent floc size = 40708 
+ntimestep = 170000 
+Parent floc size = 40708 
+ntimestep = 172000 
+Parent floc size = 40674 
+New floc at ntimestep = 172000 
+  Average position x = 8.643132e-05, y = 2.401021e-05, z = 4.186099e-05 
+  Size = 24 
+  Volume = 1.897684e-17 
+
+New floc at ntimestep = 172000 
+  Average position x = 1.171091e-04, y = 1.940678e-05, z = 4.432974e-05 
+  Size = 10 
+  Volume = 7.633571e-18 
+
+ntimestep = 174000 
+Parent floc size = 40662 
+New floc at ntimestep = 174000 
+  Average position x = 1.358374e-04, y = 1.875142e-05, z = 4.832559e-05 
+  Size = 12 
+  Volume = 8.883728e-18 
+
+ntimestep = 176000 
+Parent floc size = 40653 
+New floc at ntimestep = 176000 
+  Average position x = 1.201211e-04, y = 2.586992e-05, z = 3.396674e-05 
+  Size = 9 
+  Volume = 9.994190e-18 
+
+ntimestep = 178000 
+Parent floc size = 40653 
+ntimestep = 180000 
+Parent floc size = 40653 
+ntimestep = 182000 
+Parent floc size = 40653 
+ntimestep = 184000 
+Parent floc size = 40653 
+ntimestep = 186000 
+Parent floc size = 40653 
+ntimestep = 188000 
+Parent floc size = 40593 
+New floc at ntimestep = 188000 
+  Average position x = 9.547023e-05, y = 2.463780e-05, z = 3.111996e-05 
+  Size = 60 
+  Volume = 4.725962e-17 
+
+ntimestep = 190000 
+Parent floc size = 40541 
+New floc at ntimestep = 190000 
+  Average position x = 1.272629e-04, y = 1.777817e-05, z = 4.426980e-05 
+  Size = 52 
+  Volume = 3.387142e-17 
+
+ntimestep = 192000 
+Parent floc size = 40541 
+ntimestep = 194000 
+Parent floc size = 40541 
+ntimestep = 196000 
+Parent floc size = 40541 
+ntimestep = 198000 
+Parent floc size = 40541 
+ntimestep = 200000 
+Parent floc size = 40293 
+New floc at ntimestep = 200000 
+  Average position x = 8.343827e-05, y = 2.407901e-05, z = 4.221620e-05 
+  Size = 33 
+  Volume = 2.662010e-17 
+
+New floc at ntimestep = 200000 
+  Average position x = 1.133407e-04, y = 1.693536e-05, z = 4.457890e-05 
+  Size = 215 
+  Volume = 1.387746e-16 
+
+ntimestep = 202000 
+Parent floc size = 40293 
+ntimestep = 204000 
+Parent floc size = 40293 
+ntimestep = 206000 
+Parent floc size = 40293 
+ntimestep = 208000 
+Parent floc size = 40293 
+ntimestep = 210000 
+Parent floc size = 40454 
+ntimestep = 212000 
+Parent floc size = 40285 
+Mixed floc at ntimestep = 212000 
+  Average position x = 1.193957e-04, y = 1.735434e-05, z = 4.432796e-05 
+  Size = 169 
+  Old size = 161 
+  New size = 8 
+  Volume = 1.023854e-16 
+  Old volume = 9.656727e-17 
+  New volume = 5.818079e-18 
+
+ntimestep = 214000 
+Parent floc size = 40285 
+ntimestep = 216000 
+Parent floc size = 40285 
+ntimestep = 218000 
+Parent floc size = 40423 
+ntimestep = 220000 
+Parent floc size = 40245 
+New floc at ntimestep = 220000 
+  Average position x = 1.112406e-04, y = 2.567812e-05, z = 3.282847e-05 
+  Size = 22 
+  Volume = 1.902851e-17 
+
+Mixed floc at ntimestep = 220000 
+  Average position x = 1.214965e-04, y = 1.719082e-05, z = 4.444120e-05 
+  Size = 149 
+  Old size = 131 
+  New size = 18 
+  Volume = 8.761533e-17 
+  Old volume = 7.517516e-17 
+  New volume = 1.244018e-17 
+
+ntimestep = 222000 
+Parent floc size = 40245 
+ntimestep = 224000 
+Parent floc size = 40193 
+New floc at ntimestep = 224000 
+  Average position x = 1.012208e-04, y = 2.514762e-05, z = 3.237201e-05 
+  Size = 52 
+  Volume = 3.713535e-17 
+
+ntimestep = 226000 
+Parent floc size = 40193 
+ntimestep = 228000 
+Parent floc size = 40193 
+ntimestep = 230000 
+Parent floc size = 40142 
+New floc at ntimestep = 230000 
+  Average position x = 7.540859e-05, y = 1.211581e-05, z = 2.684722e-05 
+  Size = 37 
+  Volume = 3.554559e-17 
+
+Mixed floc at ntimestep = 230000 
+  Average position x = 1.258478e-04, y = 1.707434e-05, z = 4.464376e-05 
+  Size = 141 
+  Old size = 127 
+  New size = 14 
+  Volume = 8.272694e-17 
+  Old volume = 7.186747e-17 
+  New volume = 1.085947e-17 
+
+ntimestep = 232000 
+Parent floc size = 39796 
+New floc at ntimestep = 232000 
+  Average position x = 9.524688e-05, y = 1.664020e-05, z = 4.337018e-05 
+  Size = 346 
+  Volume = 2.073029e-16 
+
+ntimestep = 234000 
+Parent floc size = 39796 
+ntimestep = 236000 
+Parent floc size = 39796 
+ntimestep = 238000 
+Parent floc size = 39796 
+ntimestep = 240000 
+Parent floc size = 39796 
+ntimestep = 242000 
+Parent floc size = 39848 
+ntimestep = 244000 
+Parent floc size = 39776 
+Mixed floc at ntimestep = 244000 
+  Average position x = 1.118295e-04, y = 2.525497e-05, z = 3.251710e-05 
+  Size = 72 
+  Old size = 52 
+  New size = 20 
+  Volume = 5.481833e-17 
+  Old volume = 3.713535e-17 
+  New volume = 1.768298e-17 
+
+ntimestep = 246000 
+Parent floc size = 39753 
+Mixed floc at ntimestep = 246000 
+  Average position x = 1.014457e-04, y = 1.676803e-05, z = 4.316272e-05 
+  Size = 335 
+  Old size = 312 
+  New size = 23 
+  Volume = 2.015742e-16 
+  Old volume = 1.832714e-16 
+  New volume = 1.830283e-17 
+
+ntimestep = 248000 
+Parent floc size = 40088 
+ntimestep = 250000 
+Parent floc size = 39723 
+New floc at ntimestep = 250000 
+  Average position x = 1.024955e-04, y = 2.200225e-05, z = 4.189573e-05 
+  Size = 30 
+  Volume = 2.406056e-17 
+
+ntimestep = 252000 
+Parent floc size = 39663 
+New floc at ntimestep = 252000 
+  Average position x = 7.746671e-05, y = 1.139277e-05, z = 2.466017e-05 
+  Size = 38 
+  Volume = 3.143075e-17 
+
+New floc at ntimestep = 252000 
+  Average position x = 9.851316e-05, y = 1.161178e-05, z = 2.555867e-05 
+  Size = 22 
+  Volume = 2.139617e-17 
+
+ntimestep = 254000 
+Parent floc size = 39663 
+ntimestep = 256000 
+Parent floc size = 39591 
+New floc at ntimestep = 256000 
+  Average position x = 8.950822e-05, y = 2.071040e-05, z = 4.095773e-05 
+  Size = 72 
+  Volume = 4.980382e-17 
+
+ntimestep = 258000 
+Parent floc size = 39591 
+ntimestep = 260000 
+Parent floc size = 39591 
+ntimestep = 262000 
+Parent floc size = 39516 
+New floc at ntimestep = 262000 
+  Average position x = 7.837433e-05, y = 1.518802e-05, z = 2.944881e-05 
+  Size = 58 
+  Volume = 4.480185e-17 
+
+New floc at ntimestep = 262000 
+  Average position x = 1.248218e-04, y = 2.639821e-05, z = 3.301534e-05 
+  Size = 17 
+  Volume = 1.458211e-17 
+
+ntimestep = 264000 
+Parent floc size = 39516 
+ntimestep = 266000 
+Parent floc size = 39516 
+ntimestep = 268000 
+Parent floc size = 39516 
+ntimestep = 270000 
+Parent floc size = 39516 
+ntimestep = 272000 
+Parent floc size = 39481 
+New floc at ntimestep = 272000 
+  Average position x = 1.255013e-04, y = 2.580082e-05, z = 3.173090e-05 
+  Size = 35 
+  Volume = 2.834895e-17 
+
+ntimestep = 274000 
+Parent floc size = 39481 
+ntimestep = 276000 
+Parent floc size = 39481 
+ntimestep = 278000 
+Parent floc size = 39474 
+Mixed floc at ntimestep = 278000 
+  Average position x = 1.121848e-04, y = 1.688200e-05, z = 4.329843e-05 
+  Size = 281 
+  Old size = 274 
+  New size = 7 
+  Volume = 1.605464e-16 
+  Old volume = 1.536594e-16 
+  New volume = 6.887061e-18 
+
+ntimestep = 280000 
+Parent floc size = 39474 
+ntimestep = 282000 
+Parent floc size = 39432 
+New floc at ntimestep = 282000 
+  Average position x = 9.556558e-05, y = 1.755788e-05, z = 4.385208e-05 
+  Size = 42 
+  Volume = 2.887865e-17 
+
+ntimestep = 284000 
+Parent floc size = 39432 
+ntimestep = 286000 
+Parent floc size = 39432 
+ntimestep = 288000 
+Parent floc size = 39432 
+ntimestep = 290000 
+Parent floc size = 39432 
+ntimestep = 292000 
+Parent floc size = 39432 
+ntimestep = 294000 
+Parent floc size = 39419 
+New floc at ntimestep = 294000 
+  Average position x = 1.136625e-04, y = 2.195192e-05, z = 4.383339e-05 
+  Size = 13 
+  Volume = 1.234391e-17 
+
+ntimestep = 296000 
+Parent floc size = 39419 
+ntimestep = 298000 
+Parent floc size = 39419 
+ntimestep = 300000 
+Parent floc size = 39397 
+New floc at ntimestep = 300000 
+  Average position x = 1.058045e-04, y = 2.030101e-05, z = 4.215757e-05 
+  Size = 22 
+  Volume = 1.768748e-17 
+
+ntimestep = 302000 
+Parent floc size = 39397 
+ntimestep = 304000 
+Parent floc size = 39397 
+ntimestep = 306000 
+Parent floc size = 39397 
+ntimestep = 308000 
+Parent floc size = 39397 
+ntimestep = 310000 
+Parent floc size = 39397 
+ntimestep = 312000 
+Parent floc size = 39397 
+ntimestep = 314000 
+Parent floc size = 39384 
+New floc at ntimestep = 314000 
+  Average position x = 1.210875e-04, y = 2.143127e-05, z = 4.196565e-05 
+  Size = 13 
+  Volume = 1.279412e-17 
+
+ntimestep = 316000 
+Parent floc size = 39384 
+ntimestep = 318000 
+Parent floc size = 39384 
+ntimestep = 320000 
+Parent floc size = 39384 
+ntimestep = 322000 
+Parent floc size = 39132 
+New floc at ntimestep = 322000 
+  Average position x = 1.310867e-04, y = 2.568131e-05, z = 3.184539e-05 
+  Size = 252 
+  Volume = 1.856716e-16 
+
+ntimestep = 324000 
+Parent floc size = 39132 
+ntimestep = 326000 
+Parent floc size = 39076 
+Mixed floc at ntimestep = 326000 
+  Average position x = 1.265842e-04, y = 1.815243e-05, z = 4.247545e-05 
+  Size = 274 
+  Old size = 218 
+  New size = 56 
+  Volume = 1.690786e-16 
+  Old volume = 1.248369e-16 
+  New volume = 4.424171e-17 
+
+ntimestep = 328000 
+Parent floc size = 39076 
+ntimestep = 330000 
+Parent floc size = 39076 
+ntimestep = 332000 
+Parent floc size = 39076 
+ntimestep = 334000 
+Parent floc size = 39076 
+ntimestep = 336000 
+Parent floc size = 39076 
+ntimestep = 338000 
+Parent floc size = 39076 
+ntimestep = 340000 
+Parent floc size = 39076 
+ntimestep = 342000 
+Parent floc size = 39061 
+Mixed floc at ntimestep = 342000 
+  Average position x = 1.298883e-04, y = 1.874698e-05, z = 4.223351e-05 
+  Size = 147 
+  Old size = 132 
+  New size = 15 
+  Volume = 8.103533e-17 
+  Old volume = 6.795090e-17 
+  New volume = 1.308443e-17 
+
+ntimestep = 344000 
+Parent floc size = 39061 
+ntimestep = 346000 
+Parent floc size = 39061 
+ntimestep = 348000 
+Parent floc size = 39208 
+ntimestep = 350000 
+Parent floc size = 39473 
+ntimestep = 352000 
+Parent floc size = 38984 
+Mixed floc at ntimestep = 352000 
+  Average position x = 1.483106e-04, y = 1.829037e-05, z = 4.211044e-05 
+  Size = 519 
+  Old size = 408 
+  New size = 111 
+  Volume = 3.220783e-16 
+  Old volume = 2.440169e-16 
+  New volume = 7.806147e-17 
+
+ntimestep = 354000 
+Parent floc size = 38984 
+ntimestep = 356000 
+Parent floc size = 38984 
+ntimestep = 358000 
+Parent floc size = 38984 
+ntimestep = 360000 
+Parent floc size = 38984 
+ntimestep = 362000 
+Parent floc size = 38984 
+ntimestep = 364000 
+Parent floc size = 38828 
+Mixed floc at ntimestep = 364000 
+  Average position x = 1.345059e-04, y = 2.418909e-05, z = 3.229688e-05 
+  Size = 156 
+  Old size = 34 
+  New size = 122 
+  Volume = 1.106619e-16 
+  Old volume = 1.903799e-17 
+  New volume = 9.162392e-17 
+
+ntimestep = 366000 
+Parent floc size = 38828 
+ntimestep = 368000 
+Parent floc size = 38828 
+ntimestep = 370000 
+Parent floc size = 38828 
+ntimestep = 372000 
+Parent floc size = 38804 
+New floc at ntimestep = 372000 
+  Average position x = 9.970873e-05, y = 1.286735e-05, z = 2.761487e-05 
+  Size = 24 
+  Volume = 2.055646e-17 
+
+ntimestep = 374000 
+Parent floc size = 38743 
+New floc at ntimestep = 374000 
+  Average position x = 1.337556e-04, y = 2.050869e-05, z = 3.940774e-05 
+  Size = 61 
+  Volume = 4.655710e-17 
+
+ntimestep = 376000 
+Parent floc size = 38743 
+ntimestep = 378000 
+Parent floc size = 38743 
+ntimestep = 380000 
+Parent floc size = 38680 
+New floc at ntimestep = 380000 
+  Average position x = 1.268841e-04, y = 2.060769e-05, z = 3.952266e-05 
+  Size = 63 
+  Volume = 3.922782e-17 
+
+ntimestep = 382000 
+Parent floc size = 38680 
+ntimestep = 384000 
+Parent floc size = 38680 
+ntimestep = 386000 
+Parent floc size = 38680 
+ntimestep = 388000 
+Parent floc size = 38680 
+ntimestep = 390000 
+Parent floc size = 38646 
+New floc at ntimestep = 390000 
+  Average position x = 1.389642e-04, y = 2.540045e-05, z = 3.326575e-05 
+  Size = 34 
+  Volume = 2.680734e-17 
+
+ntimestep = 392000 
+Parent floc size = 38646 
+ntimestep = 394000 
+Parent floc size = 38646 
+ntimestep = 396000 
+Parent floc size = 38646 
+ntimestep = 398000 
+Parent floc size = 38646 
+ntimestep = 400000 
+Parent floc size = 38480 
+New floc at ntimestep = 400000 
+  Average position x = 1.235192e-04, y = 2.407174e-05, z = 3.263239e-05 
+  Size = 152 
+  Volume = 9.707224e-17 
+
+New floc at ntimestep = 400000 
+  Average position x = 1.427229e-04, y = 2.247653e-05, z = 4.067102e-05 
+  Size = 14 
+  Volume = 1.186926e-17 
+
+ntimestep = 402000 
+Parent floc size = 38480 
+ntimestep = 404000 
+Parent floc size = 38480 
+ntimestep = 406000 
+Parent floc size = 38480 
+ntimestep = 408000 
+Parent floc size = 38480 
+ntimestep = 410000 
+Parent floc size = 38616 
+ntimestep = 412000 
+Parent floc size = 38616 
+ntimestep = 414000 
+Parent floc size = 38616 
+ntimestep = 416000 
+Parent floc size = 38616 
+ntimestep = 418000 
+Parent floc size = 38608 
+New floc at ntimestep = 418000 
+  Average position x = 1.628872e-04, y = 2.463260e-05, z = 4.131820e-05 
+  Size = 8 
+  Volume = 6.641080e-18 
+
+ntimestep = 420000 
+Parent floc size = 38608 
+ntimestep = 422000 
+Parent floc size = 38608 
+ntimestep = 424000 
+Parent floc size = 38608 
+ntimestep = 426000 
+Parent floc size = 38679 
+New floc at ntimestep = 426000 
+  Average position x = 1.013232e-04, y = 1.155246e-05, z = 2.488094e-05 
+  Size = 70 
+  Volume = 5.114571e-17 
+
+ntimestep = 428000 
+Parent floc size = 38491 
+Mixed floc at ntimestep = 428000 
+  Average position x = 1.579300e-04, y = 2.093647e-05, z = 3.852749e-05 
+  Size = 188 
+  Old size = 153 
+  New size = 35 
+  Volume = 1.239978e-16 
+  Old volume = 9.441947e-17 
+  New volume = 2.957832e-17 
+
+ntimestep = 430000 
+Parent floc size = 38491 
+ntimestep = 432000 
+Parent floc size = 38491 
+ntimestep = 434000 
+Parent floc size = 38491 
+ntimestep = 436000 
+Parent floc size = 38491 
+ntimestep = 438000 
+Parent floc size = 38491 
+ntimestep = 440000 
+Parent floc size = 38491 
+ntimestep = 442000 
+Parent floc size = 38491 
+ntimestep = 444000 
+Parent floc size = 38491 
+ntimestep = 446000 
+Parent floc size = 38491 
+ntimestep = 448000 
+Parent floc size = 38592 
+ntimestep = 450000 
+Parent floc size = 38592 
+ntimestep = 452000 
+Parent floc size = 38592 
+ntimestep = 454000 
+Parent floc size = 38592 
+ntimestep = 456000 
+Parent floc size = 38231 
+Mixed floc at ntimestep = 456000 
+  Average position x = 1.581892e-04, y = 2.134364e-05, z = 3.753134e-05 
+  Size = 361 
+  Old size = 169 
+  New size = 192 
+  Volume = 2.366212e-16 
+  Old volume = 1.024633e-16 
+  New volume = 1.341579e-16 
+
+ntimestep = 458000 
+Parent floc size = 38080 
+New floc at ntimestep = 458000 
+  Average position x = 9.624279e-05, y = 1.353900e-05, z = 2.783710e-05 
+  Size = 146 
+  Volume = 9.448991e-17 
+
+Mixed floc at ntimestep = 458000 
+  Average position x = 1.593233e-04, y = 2.129672e-05, z = 3.744858e-05 
+  Size = 366 
+  Old size = 361 
+  New size = 5 
+  Volume = 2.410279e-16 
+  Old volume = 2.366212e-16 
+  New volume = 4.406742e-18 
+
+ntimestep = 460000 
+Parent floc size = 38080 
+ntimestep = 462000 
+Parent floc size = 38080 
+ntimestep = 464000 
+Parent floc size = 38080 
+ntimestep = 466000 
+Parent floc size = 38080 
+ntimestep = 468000 
+Parent floc size = 38080 
+ntimestep = 470000 
+Parent floc size = 38060 
+Mixed floc at ntimestep = 470000 
+  Average position x = 1.655715e-04, y = 2.131256e-05, z = 3.710821e-05 
+  Size = 386 
+  Old size = 378 
+  New size = 8 
+  Volume = 2.572486e-16 
+  Old volume = 2.487446e-16 
+  New volume = 8.504090e-18 
+
+ntimestep = 472000 
+Parent floc size = 38060 
+ntimestep = 474000 
+Parent floc size = 38060 
+ntimestep = 476000 
+Parent floc size = 38060 
+ntimestep = 478000 
+Parent floc size = 38060 
+ntimestep = 480000 
+Parent floc size = 38060 
+ntimestep = 482000 
+Parent floc size = 38442 
+ntimestep = 484000 
+Parent floc size = 38044 
+Mixed floc at ntimestep = 484000 
+  Average position x = 1.726564e-04, y = 2.117287e-05, z = 3.702434e-05 
+  Size = 398 
+  Old size = 382 
+  New size = 16 
+  Volume = 2.645435e-16 
+  Old volume = 2.526161e-16 
+  New volume = 1.192739e-17 
+
+ntimestep = 486000 
+Parent floc size = 38044 
+ntimestep = 488000 
+Parent floc size = 38044 
+ntimestep = 490000 
+Parent floc size = 37701 
+Mixed floc at ntimestep = 490000 
+  Average position x = 1.394397e-04, y = 2.303431e-05, z = 3.431264e-05 
+  Size = 343 
+  Old size = 44 
+  New size = 299 
+  Volume = 2.161799e-16 
+  Old volume = 1.904230e-17 
+  New volume = 1.971376e-16 
+
+ntimestep = 492000 
+Parent floc size = 37701 
+ntimestep = 494000 
+Parent floc size = 37701 
+ntimestep = 496000 
+Parent floc size = 37701 
+ntimestep = 498000 
+Parent floc size = 37793 
+ntimestep = 500000 
+Parent floc size = 37793 
+ntimestep = 502000 
+Parent floc size = 38134 
+ntimestep = 504000 
+Parent floc size = 38134 
+ntimestep = 506000 
+Parent floc size = 38134 
+ntimestep = 508000 
+Parent floc size = 37998 
+Mixed floc at ntimestep = 508000 
+  Average position x = 1.041618e-04, y = 1.267495e-05, z = 2.725792e-05 
+  Size = 136 
+  Old size = 92 
+  New size = 44 
+  Volume = 8.499749e-17 
+  Old volume = 5.113249e-17 
+  New volume = 3.386500e-17 
+
+ntimestep = 510000 
+Parent floc size = 38213 
+ntimestep = 512000 
+Parent floc size = 37985 
+ntimestep = 514000 
+Parent floc size = 37840 
+ntimestep = 516000 
+Parent floc size = 37840 
+ntimestep = 518000 
+Parent floc size = 37840 
+ntimestep = 520000 
+Parent floc size = 37840 
+ntimestep = 522000 
+Parent floc size = 37840 
+ntimestep = 524000 
+Parent floc size = 37840 
+ntimestep = 526000 
+Parent floc size = 37840 
+ntimestep = 528000 
+Parent floc size = 37840 
+ntimestep = 530000 
+Parent floc size = 37840 
+ntimestep = 532000 
+Parent floc size = 37840 
+ntimestep = 534000 
+Parent floc size = 37840 
+ntimestep = 536000 
+Parent floc size = 37840 
+ntimestep = 538000 
+Parent floc size = 37840 
+ntimestep = 540000 
+Parent floc size = 37828 

@@ -116,9 +116,12 @@ void FixShear::post_force(int vflag)
   for (int i = 0; i < nall; i++) {
   	double diameter = 2 * radius[i];
   	if (dflag == 1) {
-  		f[i][0] = MY_3PI * viscosity * diameter * shearRate * (x[i][2] - height);
+  		//f[i][0] += MY_3PI * viscosity * diameter * (shearRate * (x[i][2] - height)-v[i][0]);
+		f[i][0] += MY_3PI * viscosity * diameter * (shearRate * (x[i][2] - height));
+
   	} else {
-  		f[i][1] = MY_3PI * viscosity * diameter * shearRate * (x[i][2] - height);
+  		//f[i][1] += MY_3PI * viscosity * diameter * (shearRate * (x[i][2] - height)-v[i][1]);
+		f[i][1] += MY_3PI * viscosity * diameter * (shearRate * (x[i][2] - height));
   	}
   }
 }
