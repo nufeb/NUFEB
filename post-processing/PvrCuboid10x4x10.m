@@ -1,4 +1,4 @@
-function [ POV_RAY ] = PvrCube10x10x10(image, rotate)
+function [ POV_RAY ] = PvrCuboid10x4x10(image, rotate)
 
 %==================================
 
@@ -12,7 +12,7 @@ fprintf(fid,'#include "shapes.inc"\n');
 fprintf(fid,'// Right-handed coordinate system in which the z-axis points upwards\n');
 fprintf(fid,'camera {\n');
 %fprintf(fid,['location <0, 60e-2, 0>\n']);
-fprintf(fid,['location <0e-2, 30e-2, 0e-2>\n']);
+fprintf(fid,['location <0e-2, 60e-2, 0e-2>\n']);
 fprintf(fid,'sky z\n');
 fprintf(fid,'right 0.24*x*image_width/image_height\n');
 fprintf(fid,'up 0.24*y\n');
@@ -24,7 +24,7 @@ fprintf(fid,'}\n');
 
 fprintf(fid,'// Create simualtion box\n');
 fprintf(fid,'#declare b_x=0.05;\n');
-fprintf(fid,'#declare b_y=0.05;\n');
+fprintf(fid,'#declare b_y=0.02;\n');
 fprintf(fid,'#declare b_z=0.05;\n');
 fprintf(fid,'object{ \n');
 fprintf(fid,['Wire_Box(<b_x, b_y, b_z>, <-b_x, -b_y, -b_z>, 0.0002, 0) \n']);

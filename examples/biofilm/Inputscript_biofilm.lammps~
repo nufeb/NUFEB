@@ -2,11 +2,11 @@
 
 atom_style	bio
 atom_modify	map array sort 1000 5.0e-7
-boundary	ff ff ff
+boundary	pp pp ff
 newton		off
-#processors  2 1 1
 
-#radius x y z outerradius sub o2 nh4 no2 no3
+
+
 communicate single vel yes
 read_data initial_cells_biofilm.in
 
@@ -14,29 +14,19 @@ group HET type 1
 group AOB type 2
 group NOB type 3 
 group EPS type 4
-group inert type 5
+#group inert type 5
 group dead type 6
 
 neighbor	5.0e-7 bin
 neigh_modify	delay 0 one 5000
 
-#pair_style none
-pair_style  gran/hooke/history 0.000200 NULL 0.000050 NULL 0.0 1
 
-pair_coeff  * *
-timestep 10
+timestep 5000
 
-#velocity all set 0.0 0.0 0.0 units box
 
 fix 1 all nve/limit 1e-8 
 
-#fix	 2 all gravity 1.47 vector 0 0 -1 # spherical 90.0 -180.0 
 
-fix 10 all viscous 0.1 
-
-
-fix xw all wall/gran 2000 NULL 500.0 NULL 1.5 0 xplane  0.000000e-04 1.000000e-04
-fix yw all wall/gran 2000 NULL 500.0 NULL 1.5 0 yplane  0.000000e-04 1.000000e-04
 fix zw all wall/gran 2000 NULL 500.0 NULL 1.5 0 zplane  0.000000e-04 1.000000e-04
 
 variable kanc equal 50
@@ -48,8 +38,8 @@ fix zwa all walladh v_kanc zplane  0.000000e-04 1.000000e-04
 ##############Ibm Variable Definitions##############
 
 #Defining affinity variables
-variable KsHET equal 0.004
-variable Ko2HET equal 0.0002
+variable KsHET equal 0.01
+variable Ko2HET equal 0.81
 variable Kno2HET equal 0.0003
 variable Kno3HET equal 0.0003
 
@@ -117,32 +107,73 @@ variable deadDia equal 0.8e-6
 
 variable factor equal 1.5
 
-variable ke equal 5e+9
+variable kee equal 5e+9
+
 
 #Defining shear force parameters
 variable viscosity equal 0.001
-variable shearRate equal 0
-variable height equal 5e-5
+variable shearRate equal 0.0
+variable height equal 0.0
 
-##############Ibm functions##############
+#################Simulation Output################################
 
-fix g1 all diffnugrowth 1 200 v_KsHET v_Ko2HET v_Kno2HET v_Kno3HET v_Knh4AOB v_Ko2AOB v_Kno2NOB v_Ko2NOB v_MumHET v_MumAOB v_MumNOB v_etaHET v_bHET v_bAOB v_bNOB v_bEPS v_bmHET v_bmAOB v_bmNOB b_bX v_YHET v_YAOB v_YNOB v_YEPS v_Y1 v_EPSdens v_Do2 v_Dnh4 v_Dno2 v_Dno3 v_Ds v_diffT v_sub v_o2 v_no2 v_no3 v_nh4 20 20 20 mixed v_BCsub v_BCo2 v_BCno2 v_BCno3 v_BCnh4 v_shearRate 0
-
-fix j1 all epsadh 1 v_ke 1
-fix d1 all divide 500 v_EPSdens 2.0 3123
-fix e1 HET eps_extract 500 v_EPSratio v_EPSdens 1242242
-fix d5 all death 500 v_deadDia
-
-#fix s1 all shear 10 v_viscosity v_shearRate v_height zx 0 80000
-
-##############Simulation outputs##############
-
-dump		id all custom 500 output.lammps id type diameter x y z vx vy vz fx fy fz
-#thermo_style   custom step atoms mhet maob mnob meps mdead
-thermo_style    custom step atoms nhet naob nnob neps ndead
-thermo		1000
+dump		id all custom 100 snapshot.bubblemd id type diameter x y z vx vy vz fx fy fz 
+thermo_style    custom step time atoms nhet naob nnob neps ndead press 
+thermo		100
 thermo_modify	lost ignore
 
-run  20000
+
+
+
+
+##############Ibm functions##############
+label       loopa
+variable    a loop 16
+#print            "AAAAAAA = $a"
+
+pair_style  gran/hooke/history 1.e-4 NULL 1.e-5 NULL 0.0 1
+
+
+pair_coeff  * *
+timestep 5000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+
+
+fix 1 all nve/limit 1e-8 
+
+
+
+fix zw all wall/gran 2000 NULL 500.0 NULL 1.5 0 zplane  0.000000e-04 1.000000e-04
+
+
+
+fix g1 all diffnugrowth 1 1 v_KsHET v_Ko2HET v_Kno2HET v_Kno3HET v_Knh4AOB v_Ko2AOB v_Kno2NOB v_Ko2NOB v_MumHET v_MumAOB v_MumNOB v_etaHET v_bHET v_bAOB v_bNOB v_bEPS v_bmHET v_bmAOB v_bmNOB b_bX v_YHET v_YAOB v_YNOB v_YEPS v_Y1 v_EPSdens v_Do2 v_Dnh4 v_Dno2 v_Dno3 v_Ds v_diffT v_sub v_o2 v_no2 v_no3 v_nh4 30 12 30 mixed v_BCsub v_BCo2 v_BCno2 v_BCno3 v_BCnh4 v_shearRate 1000
+
+
+
+fix j1 all epsadh 1 v_kee 1
+fix d1 all divide 1 v_EPSdens 2.0 3123
+fix e1 HET eps_extract 1 v_EPSratio v_EPSdens 1242242
+fix d5 all death 1 v_deadDia
+
+fix s1 all shear 1 v_viscosity v_shearRate v_height zx 0 8000000
+
+
+run 2
+
+
+
+unfix g1
+
+timestep 1e-3  
+
+
+run  1000
+
+
+
+next     a
+jump SELF loopa
 	
+
+
 

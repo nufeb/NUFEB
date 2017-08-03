@@ -139,7 +139,7 @@ fix s1 all shear 1 v_viscosity v_shearRate v_height zx 0 800000
 
 ##############Simulation outputs##############
 
-dump		id all custom 2000 snapshot.bubblemd id type diameter x y z vx vy vz fx fy fz
+dump		id all custom 2000 output.lammps id type diameter x y z vx vy vz fx fy fz
 #thermo_style   custom step atoms mhet maob mnob meps mdead
 thermo_style    custom step cpu atoms nhet naob nnob neps ndead
 thermo		2000
@@ -183,7 +183,7 @@ fix zwa all walladh v_kanc zplane  0.000000e-04 1.000000e-04
 
 
 
-fix g1 all diffnugrowth 1 100 v_KsHET v_Ko2HET v_Kno2HET v_Kno3HET v_Knh4AOB v_Ko2AOB v_Kno2NOB v_Ko2NOB v_MumHET v_MumAOB v_MumNOB v_etaHET v_bHET v_bAOB v_bNOB v_bEPS v_bmHET v_bmAOB v_bmNOB b_bX v_YHET v_YAOB v_YNOB v_YEPS v_Y1 v_EPSdens v_Do2 v_Dnh4 v_Dno2 v_Dno3 v_Ds v_diffT v_sub v_o2 v_no2 v_no3 v_nh4 60 12 30 mixed v_BCsub v_BCo2 v_BCno2 v_BCno3 v_BCnh4 1000 0.0
+fix g1 all diffnugrowth 1 100 v_KsHET v_Ko2HET v_Kno2HET v_Kno3HET v_Knh4AOB v_Ko2AOB v_Kno2NOB v_Ko2NOB v_MumHET v_MumAOB v_MumNOB v_etaHET v_bHET v_bAOB v_bNOB v_bEPS v_bmHET v_bmAOB v_bmNOB b_bX v_YHET v_YAOB v_YNOB v_YEPS v_Y1 v_EPSdens v_Do2 v_Dnh4 v_Dno2 v_Dno3 v_Ds v_diffT v_sub v_o2 v_no2 v_no3 v_nh4 60 12 30 mixed v_BCsub v_BCo2 v_BCno2 v_BCno3 v_BCnh4 v_shearRate 1000
 
 #fix dt1 HET inert 1 v_bHET v_factor 4123
 #fix dt2 AOB inert 1 v_bAOB v_factor 412321
@@ -193,7 +193,7 @@ fix j1 all epsadh 1 v_ke 1
 fix d1 all divide 100 v_EPSdens 2.0 31233
 fix e1 HET eps_extract 100 v_EPSratio v_EPSdens 12422423
 fix d5 all death 100 v_deadDia
-#fix u1 all utilities 2000
+fix u1 all utilities 2000
 
 #unfix s1
 
