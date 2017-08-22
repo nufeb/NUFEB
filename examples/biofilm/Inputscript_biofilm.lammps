@@ -32,7 +32,7 @@ fix zw all wall/gran 2000 NULL 500.0 NULL 1.5 0 zplane  0.000000e-04 1.000000e-0
 variable kanc equal 50
 
 fix xwa all walladh v_kanc xplane  0.000000e-04 1.000000e-04
-fix ywa all walladh v_kanc yplane  0.000000e-04 1.000000e-04
+fix ywa all walladh v_kanc yplane  0.000000e-04 4.000000e-05
 fix zwa all walladh v_kanc zplane  0.000000e-04 1.000000e-04
 
 ##############Ibm Variable Definitions##############

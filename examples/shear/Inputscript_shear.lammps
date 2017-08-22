@@ -120,7 +120,7 @@ fix s1 all shear 1 v_viscosity v_shearRate v_height zx 0 800000
 
 ##############Simulation outputs##############
 
-dump		id all custom 2000 output.lammp id type diameter x y z vx vy vz fx fy fz
+dump		id all custom 2000 output.lammps id type diameter x y z vx vy vz fx fy fz
 #thermo_style   custom step atoms mhet maob mnob meps mdead
 thermo_style    custom step cpu atoms nhet naob nnob neps ndead
 thermo		2000
@@ -151,13 +151,13 @@ fix 1 all nve/limit 1e-8
 fix 10 all viscous 1.e-5
 
 
-fix xw all wall/gran 0.0 NULL 0.0 NULL 1.5 0 xplane  0.000000e-04 1.000000e-04
+fix xw all wall/gran 0.0 NULL 0.0 NULL 1.5 0 xplane  0.000000e-04 2.000000e-04
 #fix yw all wall/gran 2000 NULL 500.0 NULL 1.5 0 yplane  0.000000e-04 4.000000e-05
 fix zw all wall/gran 2000 NULL 500.0 NULL 1.5 0 zplane  0.000000e-04 1.000000e-04
 
 variable kanc equal 50
 
-fix xwa all walladh v_kanc xplane  0.000000e-04 1.000000e-04
+fix xwa all walladh v_kanc xplane  0.000000e-04 2.000000e-04
 #fix ywa all walladh v_kanc yplane  0.000000e-04 4.000000e-05
 fix zwa all walladh v_kanc zplane  0.000000e-04 1.000000e-04
 
