@@ -1,0 +1,117 @@
+# NUFEB simulation
+units si
+atom_style      bio
+atom_modify     map array sort 100 5.0e-7
+boundary        pp pp ff
+newton          off
+processors 5 1 10 
+
+comm_modify     vel yes
+read_data_bio atom.in
+
+group AOB type 1
+group NOB type 2
+group DEAD type 3
+
+##############Define initial particle distribution##############
+
+lattice custom 1.25e-6 a1 2 0 0 a2 0 1 0 a3 0 0 1 basis 0.6 0.5 0.5 
+region reg block 0 40 0 16 0 8
+create_atoms 1 region reg
+
+lattice custom 1.25e-6 a1 2 0 0 a2 0 1 0 a3 0 0 1 basis 0.1 0.5 0.5 
+region reg2 block 0 40 0 16 0 8
+create_atoms 2 region reg2
+
+set type 1 density 290
+set type 1 diameter 1.2e-6
+set type 2 density 290
+set type 2 diameter 1.2e-6
+set type 1 mass 2.62e-16 
+set type 2 mass 2.62e-16
+
+lattice sc 1e-5 origin 0 0 0
+region reg3 block 0 10 0 2 25 28
+
+neighbor        5e-7 bin
+neigh_modify    delay 0 one 5000
+
+##############Define DEM Variables&Commands##############
+
+pair_style  gran/hooke/history 1.e-4 NULL 1.e-5 NULL 0.0 1
+pair_coeff  * *
+
+timestep 720
+
+fix 1 all nve/limit 1e-7
+fix fv all viscous 1e-5
+
+fix zw all wall/gran hooke/history 2000 NULL 500 NULL 1.5 0 zplane  0.0  3e-04
+
+variable kanc equal 0
+fix zwa all walladh v_kanc zplane  0.0   3e-04
+
+variable ke equal 5e+9
+#fix j1 all epsadh 1 v_ke 1
+
+##############Ibm Variable Definitions##############
+
+#Defining EPS density and ratio variables
+variable EPSdens equal 30
+variable EPSratio equal 1.25
+
+#variables used in fix division
+variable divDia equal 1.25e-6
+
+#Defining diffusion variables
+variable diffT equal 1e-4
+variable tol equal 1e-7
+variable etaHET equal 0.0
+variable layer equal 4e-5
+
+#variables used in fix death
+variable deadDia equal 5.85e-7
+
+##############Ibm functions##############
+
+fix k1 all kinetics 1 50 10 150 v_diffT v_layer demflag 0 niter 20000 devery 10 
+fix ki3 all kinetics/ph fix ph 7.5
+fix ki2 all kinetics/thermo
+fix ki1 all kinetics/growth/energy v_EPSdens 
+fix g1 all kinetics/diffusion v_tol pp pp nd mol dcflag 2 
+fix d1 all divide 1 v_EPSdens v_divDia 31231 demflag 0
+fix d2 all death 1 v_deadDia demflag 0
+
+##############Ibm compute##############
+
+compute myNtypes all ntypes
+compute myMass all biomass
+compute myAvgs all avg_con
+compute myPh all avg_ph
+
+##############Simulation outputs##############
+
+thermo_style    custom step cpu atoms biomass c_myNtypes[*]
+dump du0 all bio 10010 biomass ntypes bulk avg_con avg_ph
+dump du2 all grid 100100 grid_%_*.vti con hyd
+dump du3 all custom/vtk 100100 snapshot%_*.vtu id type diameter x y z
+dump du4 all bio/hdf5 100100 dump_*.h5 id type radius x y z con cat ana hyd
+thermo 1001
+thermo_modify   lost ignore
+
+##############Define Bio-loop and DEM-subloop##############
+
+run 12000 pre no post no every 1 &
+"fix_modify k1 demflag 1" &
+"fix_modify d2 demflag 1" &
+"fix_modify d1 demflag 1" &
+"delete_atoms region reg3" &
+"timestep 0.1" &
+"run 1000 pre no post no" &
+"timestep 720" &
+"fix_modify k1 demflag 0" &
+"fix_modify d2 demflag 0" &
+"fix_modify d1 demflag 0" &
+
+
+

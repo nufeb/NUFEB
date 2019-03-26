@@ -1,0 +1,82 @@
+# NUFEB simulation
+
+atom_style	bio
+atom_modify	map array sort 100 5.0e-7
+boundary	pp pp ff
+newton		off
+processors  * * 1
+
+comm_modify	vel yes
+read_data_bio atom.in
+
+group HET type 1
+group AOB type 2
+group NOB type 3
+group EPS type 4
+group DEAD type 5
+
+neighbor	5e-7 bin
+neigh_modify	delay 0 one 5000
+
+##############Define DEM Variables&Commands##############
+
+pair_style  gran/hooke/history 1.e-4 NULL 1.e-5 NULL 0.0 1
+pair_coeff  * *
+
+timestep 10
+
+fix 1 all nve/limit 1e-8
+fix fv all viscous 1e-5
+
+fix zw all wall/gran hooke/history 2000 NULL 500.0 NULL 1.5 0 zplane  0.0   1.0e-04
+
+variable kanc equal 50
+
+fix zwa all walladh v_kanc zplane  0.0   1.0e-04
+
+variable ke equal 5e+10
+fix j1 all epsadh 1 v_ke 1
+
+##############Define IBm Variables##############
+
+#variables used in fix eps_extract
+variable EPSdens equal 30
+variable EPSratio equal 1.25
+
+#variables used in fix division
+variable divDia equal 1.36e-6
+
+#variables used in fix kinetics 
+variable diffT equal 1e-4
+variable tol equal 1e-6
+variable etaHET equal 0.6
+variable layer equal -1
+
+#variables used in fix death
+variable deadDia equal 9e-7
+
+
+##############Define IBm Commands##############
+
+fix k1 all kinetics 100 30 12 30 v_diffT v_layer niter -1
+fix kgm all kinetics/growth/monod v_EPSdens v_etaHET
+fix g1 all kinetics/diffusion v_tol pp pp nd kg
+fix d1 all divide 100 v_EPSdens v_divDia 978595
+fix e1 HET eps_extract 100 v_EPSratio v_EPSdens 6274
+fix d5 all death 100 v_deadDia
+
+##############Define IBm Computes##############
+
+compute myNtypes all ntypes
+
+##############Simulation Output##############
+
+#dump		id all custom 1000 snapshot.bubblemd id type diameter x y z
+#dump		du1 all custom/vtk 1000 atom%_*.vtu id type diameter x y z
+#dump		du2 all grid 1000 grid_%_*.vti con
+thermo_style    custom step cpu atoms biomass c_myNtypes[*] 
+thermo		100
+thermo_modify	lost ignore
+restart 40000 restart
+
+run 40000

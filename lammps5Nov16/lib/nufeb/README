@@ -1,0 +1,33 @@
+The Makefile.lammps file in this directory is used when building LAMMPS with
+its USER-NUFEB package installed. 
+
+To dump simulation results in VTK format (and visualize in paraview), 
+you need to link LAMMPS with the VTK library.
+
+To dump simulation results in HDF format, 
+you need to link LAMMPS with the HDF library.
+
+You should choose a Makefile.lammps.* file compatible with 
+your system and your version of VTK or VTK, and
+copy it to Makefile.lammps before building LAMMPS itself.  
+You may need to edit one of the provided files to match your system.
+
+To illustrate, these are example settings from the
+Makefile.lammps.ubuntu16.04_vtk6.2 file:
+
+nufeb_SYSINC = -std=c++1y -DENABLE_DUMP_GRID -I/usr/include/vtk-6.2 
+nufeb_SYSLIB = -lvtksys-6.2 -lvtkCommonCore-6.2 -lvtkCommonExecutionModel-6.2 -lvtkCommonMisc-6.2 -lvtkCommonMath-6.2 -lvtkCommonSystem-6.2 -lvtkCommonTransforms-6.2 -lvtkIOCore-6.2 -lvtkIOXML-6.2 -lvtkIOXMLParser-6.2 -lvtkIOLegacy-6.2 -lvtkIOParallelXML-6.2 -lvtkCommonDataModel-6.2 -lvtkParallelCore-6.2
+nufeb_SYSPATH =
+
+vtk_SYSINC refers to the include directory of the installed VTK library, 
+-DENABLE_DUMP_GRID is the flag to dump mesh grid information
+-I/usr/include/vtk-6.2 is the path where the VTK library
+can be found.
+
+vtk_SYSLIB refers to the libraries needed to link to from an application
+(LAMMPS in this case) to "embed" VTK in the application. VTK consists of
+multiple shared libraries which are needed when using the USER-NUFEB package.
+
+vtk_SYSPATH = refers to the path (e.g. -L/usr/local/lib) where the VTK library
+can be found.  You may not need this setting if the path is already included in
+your LD_LIBRARY_PATH environment variable.

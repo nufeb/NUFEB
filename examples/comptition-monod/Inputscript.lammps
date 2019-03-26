@@ -1,0 +1,75 @@
+# NUFEB simulation
+
+atom_style	bio
+atom_modify	map array sort 100 5.0e-7
+boundary	ff ff ff
+newton		off
+#processors  4 1 1
+
+comm_modify	vel yes
+read_data_bio atom.in
+
+group HET type 1 2
+
+neighbor	5e-7 bin
+neigh_modify	delay 0 one 5000
+
+##############Define DEM Variables&Commands##############
+
+pair_style  gran/hooke/history 1.e-4 NULL 1.e-5 NULL 0.0 1
+pair_coeff  * *
+
+timestep 9
+
+fix 1 all nve/limit 1e-7
+fix fv all viscous 1e-5
+
+fix xw all wall/gran hooke/history 2000 NULL 500.0 NULL 1.5 0 xplane  0.0   1.0e-04
+fix yw all wall/gran hooke/history 2000 NULL 500.0 NULL 1.5 0 yplane  0.0   4.0e-05
+fix zw all wall/gran hooke/history 2000 NULL 500.0 NULL 1.5 0 zplane  0.0   1.0e-04
+
+variable kanc equal 50
+
+fix xwa all walladh v_kanc xplane  0.0   1.0e-04
+fix ywa all walladh v_kanc yplane  0.0   4.0e-05
+fix zwa all walladh v_kanc zplane  0.0   1.0e-04
+
+variable ke equal 5e+10
+fix j1 all epsadh 1 v_ke 1
+
+##############Define IBm Variables##############
+
+#variables used in fix eps_extract
+variable EPSdens equal 30
+variable EPSratio equal 1.25
+
+#variables used in fix division
+variable divDia equal 1e-6
+
+#variables used in fix kinetics 
+variable diffT equal 1e-4
+variable tol equal 1e-6
+variable etaHET equal 0.0
+variable layer equal -1
+
+##############Define IBm Commands##############
+
+fix k1 all kinetics 400 30 12 30 v_diffT v_layer niter 10000
+fix kgm all kinetics/growth/monod v_EPSdens v_etaHET
+fix g1 all kinetics/diffusion v_tol pp pp nd kg
+fix d1 all divide 400 v_EPSdens v_divDia 31231
+
+##############Define IBm Computes##############
+
+compute myNtypes all ntypes
+
+##############Simulation outputs##############
+
+dump		id all custom 4000 snapshot.bubblemd id type diameter x y z
+#dump            d0 all bio 4000 concentration ntypes ave_concentration
+thermo_style    custom step cpu atoms biomass c_myNtypes[*] 
+thermo		400
+thermo_modify	lost ignore
+
+run 192000
+

@@ -1,45 +1,41 @@
 # NUFEB
-NUFEB is an open source tool for Individual Based model (IBm) simulation. 
-The tool is implemented as a user package within LAMMPS - 
-a molecular dynamics simulator offering basic functionalities for 
-Discrete Element Method (DEM) simulations. NUFEB aims to improve those capability
-with the goal to apply it to biological modelling.
+NUFEB is an open source tool for Individual-based Model (IbM) simulation. 
+The tool is based on the Individual-based Modelling (IbM) approach, 
+where microbes are represented as discrete units and their
+behaviour changes over time due to a variety of processes. 
+
+NUFEB is built on top of the classical molecular dynamics simulator
+LAMMPS, extended with IbM features. A wide range of biological, physical and
+chemical processes are implemented to explicitly model microbial systems. 
+NUFEB is fully parallelised and allows for the simulation of large numbers of microbes 
+(10^7 microbes and beyond).
 
 NUFEB is a freely-available open-source code, distributed under the terms
 of the GNU Public License.
 
-NUFEB development has been funded by the EPSRC project An New
-Frontier in Design: The Simulation of Open Engineered Biological Systems
-(NUFEB).
+NUFEB development has been funded by the UK’s EPSRC EP/K039083/1 
+Newcastle University Frontiers in Engineering Biology (NUFEB) project.
 
 ### Building
 
-NUFEB requires GCC/G++ for a successful build. 
-It has been rigorously tested on Ubuntu-14.10 and Fedora-22.
+NUFEB requires GCC/G++ and OpenMPI libraries for a successful build. 
 
-To compile this code, go to the /src directory:
+To compile this code, go to the lammps5Nov16/src directory:
 
-$ cd NUFEB/src/
+$ cd NUFEB/lammps5Nov16/src/
 
-then execute the following commands to compile code in the /STUBS directory:
-
-$ cd STUBS/
-
-$ make
-
-Now, install the NUFEB and granular packages in /src directory with the following instruction:
+Then, install the NUFEB and granular packages in /src directory with the following instruction:
 
 $ make yes-USER-NUFEB
 
 $ make yes-GRANULAR
 
-Finally, execute the following
-command to compile the NUFEB executable:
+Finally, execute the following command to compile the NUFEB executable:
 
-$ make serial
+$ make mpi
 
 ### Running
 
 You can run NUFEB by going to one of the sub-directories in /examples/ and run:
 
-$  ../../src/./lmp_serial < Inputscript_xxx.lammps
+$  mpirun -np 4 PATH_TO_SRC/./lmp_mpi -in Inputscript.lammps

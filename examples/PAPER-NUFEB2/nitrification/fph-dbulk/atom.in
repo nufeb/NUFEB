@@ -1,0 +1,130 @@
+ Granular Flow Simulation
+
+       0 atoms
+       3 atom types
+       7 nutrients
+
+   0.0   1e-04  xlo xhi
+   0.0   2e-05  ylo yhi
+   0.0   3.0e-04  zlo zhi
+
+ Atoms
+
+ Nutrients
+
+     1 nh3 l 0.001765 0.001765 0.001765 0.001765 0.001765 0.001765 0.001765
+     2 no2 l 1e-20 1e-20 1e-20 1e-20 1e-20 1e-20 1e-20
+     3 no3 l 1e-20 1e-20 1e-20 1e-20 1e-20 1e-20 1e-20
+     4 o2 l  2.81E-04 2.81E-04 2.81E-04 2.81E-04 2.81E-04 2.81E-04 2.81E-04
+     5 co2 l 2e-3 2e-3 2e-3 2e-3 2e-3 2e-3 2e-3
+     6 h2o l 1 1 1 1 1 1 1
+     7 h l 0 0 0 0 0 0 0
+
+ Type Name
+
+     1 aob
+     2 nob
+     3 dead
+
+ Diffusion Coeffs
+
+     nh3 1.958333e-9
+     no2 1.911111e-9
+     no3 1.902778e-9
+     o2 2.1e-9
+     co2 1.186111e-9
+     h2o 0
+     h 0
+
+ Ks
+
+     aob 2.11e-6 0 0 9.38e-7 0 0 0
+     nob 0 3.94e-09 0 1.88e-06 0 0 0
+     dead 0 0 0 0 0 0 0
+
+ Consumption Rate
+
+     aob 0.000057175
+     nob 0.000110776
+     dead 0
+
+ Yield
+
+     aob 0.155468293
+     nob 0.077734146
+     dead 1
+
+ Maintenance
+
+     aob 0.000001419
+     nob 0.000001415
+     dead 0
+
+ Electron Donor
+
+     aob nh3
+     nob no2
+     dead h
+
+ Decay
+
+     aob 2.2665e-6
+     nob 1.9167e-6
+     dead 0
+
+ Catabolism Coeffs
+
+     aob -1 1 0 -1.5 0 1 1
+     nob 0 -1 1 -0.5 0 0 0
+     dead 0 0 0 0 0 0 0
+
+ Anabolism Coeffs
+
+     aob -0.9 0.7 0 0 -1 1.1 -1
+     nob 0 -2.9 2.7 0 -1 0.2 -1
+     dead 0 0 0 0 0 0 0
+
+ Decay Coeffs
+
+     aob 0.2 0 0 0 1 0 0
+     nob 0.2 0 0 0 1 0 0
+     dead 0 0 0 0 0 0 0
+
+ Nutrient Energy
+
+    nh3 inf -79.37 -26.57 inf inf 3
+    no2 inf -50.60 -32.20 inf inf 2
+    no3 inf -103.70 -111.30 inf inf 2
+    o2 inf 16.4 inf inf inf 2
+    co2 -386.00 -623.16 -586.85 -527.80 inf 3
+    h2o inf -237.18 -157.3 inf inf 2
+    h inf 0 inf inf inf 2
+
+ Type Energy
+
+    aob inf -67 inf inf inf 2
+    nob inf -67 inf inf inf 2
+    dead  inf -67 inf inf inf 2
+
+ Dissipation
+
+    aob 3500
+    nob 3500
+    dead 0  
+
+ Nutrient Charge
+  
+    nh3 na 1 0 na na
+    no2 na 0 -1 na na
+    no3 na 0 -1 na na
+    o2 na 0 na na na
+    co2 0 0 -1 -2 na
+    h2o na 0 -1 na na
+    h na 1 na na na
+
+ Type Charge
+  
+    aob na 0 na na na
+    nob na 0 na na na
+    dead na 0 na na na         
+                                                                                                           
