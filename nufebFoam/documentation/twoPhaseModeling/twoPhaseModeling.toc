@@ -1,0 +1,14 @@
+\contentsline {section}{\numberline {1}Introduction}{1}{section.1}
+\contentsline {section}{\numberline {2}Derivation of the equations}{2}{section.2}
+\contentsline {subsection}{\numberline {2.1}Fluid Phase Momentum Equations}{2}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Multiphase Flow in OpenFOAM}{2}{subsection.2.2}
+\contentsline {section}{\numberline {3}Treatment of the stress tensor}{5}{section.3}
+\contentsline {subsection}{\numberline {3.1}Brief Review}{5}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Conclusions}{6}{subsection.3.2}
+\contentsline {section}{\numberline {4}Large Eddy simulations in OpenFOAM}{6}{section.4}
+\contentsline {subsection}{\numberline {4.1}Introduction}{6}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Filtered Navier--Stokes Equations in OpenFOAM}{7}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.3}Subgrid scale modeling}{8}{subsection.4.3}
+\contentsline {subsection}{\numberline {4.4}LES--DEM Equations}{8}{subsection.4.4}
+\contentsline {section}{\numberline {5}Useful Advices}{9}{section.5}
+\contentsline {section}{\numberline {6}Plan for new implementations}{9}{section.6}

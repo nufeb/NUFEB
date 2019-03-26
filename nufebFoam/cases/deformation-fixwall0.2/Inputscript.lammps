@@ -1,0 +1,91 @@
+# NUFEB simulation
+
+atom_style	bio
+atom_modify	map array sort 1000 5.0e-7
+boundary	ff pp pp
+newton		off
+processors  * * 1
+
+comm_modify	vel yes
+
+read_data_bio atom.restart.in 
+read_bio_restart restart.data
+
+group HET type 1
+group EPS type 2
+
+region bed block 0 1e-4 0 4e-5 0 2e-6 units box
+region del block 0.5e-6 99.5e-6 0.5e-6 39.5e-6 0 INF units box
+
+group bed1 region bed
+group del1 region del
+
+group moving subtract all bed1 
+group deleting subtract all del1 
+
+velocity all set 0.0 0.0 0.0
+
+change_box all boundary f p f
+
+set type 1 diameter 0.8e-6
+set type 2 diameter 0.8e-6
+set type 1 mass 2.68083e-16
+set type 2 mass 2.68083e-16
+
+neighbor	5e-7 bin
+neigh_modify	delay 0 one 5000
+
+##############Define DEM Variables&Commands##############
+
+pair_style  gran/hooke/history 1 NULL 1.e6 NULL 0.0 1
+pair_coeff  * *
+
+timestep 1e-8
+
+fix 1 moving nve/sphere
+
+delete_atoms group deleting
+
+fix zw all wall/gran hooke/history 1e-4 NULL 1e6 NULL 0 0 zplane 0.0 4e-05
+
+variable kanc equal 5e+5
+
+fix zwa all walladh v_kanc zplane 0.0 4e-05
+
+fix fco all cohesive 1e-16 1 1e-8 1e-6 1
+
+variable pfx equal 0.0
+variable pfy equal 0.0
+variable pfz equal 0.0
+
+fix 3 all fdrag 1000
+
+#Defining nufebFoam variables
+variable demSteps equal -1
+variable bioSteps equal 1
+variable bioDt equal 1
+variable nloops equal 1
+
+#variables used in fix kinetics 
+variable diffT equal 1e-4
+variable layer equal -1
+
+##############Define IBm Computes##############
+
+compute myMass all biomass
+compute myRough all roughness 
+
+fix k1 all kinetics 100000 25 10 10 v_diffT v_layer niter 1
+fix cfd1 all nufebFoam v_demSteps v_bioSteps v_bioDt v_nloops
+
+##############Simulation Output##############
+#dump du3 all custom/vtk 1000 snapshot%_*.vtu id type diameter x y z
+
+dump            d0 all bio 6800 biomass roughness 
+
+thermo_style    custom step cpu atoms 
+thermo		100
+thermo_modify	lost ignore
+
+
+

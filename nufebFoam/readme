@@ -1,0 +1,27 @@
+nufebFoam is CFD-DEM solver built on top of SediFOAM [1] to simulate hydrodynamic biofilm. The tool combines NUFEB (LAMMPS) and OpenFOAM.
+
+LAMMPS is an open source molecular dynamics code that perform DEM simulations.
+
+OpenFOAM is an open source toolbox for CFD simulations.
+
+The structure of the nufebFoam is like this:
+
+demFoam
+|
+|----Allwclean.sh
+|----Allwmake.sh
+|----cases/
+|----documentation/
+|----CFD-DEM package (in LAMMPS)/
+|----src/
+|----readme/
+
+Allwclean.sh are Allwmake.sh written to help with the compilation of nufebFoam. 
+Allwmake.sh will help you install nufebFoam while Allclean.sh will uninstall
+nufebFoam. Note that the source file of NUFEB is not included in nufebFoam.
+
+All numerical cases are placed in cases/.
+
+src/ is folder containing the source code of nufebFoam. 
+
+[1] - [[[Sun2016]]] R. Sun and H. Xiao. 'SediFoam: A general-purpose, open-source CFD-DEM solver for particle-laden flows with emphasis on sediment transport'. Computers and Geosciences, 89, 207-219, 2016. https://doi.org/10.1016/j.cageo.2016.01.011[DOI:10.1016/j.cageo.2016.01.011]
