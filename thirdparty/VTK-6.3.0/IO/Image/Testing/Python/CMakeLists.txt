@@ -1,0 +1,12 @@
+vtk_add_test_python(
+  TestBMPReader.py
+  TestImageWriters.py
+  TestJPEGReader.py
+  TestMHD.py
+  TestTIFFReader.py
+  dem.py
+  TestMetaImage2D.py
+  TestNIFTIReaderWriter.py
+  TestSetFileNames.py
+  TestImageJSONWriter.py,NO_VALID
+  )
