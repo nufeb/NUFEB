@@ -1,0 +1,3 @@
+[submodule "lammps"]
+	path = lammps
+	url = https://github.com/lammps/lammps
