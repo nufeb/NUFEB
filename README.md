@@ -18,16 +18,15 @@ Newcastle University Frontiers in Engineering Biology (NUFEB) project.
 ---------------------------------------------------------------------------
 
 The NUFEB distribution includes the following files and directories:
-
-README			this file
+<pre>
+README                  this file 
 LICENSE                 the GNU General Public License (GPL)
-install.sh              script for building NUFEB
-doc                     documentation
-examples                test problems and cases used in publications
-lib                     libraries NUFEB can be linked with
-nufebFoam               CFD-DEM solver (extended with SediFoam)
-post-processing         visualisation routine
-src                     source files
+install.sh              script for building NUFEB 
+doc                     documentation 
+examples                test problems and cases used in publications 
+lib                     libraries NUFEB can be linked with 
+nufebFoam               CFD-DEM solver (extended with SediFoam) 
+post-processing         visualisation routine 
+src                     source files 
 thirdparty              visualisation tools
-
-
+</pre>
