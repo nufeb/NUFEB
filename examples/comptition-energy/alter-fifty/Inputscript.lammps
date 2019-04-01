@@ -64,7 +64,7 @@ compute myMass all biomass
 #dump		du1 all custom/vtk 100000 snapshot.bubblemd.vtu id type diameter x y z
 dump            du0 all bio 100000 ntypes biomass
 dump		du3 all custom 500000 snapshot.bubblemd id type diameter x y z
-thermo_style    custom step cpu atoms biomass c_myNtypes[*] 
+thermo_style    custom step cpu atoms c_myNtypes[*] 
 thermo		1000
 thermo_modify	lost ignore
 

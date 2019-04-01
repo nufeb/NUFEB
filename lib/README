@@ -1,0 +1,25 @@
+This directory contains libraries that can be linked to when building
+NUFEB/LAMMPS.
+
+Most of these directories contain code for the library; some contain
+a Makefile.lammps file that points to where the library is installed
+elsewhere on your system.  
+
+In either case, the library itself must be installed and/or built
+first, so that the appropriate library files exist for LAMMPS to link
+against.
+
+Each library directory contains a README with additional info about
+how to acquire and/or build the library.  This may require you to edit
+one of the provided Makefiles to make it suitable for your machine.
+
+The libraries in this directory are the following:
+
+
+nufeb         hooks to the NUFEB library, used by USER-NUFEB package
+
+vtk           hooks to the VTK library, used by dump custom/vtk command (USER-VTK package)
+              from Richard Berger (JKU). Two addtional settings for compiling 
+              with vtk6.3 and rocket are added in the directory
+
+cfddem        hooks to the CFDDEM (nufebfoam) library, used by USER-CFDDEM package

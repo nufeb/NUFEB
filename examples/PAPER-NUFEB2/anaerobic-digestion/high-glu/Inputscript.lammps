@@ -100,7 +100,7 @@ compute myPh all avg_ph
 
 ##############Simulation outputs##############
 
-thermo_style    custom step cpu atoms biomass c_myNtypes[*]
+thermo_style    custom step cpu atoms c_myNtypes[*]
 dump du0 all bio 10010 biomass ntypes bulk avg_con avg_ph
 dump du2 all grid 100100 grid_%_*.vti con hyd
 dump du3 all custom/vtk 100100 snapshot%_*.vtu id type diameter x y z

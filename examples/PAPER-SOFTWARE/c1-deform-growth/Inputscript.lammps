@@ -71,7 +71,7 @@ compute myPressure all pressure thermo_temp
 dump		id all custom 1000 output.lammmps id type diameter x y z
 dump		du1 all custom/vtk 1000 atom%_*.vtu id type diameter x y z
 dump		du2 all grid 1000 grid_%_*.vti con
-thermo_style    custom step cpu atoms biomass c_myNtypes[*] c_myPressure
+thermo_style    custom step cpu atoms c_myNtypes[*] c_myPressure
 thermo		100
 thermo_modify	lost ignore
 

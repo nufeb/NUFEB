@@ -104,7 +104,7 @@ compute myCon all avg_con
 
 ##############Simulation Output##############
 
-thermo_style    custom step cpu atoms biomass c_myNtypes[*]
+thermo_style    custom step cpu atoms c_myNtypes[*]
 dump du0 all bio 18006 biomass ntypes bulk avg_con
 dump du2 all grid 90030 grid_%_*.vti con 
 dump du3 all custom/vtk 90030 snapshot%_*.vtu id type diameter x y z 

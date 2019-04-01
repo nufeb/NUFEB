@@ -1,5 +1,0 @@
-# Settings that the LAMMPS build will import when this package library is used
-#
-nufeb_SYSINC = -std=c++1y -DENABLE_DUMP_GRID -I$(HOME)/local/include/vtk-8.0
-nufeb_SYSLIB = -lvtksys-8.0 -lvtklz4-8.0 -lvtkzlib-8.0 -lvtkexpat-8.0 -lvtkCommonCore-8.0 -lvtkCommonExecutionModel-8.0 -lvtkCommonMisc-8.0 -lvtkCommonMath-8.0 -lvtkCommonSystem-8.0 -lvtkCommonTransforms-8.0 -lvtkIOCore-8.0 -lvtkIOXML-8.0 -lvtkIOXMLParser-8.0 -lvtkIOLegacy-8.0 -lvtkIOParallelXML-8.0 -lvtkCommonDataModel-8.0 -lvtkParallelCore-8.0
-nufeb_SYSPATH = -L$(HOME)/local/lib
