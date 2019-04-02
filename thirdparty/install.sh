@@ -8,3 +8,4 @@ cmake ../VTK-6.3.0
 
 make -j4
 make install
+echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib' >> ~/.bashrc

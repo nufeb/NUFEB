@@ -1,4 +1,4 @@
-LAMMPS_DIR = ../../lammps5Nov16/src/
+LAMMPS_DIR = ../../lammps/src/
 
 EXE_INC = \
     -I$(PWD)/include \
