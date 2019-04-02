@@ -459,15 +459,14 @@ void FixKinetics::update_bgrids() {
     if (new_bnz != bnz)
     {
       bnz = new_bnz;
-      
-      bgrids = subn[0] * subn[1] * MIN(subn[2], MAX(0, bnz - subnlo[2]));
-      
+      double subnz = MIN(subn[2], MAX(0, bnz - subnlo[2]));
+      bgrids = subn[0] * subn[1] * subnz;
       double tmpsublo[3], tmpsubhi[3];
       const double small = 1e-12;
       for (int i = 0; i < 3; i++) {
         tmpsublo[i] = domain->sublo[i] + small;
         if (i == 2)
-          tmpsubhi[i] = bnz * stepz;
+          tmpsubhi[i] = subnz * stepz;
         else
           tmpsubhi[i] = domain->subhi[i] + small;
       }

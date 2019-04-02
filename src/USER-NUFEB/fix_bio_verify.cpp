@@ -266,11 +266,11 @@ void FixVerify::benchmark_two() {
   MPI_Allreduce(&ssurf,&gssurf,1,MPI_DOUBLE,MPI_SUM,world);
 
   gssurf /= comm->nprocs;
-//  if (comm->me == 0 && logfile) fprintf(logfile, "ssurf = %e \n",gssurf);
-//  if (comm->me == 0 && screen) fprintf(screen, "ssurf = %e \n",gssurf);
-//
-//  if (comm->me == 0 && logfile) fprintf(logfile, "ssurf2 = %e \n",ssurf_2);
-//  if (comm->me == 0 && screen) fprintf(screen, "ssurf2 = %e \n",ssurf_2);
+  if (comm->me == 0 && logfile) fprintf(logfile, "ssurf = %e \n",gssurf);
+  if (comm->me == 0 && screen) fprintf(screen, "ssurf = %e \n",gssurf);
+
+  if (comm->me == 0 && logfile) fprintf(logfile, "ssurf2 = %e \n",ssurf_2);
+  if (comm->me == 0 && screen) fprintf(screen, "ssurf2 = %e \n",ssurf_2);
 
   if (comm->me == 0 && logfile) fprintf(logfile, "ssurf3 = %e \n",ssurf_3);
   if (comm->me == 0 && screen) fprintf(screen, "ssurf3 = %e \n",ssurf_3);
@@ -302,7 +302,6 @@ void FixVerify::benchmark_three() {
   bm3_output();
 
   if (global_maxz > 5e-4) {
-    kinetics->niter = -1;
     for (int i = 0; i < 50; i++) {
       kinetics->integration();
       bm3_output();

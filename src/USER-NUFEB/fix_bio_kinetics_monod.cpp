@@ -323,7 +323,7 @@ void FixKineticsMonod::growth(double dt, int gflag) {
         double R11 = maintain[i] * (nus[io2][grid] / (ks[i][io2] + nus[io2][grid]));
 
         nur[io2][grid] += -(((3.42 - yield[i]) / yield[i]) * R2 * xdensity[i][grid]);
-        // BM3
+        // For BM3
         //nur[io2][grid] += -(((4.57 - yield[i]) / yield[i]) * R2 * xdensity[i][grid]);
         nur[inh4][grid] += -(1 / yield[i]) * R2 * xdensity[i][grid];
         nur[ino2][grid] += (1 / yield[i]) * R2 * xdensity[i][grid];
