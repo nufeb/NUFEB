@@ -1,3 +1,15 @@
 [submodule "lammps"]
 	path = lammps
 	url = https://github.com/lammps/lammps
+[submodule "thirdparty/vtk"]
+	path = thirdparty/vtk
+	url = https://github.com/Kitware/VTK
+[submodule "thirdparty/sedifoam"]
+	path = thirdparty/sedifoam
+	url = https://github.com/xiaoh/sediFoam
+[submodule "thirdparty/openfoam/openfoam"]
+	path = thirdparty/openfoam/openfoam
+	url = https://github.com/OpenFOAM/OpenFOAM-6
+[submodule "thirdparty/openfoam/thirdparty"]
+	path = thirdparty/openfoam/thirdparty
+	url = https://github.com/OpenFOAM/ThirdParty-6
