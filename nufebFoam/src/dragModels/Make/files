@@ -1,6 +1,0 @@
-dragModel/dragModel.C
-dragModel/newDragModel.C
-SyamlalOBrien/SyamlalOBrien.C
-ErgunWenYu/ErgunWenYu.C
-
-LIB = $(FOAM_USER_LIBBIN)/libLagrangianInterfacialModels

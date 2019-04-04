@@ -1,1 +1,0 @@
-../LES/mySmagorinsky/mySmagorinsky.C
