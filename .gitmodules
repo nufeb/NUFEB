@@ -13,3 +13,6 @@
 [submodule "thirdparty/openfoam/thirdparty"]
 	path = thirdparty/openfoam/thirdparty
 	url = https://github.com/OpenFOAM/ThirdParty-6
+[submodule "thirdparty/hdf5"]
+	path = thirdparty/hdf5
+	url = https://github.com/live-clones/hdf5

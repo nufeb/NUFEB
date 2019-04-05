@@ -13,7 +13,6 @@ echo "Configuring vtk-6.3 library.."
 cd $currentDir/lammps/lib/nufeb
 cp Makefile.lammps_vtk6.3 Makefile.lammps
 cd $currentDir/lammps/lib/vtk
-cp Makefile.lammps Makefile.lammps_default
 cp Makefile.lammps_vtk6.3 Makefile.lammps
 
 
