@@ -16,7 +16,7 @@ echo "Copying packages to LAMMPS.."
 cp -rf $sedifoamDir/interfaceToLammps/MAKE $lammpsSRC/
 cp -rf $sedifoamDir/interfaceToLammps/USER-CFDDEM $lammpsSRC/
 cp -rf $sedifoamDir/interfaceToLammps/Makefile $lammpsSRC/
-cp -rf $sedifoamDir/interfaceToLammps/lib $lammpsDir/lib/
+cp -rf $sedifoamDir/interfaceToLammps/lib/* $lammpsDir/lib/
 cp -rf $nufebDir/src/* $lammpsSRC/
 cp -rf $nufebDir/lib/* $lammpsDir/lib/
 
