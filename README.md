@@ -35,9 +35,7 @@ thirdparty              thirdparty tools
 ### Getting source
 Get NUFEB source code and submodules for its thirdparty libraries:
 <pre>
-git clone https://github.com/nufeb/NUFEB
-cd NUFEB
-git submodule update --init --remote
+git clone https://github.com/nufeb/NUFEB --recursive
 </pre>
 
 ### Building
@@ -45,7 +43,7 @@ Build NUFEB essential features without vtk or hdf5:
 <pre>
 ./install.sh
 </pre>
-To build NUFEB with vtk:
+Build NUFEB with vtk:
 <pre>
 cd thirdparty
 ./install-vtk.sh
