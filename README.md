@@ -22,11 +22,35 @@ The NUFEB distribution includes the following files and directories:
 README                  this file 
 LICENSE                 the GNU General Public License (GPL)
 install.sh              script for building NUFEB 
+uninstall.sh            script for uninstalling NUFEB 
 doc                     documentation 
 examples                test problems and cases used in publications 
 lib                     libraries NUFEB can be linked with 
-nufebFoam               CFD-DEM solver (extended with SediFoam) 
+lammps                  LAMMPS source code
 post-processing         visualisation routine 
 src                     source files 
-thirdparty              visualisation tools
+thirdparty              thirdparty tools
 </pre>
+
+### Building
+To build NUFEB essential features without vtk or hdf5:
+<pre>
+./install.sh
+</pre>
+To build NUFEB with vtk:
+<pre>
+cd thirdparty
+./install-vtk.sh
+cd ..
+./install.sh --enable-vtk
+</pre>
+
+### Running
+You can run a case in /examples after building NUFEB, for example:
+<pre>
+cd examples/biofilm-monod
+mpirun -np 4 ../../lammps/src/./lmp_mpi -in Inputscript.lammps
+</pre>
+
+
+
