@@ -32,8 +32,16 @@ src                     source files
 thirdparty              thirdparty tools
 </pre>
 
+### Getting source
+Get NUFEB source code and submodules for its thirdparty libraries:
+<pre>
+git clone https://github.com/nufeb/NUFEB
+cd NUFEB
+git submodule update --init --remote
+</pre>
+
 ### Building
-To build NUFEB essential features without vtk or hdf5:
+Build NUFEB essential features without vtk or hdf5:
 <pre>
 ./install.sh
 </pre>
@@ -46,7 +54,7 @@ cd ..
 </pre>
 
 ### Running
-You can run a case in /examples after building NUFEB, for example:
+Run a case in /examples after building NUFEB, for example:
 <pre>
 cd examples/biofilm-monod
 mpirun -np 4 ../../lammps/src/./lmp_mpi -in Inputscript.lammps
