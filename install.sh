@@ -49,6 +49,11 @@ do
     if [ $var == "--enable-hdf5" ] || [ $var == "--enable-vtk-hdf5" ]; then
 	echo "export LD_LIBRARY_PATH=$currentDir/thirdparty/hdf5/hdf5/lib/" >> ~/.bashrc
     fi
+    if [ $var == "--serial" ]; then
+	cd STUBS
+        make
+        cd ..
+    fi
 done
 
 make -j4 mpi

@@ -39,6 +39,8 @@ git clone https://github.com/nufeb/NUFEB --recursive
 </pre>
 
 ### Building
+NUFEB requires gcc/g++ and openmpi (parallel version) for a successful build.
+
 Build NUFEB essential features without vtk or hdf5:
 <pre>
 ./install.sh
