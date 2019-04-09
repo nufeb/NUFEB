@@ -1,5 +1,5 @@
 
-NUFEB is an open source tool for Individual-based Model (IbM) simulation. 
+NUFEB is an open source tool for modelling and simulating microbial communities.
 The tool is based on the Individual-based Modelling (IbM) approach, 
 where microbes are represented as discrete units and their
 behaviour changes over time due to a variety of processes. 

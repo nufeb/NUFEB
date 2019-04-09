@@ -53,8 +53,8 @@ class DecompGrid {
       if (p != derived->comm->me) {
 #ifdef NUFEB_DEBUG_COMM
       debug << "Checking for intersections with proc " << p
-	    << ", box: [lower](" << box.lower[0] << ", " << box.lower[1] << ", " << box.lower[2]
-	    << ") [upper](" << box.upper[0] << ", " << box.upper[1] << ", " << box.upper[2] << ")" << std::endl;
+	    << ", box: [lower](" << other.lower[0] << ", " << other.lower[1] << ", " << other.lower[2]
+	    << ") [upper](" << other.upper[0] << ", " << other.upper[1] << ", " << other.upper[2] << ")" << std::endl;
 #endif
 	// identify which cell we are going to send and receive
 	setup_comm_cells(subgrid, box, other);

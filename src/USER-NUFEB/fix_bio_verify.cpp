@@ -302,6 +302,7 @@ void FixVerify::benchmark_three() {
   bm3_output();
 
   if (global_maxz > 5e-4) {
+    kinetics->niter = -1;
     for (int i = 0; i < 50; i++) {
       kinetics->integration();
       bm3_output();
