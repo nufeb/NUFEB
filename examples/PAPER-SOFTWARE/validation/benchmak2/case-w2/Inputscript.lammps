@@ -1,0 +1,98 @@
+# NUFEB simulation
+
+atom_style	bio
+atom_modify	map array sort 1000 5e-7
+boundary	pp pp pp
+newton		off
+processors  * * 1
+
+units si
+
+comm_modify	vel yes
+read_data_bio atom.in
+
+group HET type 1
+
+variable  x equal 179
+variable  y equal 3
+variable  z equal 19
+
+lattice sc 8.901e-6 origin 0.5 0.5 0.5
+
+region reg block 0 $x 0 $y 0 $z
+
+variable  xx internal 0.0
+variable  zz internal 0.0
+variable  v equal "(0.29*v_z*zlat * cos(v_xx/xlat * 4.7*PI*4.0/v_x) + 0.90*v_z*zlat - v_zz) > 0.0"
+
+create_atoms 1 region reg var v set x xx set z zz
+#create_atoms 1 region reg
+
+neighbor	5e-7 bin
+
+set type 1 density 25
+set type 1 diameter 8.9e-6
+set type 1 mass 2.34661e-14
+
+##############Define DEM Variables&Commands##############
+
+pair_style  gran/hooke/history 1.e-4 NULL 1.e-5 NULL 0.0 1
+pair_coeff  * *
+
+reset_timestep 0
+
+timestep 1e-7
+
+#fix 1 all nve/limit 1e-7
+#fix fv all viscous 1e-5
+
+#fix zw all wall/gran hooke/history 5000 NULL 500.0 NULL 1.5 0 zplane 0.000000e-04   4e-4
+
+variable kanc equal 50
+
+#fix zwa all walladh v_kanc zplane  0.000000e-04   4e-4
+
+variable ke equal 5e+10
+
+variable pfx equal 0.0
+variable pfy equal 0.0
+variable pfz equal 0.0
+
+fix 3 all fdrag 5000
+
+##############Define IBm Variables##############
+
+#variables used in fix monod
+variable EPSdens equal 30
+variable EPSratio equal 1.25
+
+#variables used in fix kinetics 
+variable diffT equal 1e-4
+variable tol equal 5e-7
+variable etaHET equal 0
+variable layer equal -1
+
+#Defining nufebFoam variables
+variable demSteps equal 1
+variable bioSteps equal 1
+variable bioDt equal 60
+variable nloops equal 1000
+
+##############Define IBm Commands##############
+
+fix k1 all kinetics 1 160 3 40 v_diffT v_layer niter -1
+fix kgm all kinetics/growth/monod v_EPSdens v_etaHET gflag 0
+fix g1 all kinetics/diffusion v_tol nd nn nn kg
+
+fix cfd1 all nufebFoam v_demSteps v_bioSteps v_bioDt v_nloops
+fix vf1 all verify 1 bm2 1 demflag 0
+
+##############Simulation Output##############
+
+#dump		id all custom 1 snapshot.bubblemd id type diameter x y z
+#dump		du2 all grid 1000 grid_%_*.vti con 
+thermo_style    custom step cpu atoms biomass 
+thermo		10
+thermo_modify	lost warn
+
+
