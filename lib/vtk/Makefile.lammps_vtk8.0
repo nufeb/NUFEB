@@ -1,0 +1,6 @@
+# Settings that the LAMMPS build will import when this package library is used
+#
+#
+vtk_SYSINC = -I../../../thirdparty/vtk/vtk-build/vtk-8.0/include/vtk-8.0
+vtk_SYSLIB = -lvtksys-8.0 -lvtklz4-8.0 -lvtkzlib-8.0 -lvtkexpat-8.0 -lvtkCommonCore-8.0 -lvtkCommonExecutionModel-8.0 -lvtkCommonMisc-8.0 -lvtkCommonMath-8.0 -lvtkCommonSystem-8.0 -lvtkCommonTransforms-8.0 -lvtkIOCore-8.0 -lvtkIOXML-8.0 -lvtkIOXMLParser-8.0 -lvtkIOLegacy-8.0 -lvtkIOParallelXML-8.0 -lvtkCommonDataModel-8.0 -lvtkParallelCore-8.0 -L../../../thirdparty/vtk/vtk-build/vtk-8.0/lib
+vtk_SYSPATH =

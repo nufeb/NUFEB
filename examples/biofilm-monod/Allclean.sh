@@ -4,5 +4,5 @@ rm dump_*
 rm atom_*
 rm slurm-*
 rm -rf Results
-rm output.lammmps
-rm log.lammmps
+rm output.lammps
+rm log.lammps

@@ -293,7 +293,7 @@ void FixVerify::benchmark_three() {
   MPI_Allreduce(&tmass,&global_tmass,1,MPI_DOUBLE,MPI_SUM,world);
   MPI_Allreduce(&maxz,&global_maxz,1,MPI_DOUBLE,MPI_MAX ,world);
 
-  if (global_maxz > 4.7e-4) {
+  if (global_maxz > 4.75e-4) {
     kinetics->monod->external_gflag = 0;
   }
 
