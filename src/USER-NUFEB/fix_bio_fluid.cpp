@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------
    NUFEB package - A LAMMPS user package for Individual-based Modelling of Microbial Communities
-   Contributing authors: Bowen Li & Denis Taniguchi (Newcastle Univeristy, UK)
+   Contributing authors: Bowen Li & Denis Taniguchi (Newcastle University, UK)
    Email: bowen.li2@newcastle.ac.uk & denis.taniguchi@newcastle.ac.uk
 
    Copyright (2003) Sandia Corporation.  Under the terms of Contract
