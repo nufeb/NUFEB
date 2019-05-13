@@ -1,9 +1,13 @@
-/*
- * bio.h
- *
- *  Created on: 8 Nov 2016
- *      Author: bowen
- */
+/* ----------------------------------------------------------------------
+   NUFEB package - A LAMMPS user package for Individual-based Modelling of Microbial Communities
+   Contributing authors: Bowen Li & Denis Taniguchi (Newcastle Univeristy, UK)
+   Email: bowen.li2@newcastle.ac.uk & denis.taniguchi@newcastle.ac.uk
+
+   Copyright (2003) Sandia Corporation.  Under the terms of Contract
+   DE-AC04-94AL85000 with Sandia Corporation, the U.S. Government retains
+   certain rights in this software.  This software is distributed under
+   the GNU General Public License.
+------------------------------------------------------------------------- */
 
 #ifndef SRC_IBM_H_
 #define SRC_IBM_H_
