@@ -107,7 +107,7 @@ compute myCon all avg_con
 thermo_style    custom step cpu atoms c_myNtypes[*]
 dump du0 all bio 18006 biomass ntypes bulk avg_con
 dump du2 all grid 90030 grid_%_*.vti con 
-dump du3 all custom/vtk 90030 snapshot%_*.vtu id type diameter x y z 
+dump du3 all custom/vtk 90030 snapshot_*.vtu id type diameter x y z 
 thermo 3001
 thermo_modify   lost ignore
 

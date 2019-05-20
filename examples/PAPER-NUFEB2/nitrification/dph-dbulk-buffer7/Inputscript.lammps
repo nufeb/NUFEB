@@ -94,7 +94,7 @@ compute myPh all avg_ph
 thermo_style    custom step cpu atoms c_myNtypes[*]
 dump du0 all bio 10010 biomass ntypes bulk avg_con avg_ph
 dump du2 all grid 100100 grid_%_*.vti con hyd
-dump du3 all custom/vtk 100100 snapshot%_*.vtu id type diameter x y z
+dump du3 all custom/vtk 100100 snapshot_*.vtu id type diameter x y z
 dump du4 all bio/hdf5 100100 dump_*.h5 id type radius x y z con cat ana hyd
 thermo 1001
 thermo_modify   lost ignore
