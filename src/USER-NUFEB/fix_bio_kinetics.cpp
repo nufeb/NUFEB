@@ -285,8 +285,8 @@ void FixKinetics::init() {
   domain->set_local_box();
 
   init_param();
-  reset_isconv();
   update_bgrids();
+  if (diffusion != NULL) reset_isconv();
 }
 
 /* ---------------------------------------------------------------------- */
@@ -298,14 +298,14 @@ void FixKinetics::init_param() {
     fv[2][j] = 0;
 
     for (int i = 0; i <= atom->ntypes; i++) {
-      grid_yield[i][j] = bio->yield[i];
+      if (bio->yield != NULL) grid_yield[i][j] = bio->yield[i];
       gibbs_cata[i][j] = 0;
       gibbs_anab[i][j] = 0;
       xdensity[i][j] = 0;
     }
 
     for (int i = 0; i <= bio->nnu; i++) {
-      nus[i][j] = bio->ini_nus[i][0];
+      if (bio->ini_nus != NULL) nus[i][j] = bio->ini_nus[i][0];
       nur[i][j] = 0;
 
       activity[i][0][j] = 0;
@@ -348,54 +348,53 @@ void FixKinetics::integration() {
   update_xdensity();
 
   // update grid biomass to calculate diffusion coeff
-  if (diffusion != NULL && diffusion->dcflag) {
-    diffusion->update_diff_coeff();
-  }
+  if (diffusion != NULL) {
+    if (diffusion->dcflag) diffusion->update_diff_coeff();
 
-  while (!converge) {
-    converge = true;
-
-    // solve for reaction term, no growth happens here
-    if (iteration % devery == 0) {
-      reset_nur();
-      if (energy != NULL) {
-        ph->solve_ph();
-        thermo->thermo(diff_dt * devery);
-        energy->growth(diff_dt * devery, grow_flag);
-      } else if (monod != NULL) {
-        monod->growth(diff_dt * devery, grow_flag);
-      }
-    }
-
-    iteration++;
-
-    // solve for diffusion and advection
-    if (diffusion != NULL) {
-      nuconv = diffusion->diffusion(nuconv, iteration, diff_dt);
-    } else {
-      break;
-    }
-
-    // check for convergence
-    for (int i = 1; i <= nnus; i++) {
-      if (!nuconv[i]) {
-        converge = false;
-        reset_isconv();
-        break;
-      }
-    }
-
-    if (niter > 0 && iteration >= niter)
+    while (!converge) {
       converge = true;
-  }
 
-  if (comm->me == 0 && logfile)
-    fprintf(logfile, "number of iterations: %i \n", iteration);
-  if (comm->me == 0 && screen)
-    fprintf(screen, "number of iterations: %i \n", iteration);
+      // solve for reaction term, no growth happens here
+      if (iteration % devery == 0) {
+        reset_nur();
+        if (energy != NULL) {
+          ph->solve_ph();
+          thermo->thermo(diff_dt * devery);
+          energy->growth(diff_dt * devery, grow_flag);
+        } else if (monod != NULL) {
+          monod->growth(diff_dt * devery, grow_flag);
+        }
+      }
+
+      iteration++;
+
+      // solve for diffusion and advection
+      nuconv = diffusion->diffusion(nuconv, iteration, diff_dt);
+
+      // check for convergence
+      for (int i = 1; i <= nnus; i++) {
+        if (!nuconv[i]) {
+          converge = false;
+          reset_isconv();
+          break;
+        }
+      }
+
+      if (niter > 0 && iteration >= niter)
+        converge = true;
+    }
+
+    if (comm->me == 0 && logfile)
+      fprintf(logfile, "number of iterations: %i \n", iteration);
+    if (comm->me == 0 && screen)
+      fprintf(screen, "number of iterations: %i \n", iteration);
+
+    reset_isconv();
+  } else {
+    converge = true;
+  }
 
   grow_flag = 1;
-  reset_isconv();
   reset_nur();
 
   // microbe growth
