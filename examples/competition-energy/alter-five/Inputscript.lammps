@@ -1,0 +1,81 @@
+# NUFEB simulation
+
+atom_style	bio
+atom_modify	map array sort 100 5.0e-7
+boundary	pp pp ff
+newton		off
+processors  * * *
+
+comm_modify	vel yes
+read_data_bio atom.in
+
+group HET type 1 2
+
+neighbor	5e-7 bin
+neigh_modify	delay 0 one 5000
+
+##############Define DEM Variables&Commands##############
+
+pair_style  gran/hooke/history 1.e-4 NULL 1.e-5 NULL 0.0 1
+pair_coeff  * *
+
+timestep 600
+
+fix 1 all nve/limit 1e-8
+fix fv all viscous 1e-5
+
+variable kanc equal 50
+
+fix zw all wall/gran hooke/history 2000 NULL 500.0 NULL 1.5 0 zplane  0.0   2e-4
+fix zwa all walladh v_kanc zplane  0.0   2e-4
+
+##############Define IBm Variables##############
+
+#Defining EPS density and ratio variables
+variable EPSdens equal 30
+variable EPSratio equal 1.25
+
+#variables used in fix division
+variable divDia equal 0.78e-6
+
+#Defining diffusion variables
+variable diffT equal 1e-4
+variable tol equal 1e-6
+variable etaHET equal 0.0
+variable layer equal 4e-5
+
+##############Define IBm Commands##############
+
+fix k1 all kinetics 1 100 5 100 v_diffT v_layer demflag 0 niter 10000
+fix ki2 all kinetics/thermo
+fix ki1 all kinetics/growth/energy v_EPSdens	
+fix ki3 all kinetics/ph fix 
+fix g1 all kinetics/diffusion v_tol pp pp nd mol
+fix d1 all divide 1 v_EPSdens v_divDia 31231 demflag 0
+
+##############Define IBm Computes##############
+
+compute myNtypes all ntypes
+compute myMass all biomass
+
+##############Simulation outputs##############
+
+#dump 		du2 all grid 100000 grid_%_*.vti con
+#dump		du1 all custom/vtk 1000000 snapshot.bubblemd.vtu id type diameter x y z
+dump            du0 all bio 1000000 ntypes biomass
+dump		du3 all custom 5000000 snapshot.bubblemd id type diameter x y z
+thermo_style    custom step cpu atoms c_myNtypes[*] 
+thermo		1000
+thermo_modify	lost ignore
+
+##############Define Bio-loop and DEM-subloop##############
+
+run 4320 pre no post no every 1 &
+"fix_modify k1 demflag 1" &
+"fix_modify d1 demflag 1" &
+"timestep 1e-3" &
+"run 10000 pre no post no" &
+"timestep 600" &
+"fix_modify k1 demflag 0" &
+"fix_modify d1 demflag 0" &
+
