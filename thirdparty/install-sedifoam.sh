@@ -56,7 +56,6 @@ then
     cat Make/options-mac-openmpi >> Make/options
 else
     echo "Sorry, we haven't got the required version."
-    echo "Please contact the developer (sunrui@vt.edu) for help."
 fi
 
 wmake libso dragModels
