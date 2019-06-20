@@ -21,12 +21,11 @@ do
        cp Makefile.lammps_vtk8.0 Makefile.lammps
     elif [ $var == "--enable-hdf5" ]; then
        cp Makefile.lammps_hdf5 Makefile.lammps
-    elif [ $var == "--enable-essential" ]; then
-       cp Makefile.lammps_essential Makefile.lammps
     elif [ $var == "--enable-vtk-hdf5" ]; then
        cp Makefile.lammps_hdf5_vtk8.0 Makefile.lammps
        cd ../vtk
        cp Makefile.lammps_vtk8.0 Makefile.lammps
+    elif [ $var == "--serial" ]; then continue
     else
        echo "Unknown parameter"
        exit 1
