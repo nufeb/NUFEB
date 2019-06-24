@@ -49,6 +49,8 @@ do
 	cd STUBS
         make
         cd ..
+        make -j4 serial
+        exit 1
     fi
 done
 
