@@ -144,7 +144,8 @@ class DecompGrid {
       }
     }
     // wait for all MPI requests
-    MPI_Waitall(nrequests, requests.data(), MPI_STATUS_IGNORE);
+    if (nrequests > 0)
+      MPI_Waitall(nrequests, requests.data(), MPI_STATUS_IGNORE);
     // unpack data from recv buffer
     derived->unpack_cells(recv_cells.begin(), recv_cells.end(), recv_buff.begin());
 

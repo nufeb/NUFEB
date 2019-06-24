@@ -45,16 +45,22 @@ do
     if [ $var == "--enable-vtk" ] || [ $var == "--enable-vtk-hdf5" ]; then
 	make yes-user-vtk
     fi
+done
+
+echo "Building NUFEB.."
+for var in "$@"
+do 
     if [ $var == "--serial" ]; then
 	cd STUBS
         make
         cd ..
         make -j4 serial
         exit 1
-    fi
+   fi
 done
 
 make -j4 mpi
+exit 1
 
 #echo "Writing path to .bashrc"
 #echo "export PATH=\$PATH:$currentDir/lammps/src/" >> ~/.bashrc
