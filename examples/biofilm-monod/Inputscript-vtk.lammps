@@ -67,9 +67,9 @@ compute myNtypes all ntypes
 
 ##############Simulation Output##############
 
-#dump		id all custom 1000 output.lammmps id type diameter x y z
-#dump		du1 all custom/vtk 1000 atom_*.vtu id type diameter x y z
-#dump		du2 all grid 1000 grid_%_*.vti con
+dump		id all custom 1000 output.lammmps id type diameter x y z
+dump		du1 all custom/vtk 1000 atom_*.vtu id type diameter x y z
+dump		du2 all grid 1000 grid_%_*.vti con
 thermo_style    custom step cpu atoms c_myNtypes[2] c_myNtypes[3] 
 thermo		100
 thermo_modify	lost ignore
