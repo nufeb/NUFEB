@@ -84,6 +84,8 @@ DumpBio::DumpBio(LAMMPS *lmp, int narg, char **arg) :
   bulk_flag = 0;
   avgph_flag = 0;
   avgph_header = 0;
+  ntypes_flag = 0;
+  cata_flag = 0;
 
   dia_flag = 0;
   dim_flag = 0;
