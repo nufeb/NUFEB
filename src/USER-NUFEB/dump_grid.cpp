@@ -99,7 +99,7 @@ void DumpGrid::init_style() {
 void DumpGrid::write() {
   vtkSmartPointer<vtkImageData> image = vtkSmartPointer<vtkImageData>::New();
   std::array<int, 3> dim = kinetics->subgrid.get_dimensions();
-  image->SetDimensions(dim[0] + 1, dim[1] + 1, dim[2] + 1);
+  image->SetDimensions(dim[0] + 1, dim[1] + 1, kinetics->grid.get_dimensions()[2] + 1);
   std::array<double, 3> spacing = kinetics->grid.get_cell_size();
   image->SetSpacing(spacing[0], spacing[1], spacing[2]);
   std::array<int, 3> origin = kinetics->subgrid.get_origin();
@@ -186,6 +186,9 @@ void DumpGrid::pack_tuple1(vtkSmartPointer<vtkImageData> image, const char *name
   for (int i = 0; i < kinetics->subgrid.cell_count(); i++) {
     array->InsertNextTuple1(data[i]);
   }
+  for (int i = kinetics->subgrid.cell_count(); i < image->GetNumberOfCells(); i++) {
+    array->InsertNextTuple1(0);
+  }
   image->GetCellData()->AddArray(array);
 }
 
@@ -198,6 +201,9 @@ void DumpGrid::pack_tuple1(vtkSmartPointer<vtkImageData> image, const char *name
     array->SetNumberOfComponents(1);
     for (int i = 0; i < kinetics->subgrid.cell_count(); i++) {
       array->InsertNextTuple1(data[n][i]);
+    }
+    for (int i = kinetics->subgrid.cell_count(); i < image->GetNumberOfCells(); i++) {
+      array->InsertNextTuple1(0);
     }
     image->GetCellData()->AddArray(array);
   }
@@ -214,6 +220,12 @@ void DumpGrid::pack_tuple5(vtkSmartPointer<vtkImageData> image, const char *name
       double tuple[5];
       for (int j = 0; j < 5; j++)
 	tuple[j] = data[n][j][i];
+      array->InsertNextTuple(tuple);
+    }
+    for (int i = kinetics->subgrid.cell_count(); i < image->GetNumberOfCells(); i++) {
+      double tuple[5];
+      for (int j = 0; j < 5; j++)
+	tuple[j] = 0;
       array->InsertNextTuple(tuple);
     }
     image->GetCellData()->AddArray(array);
