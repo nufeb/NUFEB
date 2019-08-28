@@ -6,7 +6,7 @@
 	url = https://github.com/Kitware/VTK
 [submodule "thirdparty/sedifoam"]
 	path = thirdparty/sedifoam
-	url = https://github.com/shelllbw/sediFoam/commits/master 
+	url = https://github.com/shelllbw/sediFoam/ 
 [submodule "thirdparty/openfoam/openfoam"]
 	path = thirdparty/openfoam/openfoam
 	url = https://github.com/OpenFOAM/OpenFOAM-6
