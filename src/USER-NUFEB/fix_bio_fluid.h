@@ -11,7 +11,7 @@
 
 #ifdef FIX_CLASS
 
-FixStyle(nufebFoam,FixFluid)
+FixStyle(cfddem,FixFluid)
 
 #else
 
@@ -28,7 +28,6 @@ class FixFluid : public Fix {
  ~FixFluid();
   void init();
   int setmask();
-  void post_integrate();
 
   int dem_steps;         // # of DEM steps run in each CFD step
   int bio_steps;         // # of biological steps run in each loop
@@ -36,9 +35,6 @@ class FixFluid : public Fix {
   double dem_dt;         // DEM timestep
   int nloops;            // # of loop
   int demflag;           // 0 = biological run; 1 = DEM run
-  double scale_dt;       // timestep for scaling up
-  int scale_nevery;      // # of steps to perform scaling up
-  int scaling;           // scale flag
 
   double xlo, xhi, ylo, yhi, zlo, zhi, bzhi;
 

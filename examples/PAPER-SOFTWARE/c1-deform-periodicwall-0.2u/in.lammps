@@ -62,7 +62,7 @@ fix 3 all fdrag 1000
 
 #Defining nufebFoam variables
 variable demSteps equal -1
-variable bioSteps equal 1
+variable bioSteps equal 0
 variable bioDt equal 1
 variable nloops equal 1
 
@@ -76,7 +76,7 @@ compute myMass all biomass
 compute myRough all roughness 
 
 fix k1 all kinetics 100000 25 10 10 v_diffT v_layer niter 1
-fix cfd1 all nufebFoam v_demSteps v_bioSteps v_bioDt v_nloops
+fix cfd1 all cfddem v_demSteps v_bioSteps v_bioDt v_nloops
 
 ##############Simulation Output##############
 #dump du3 all custom/vtk 1000 snapshot%_*.vtu id type diameter x y z
