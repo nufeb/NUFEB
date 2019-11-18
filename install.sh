@@ -25,7 +25,9 @@ do
        cp Makefile.lammps_hdf5_vtk8.0 Makefile.lammps
        cd ../vtk
        cp Makefile.lammps_vtk8.0 Makefile.lammps
-    elif [ $var == "--serial" ]; then continue
+    elif [ $var == "--static" ]; then continue
+    elif [ $var == "--shared" ]; then continue
+    elif [ $var == "--library" ]; then continue
     else
        echo "Unknown parameter"
        exit 1
@@ -55,6 +57,22 @@ do
         make
         cd ..
         make -j4 serial
+        exit 1
+   fi
+done
+
+for var in "$@"
+do 
+    if [ $var == "--static" ]; then
+        make -j4 mpi mode=lib
+        exit 1
+   fi
+done
+
+for var in "$@"
+do 
+    if [ $var == "--shared" ]; then
+        make -j4 mpi mode=shlib
         exit 1
    fi
 done
