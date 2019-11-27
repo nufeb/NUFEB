@@ -1206,7 +1206,7 @@ void ReadDataBIO::atoms()
     nchunk = MIN(natoms-nread,CHUNK);
     eof = comm->read_lines_from_file(fp,nchunk,MAXLINE,buffer);
     if (eof) error->all(FLERR,"Unexpected end of data file");
-    atom->data_atoms(nchunk,buffer,id_offset,toffset,shiftflag,shift);
+    atom->data_atoms(nchunk,buffer,id_offset,0,toffset,shiftflag,shift);
     nread += nchunk;
   }
 

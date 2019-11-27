@@ -13,6 +13,7 @@
 #define LMP_REDUCE_GRID_H
 
 #include "subgrid.h"
+#include "comm.h"
 
 #include <vector>
 
