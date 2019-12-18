@@ -62,5 +62,10 @@ cd examples/biofilm-monod
 mpirun -np 4 ../../lammps/src/./lmp_mpi -in Inputscript.lammps
 </pre>
 
+---------------------------------------------------------------------------
+Developers:
 
+Bowen Li: bowen.li2@newcastle.ac.uk
+
+Denis Taniguchi: denis.taniguchi@newcastle.ac.uk
 
