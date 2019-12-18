@@ -16,6 +16,7 @@ NUFEB development has been funded by the UK’s EPSRC EP/K039083/1
 Newcastle University Frontiers in Engineering Biology (NUFEB) project.
 
 You can find tutorial and example videos in the [NUFEB Wiki page](https://github.com/nufeb/NUFEB/wiki).
+
 ---------------------------------------------------------------------------
 
 The NUFEB distribution includes the following files and directories:
@@ -63,6 +64,8 @@ mpirun -np 4 ../../lammps/src/./lmp_mpi -in Inputscript.lammps
 
 ---------------------------------------------------------------------------
 Developers:
+
 Bowen Li: bowen.li2@newcastle.ac.uk
+
 Denis Taniguchi: denis.taniguchi@newcastle.ac.uk
 
