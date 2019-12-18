@@ -257,7 +257,7 @@ void DumpBio::init_style()
       dim_flag = 1;
     } else if (strcmp(keywords[i],"diversity") == 0) {
       div_flag = 1;
-    } else if (strcmp(keywords[i],"ave_height") == 0) {
+    } else if (strcmp(keywords[i],"avg_height") == 0) {
       height_flag = 1;
     } else if (strcmp(keywords[i],"roughness") == 0) {
       rough_flag = 1;
@@ -287,7 +287,7 @@ void DumpBio::init_style()
     } else if (strcmp(modify->compute[j]->style,"diversity") == 0) {
       cdiv = static_cast<ComputeNufebDiversity *>(lmp->modify->compute[j]);
       continue;
-    } else if (strcmp(modify->compute[j]->style,"ave_height") == 0) {
+    } else if (strcmp(modify->compute[j]->style,"avg_height") == 0) {
       cheight = static_cast<ComputeNufebHeight *>(lmp->modify->compute[j]);
       continue;
     } else if (strcmp(modify->compute[j]->style,"roughness") == 0) {
@@ -384,7 +384,7 @@ void DumpBio::write()
   if (height_flag == 1 && comm->me == 0) {
     int len = 38;
     char path[len];
-    strcpy(path, "./Results/ave_height.csv");
+    strcpy(path, "./Results/avg_height.csv");
 
     filename = path;
     fp = fopen(filename,"a");
@@ -439,7 +439,7 @@ void DumpBio::write()
   if (avgnus_flag == 1 && comm->me == 0) {
     int len = 38;
     char path[len];
-    strcpy(path, "./Results/ave_concentration.csv");
+    strcpy(path, "./Results/avg_concentration.csv");
 
     filename = path;
     fp = fopen(filename,"a");
@@ -450,7 +450,7 @@ void DumpBio::write()
   if (avgph_flag == 1 && comm->me == 0) {
     int len = 38;
     char path[len];
-    strcpy(path, "./Results/ave_ph.csv");
+    strcpy(path, "./Results/avg_ph.csv");
 
     filename = path;
     fp = fopen(filename,"a");

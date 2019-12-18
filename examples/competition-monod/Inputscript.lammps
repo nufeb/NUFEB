@@ -66,7 +66,7 @@ compute myNtypes all ntypes
 ##############Simulation outputs##############
 
 dump		id all custom 4000 snapshot.bubblemd id type diameter x y z
-#dump            d0 all bio 4000 concentration ntypes ave_concentration
+#dump            d0 all bio 4000 ntypes avg_con
 thermo_style    custom step cpu atoms c_myNtypes[*] 
 thermo		400
 thermo_modify	lost ignore

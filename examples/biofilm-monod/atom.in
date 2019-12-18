@@ -1,4 +1,4 @@
-  Granular Flow Simulation 
+ NUFEB Simulation 
 
        41 atoms 
        2 atom types 
@@ -8,7 +8,7 @@
    0.000000e-04   0.4e-04  ylo yhi 
    0.000000e-04   1e-04  zlo zhi 
 
- Atoms
+ Atoms 
 
      1 1 1.0e-6 150 0.5e-5 0.5e-5 1e-6 1.0e-6
      2 1 1.0e-6 150 1.5e-5 0.5e-5 1e-6 1.0e-6
@@ -60,13 +60,6 @@
      4 no3 l 1e-4 1e-4 1e-4 1e-4 1e-4 1e-4 1e-4
      5 nh4 l 1e-4 1e-4 1e-4 1e-4 1e-4 1e-4 1e-4
 
- Diffusion Coeffs
-    
-     sub 1.6e-9
-     o2 2.30e-9
-     no2 1.15e-9
-     no3 1.15e-9
-     nh4 1.15e-9
 
  Type Name
 
