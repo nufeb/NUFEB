@@ -6,6 +6,7 @@ cd ${0%/*} || exit 1 # Run from this directory
 echo "Installing lammpsFoam (for mac/linux).."
 sedifoamDir=$PWD/sedifoam
 cd ..
+ompiDir=$PWD/thirdparty/openmpi-1.10.2/ompi-build
 nufebDir=$PWD
 lammpsDir=$PWD/lammps
 lammpsSRC=$lammpsDir/src
@@ -32,8 +33,20 @@ make yes-COLLOID
 make yes-USER-CFDDEM
 
 version=`uname`
+echo $1
 # Use different options according to different versions
-if [ $version == "Linux" ]
+if [ $1 == "--local-ompi" ]
+then
+    echo "SediFOAM will be built from local openmpi path"
+    make -j4 shanghailinux mode=shlib
+    cd $FOAM_USER_LIBBIN
+    ln -sf $lammpsDir/src/liblammps_shanghailinux.so .
+    cd $sedifoamDir/lammpsFoam
+    touch Make/options
+    echo "LAMMPS_DIR ="$lammpsSRC > Make/options
+    echo "OMPI_DIR ="$ompiDir >> Make/options
+    cat Make/options-local-openmpi >> Make/options
+elif [ $version == "Linux" ]
 then
     echo "The version you choose is openmpi version"
     make -j4 shanghailinux mode=shlib
