@@ -104,7 +104,7 @@ compute myNtypes all ntypes
 dump		id all custom 1000 output.lammmps id type diameter x y z
 
 ##output atom states (id, species, diameter, position) every 1000x10sec in vtk format##
-dump		du1 all custom/vtk 1000 atom_*.vtu id type diameter x y z
+dump		du1 all vtk 1000 atom_*.vtu id type diameter x y z
 
 ##output field state (concentration) every 1000x10sec in vtk format##
 dump		du2 all grid 1000 grid_%_*.vti con

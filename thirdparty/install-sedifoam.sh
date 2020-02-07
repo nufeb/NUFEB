@@ -71,8 +71,8 @@ else
     echo "Sorry, we haven't got the required version."
 fi
 
-wmake libso dragModels
-wmake libso chPressureGrad
+wmake libso dragModels 
+wmake libso chPressureGrad 
 wmake libso lammpsFoamTurbulenceModels
 wmake 
 

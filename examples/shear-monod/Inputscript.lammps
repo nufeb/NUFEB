@@ -62,7 +62,7 @@ compute myBiomass all biomass
 ##############Simulation outputs##############
 
 dump		id all custom 2000 snapshot.bubblemd id type diameter x y z
-#dump		du1 all custom/vtk 2000 atom_*.vtu id type diameter x y z
+#dump		du1 all vtk 2000 atom_*.vtu id type diameter x y z
 #dump		du2 all grid 2000 grid_%_*.vti con
 thermo_style    custom step cpu atoms c_myNtypes[*]
 thermo		100
