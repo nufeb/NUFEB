@@ -12,28 +12,32 @@ cp -rf $currentDir/lib/* $currentDir/lammps/lib/
 echo "Configuring Makefile.lammps.."
 
 cd $currentDir/lammps/lib/nufeb
+cp Makefile.lammps_essential Makefile.lammps
+
+declare -i vtk_hdf=0
 
 for var in "$@"
 do 
     if [ $var == "--enable-vtk" ] ; then
        cp Makefile.lammps_vtk8.0 Makefile.lammps
-       cd ../vtk
-       cp Makefile.lammps_vtk8.0 Makefile.lammps
+       cp ../vtk/Makefile.lammps_vtk8.0 ../vtk/Makefile.lammps
+       vtk_hdf=$((vtk_hdf+1))
     elif [ $var == "--enable-hdf5" ]; then
        cp Makefile.lammps_hdf5 Makefile.lammps
-    elif [ $var == "--enable-vtk-hdf5" ]; then
-       cp Makefile.lammps_hdf5_vtk8.0 Makefile.lammps
-       cd ../vtk
-       cp Makefile.lammps_vtk8.0 Makefile.lammps
+       vtk_hdf=$((vtk_hdf+1))
     elif [ $var == "--static" ]; then continue
     elif [ $var == "--shared" ]; then continue
-    elif [ $var == "--library" ]; then continue
+    elif [ $var == "--serial" ]; then continue
     else
        echo "Unknown parameter"
        exit 1
     fi
 done
 
+if [ $vtk_hdf = 2 ]; then
+echo $PWD
+    cp Makefile.lammps_hdf5_vtk8.0 Makefile.lammps
+fi
 
 #### Build LAMMPS with NUFEB and VTK packages#####
 echo "Installing required packages.."
@@ -44,7 +48,7 @@ make yes-granular
 
 for var in "$@"
 do 
-    if [ $var == "--enable-vtk" ] || [ $var == "--enable-vtk-hdf5" ]; then
+    if [ $var == "--enable-vtk" ]; then
 	make yes-user-vtk
     fi
 done

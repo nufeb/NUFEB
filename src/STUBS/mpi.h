@@ -2,12 +2,10 @@
    LAMMPS 2003 (July 31) - Molecular Dynamics Simulator
    Sandia National Laboratories, www.cs.sandia.gov/~sjplimp/lammps.html
    Steve Plimpton, sjplimp@sandia.gov
-
    Copyright (2003) Sandia Corporation.  Under the terms of Contract
    DE-AC04-94AL85000 with Sandia Corporation, the U.S. Government retains
    certain rights in this software.  This software is distributed under
    the GNU General Public License.
-
    See the README file in the top-level LAMMPS directory.
 ------------------------------------------------------------------------ */
 
@@ -64,6 +62,7 @@ extern "C" {
 #define MPI_IN_PLACE NULL
 
 #define MPI_MAX_PROCESSOR_NAME 128
+#define MPI_MAX_LIBRARY_VERSION_STRING 128
 
 typedef void MPI_User_function(void *invec, void *inoutvec,
                                int *len, MPI_Datatype *datatype);
@@ -80,6 +79,7 @@ typedef struct _MPI_Status MPI_Status;
 int MPI_Init(int *argc, char ***argv);
 int MPI_Initialized(int *flag);
 int MPI_Finalized(int *flag);
+int MPI_Get_library_version(char *version, int *resultlen);
 int MPI_Get_processor_name(char *name, int *resultlen);
 int MPI_Get_version(int *major, int *minor);
 
@@ -90,6 +90,7 @@ int MPI_Finalize();
 double MPI_Wtime();
 
 int MPI_Type_size(int, int *);
+int MPI_Request_free(MPI_Request *request);
 
 int MPI_Send(const void *buf, int count, MPI_Datatype datatype,
              int dest, int tag, MPI_Comm comm);
@@ -179,3 +180,5 @@ int MPI_Alltoallv(void *sendbuf, int *sendcounts, int *sdispls,
 #endif
 
 #endif
+
+

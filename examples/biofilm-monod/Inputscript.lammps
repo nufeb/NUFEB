@@ -64,12 +64,15 @@ fix e1 HET eps_extract 100 v_EPSratio v_EPSdens 53453
 ##############Define IBm Computes##############
 
 compute myNtypes all ntypes
+compute myHeight all avg_height
+compute myRough all roughness
 
 ##############Simulation Output##############
 
-#dump		id all custom 1000 output.lammmps id type diameter x y z
+dump		id all custom 1000 output.lammmps id type diameter x y z
 #dump		du1 all vtk 1000 atom_*.vtu id type diameter x y z
 #dump		du2 all grid 1000 grid_%_*.vti con
+dump            du3 all bio 1000 avg_height roughness
 thermo_style    custom step cpu atoms c_myNtypes[2] c_myNtypes[3] 
 thermo		100
 thermo_modify	lost ignore
