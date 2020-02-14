@@ -9,7 +9,7 @@ Enable NUFEB to output simulation results in HDF5 format. NUFEB command that req
 ### VTK (v8.0.0)
 Enable NUFEB to output simulation results in VTK format. NUFEB commands that require this library:
 
-- *dump custom/vtk*
+- *dump vtk*
 - *dump grid*
 
 ### OpenFoam (v2.4.0)
