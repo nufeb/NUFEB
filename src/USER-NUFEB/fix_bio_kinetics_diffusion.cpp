@@ -267,6 +267,38 @@ void FixKineticsDiffusion::init() {
   requests = new MPI_Request[MAX(2 * comm->nprocs, nnus + 1)];
 
   setup_exchange(kinetics->grid, kinetics->subgrid.get_box(), { xbcflag == 0, ybcflag == 0, zbcflag == 0 });
+
+  closed_flag = (xbcflag == PP || xbcflag == NN) && (ybcflag == PP || ybcflag == NN) && (zbcflag == PP || zbcflag == NN);
+}
+
+/* ----------------------------------------------------------------------
+ diffusion for closed systems
+ It never reaches steady state since the bacteria will consume the
+ substrate until there is no more available. We consider that the gradient
+ will be negligible so the concentration will only vary due to the
+ reaction rate. 
+ ------------------------------------------------------------------------- */
+
+void FixKineticsDiffusion::closed_diff(double dt) {
+  double **nus = kinetics->nus;
+  double **nur = kinetics->nur;
+  for (int nu = 1; nu < bio->nnu + 1; nu++) {
+    if (bio->nustate[nu] != 0)
+      continue;
+    double sum = 0;
+    for (int grid = 0; grid < kinetics->ngrids; grid++) {
+      sum += nur[nu][grid];
+    }
+    MPI_Allreduce(MPI_IN_PLACE, &sum, 1, MPI_DOUBLE, MPI_SUM, world);
+    sum *= dt / (nx * ny * nz);
+    if (comm->me == 0) fprintf(screen,"-->sum: %e\n", sum);
+    for (int grid = 0; grid < kinetics->ngrids; grid++) {
+      nus[nu][grid] += sum;
+      if (nus[nu][grid] <= 0)
+	nus[nu][grid] = 1e-20;
+      if (grid == 0 && comm->me == 0) fprintf(screen,"-->nus: %e\n", nus[nu][grid]);
+    }
+  }
 }
 
 /* ----------------------------------------------------------------------
@@ -280,7 +312,7 @@ int *FixKineticsDiffusion::diffusion(int *nuConv, int iter, double diff_dt) {
   double **nus = kinetics->nus;
   double *nubs = kinetics->nubs;
   double **ini_nus = bio->ini_nus;
-
+  
   if (setup_exchange_flag)
   {
     setup_exchange(kinetics->grid, kinetics->subgrid.get_box(), { xbcflag == 0, ybcflag == 0, zbcflag == 0 });
@@ -755,7 +787,7 @@ bool FixKineticsDiffusion::is_equal(double a, double b, double c) {
  ------------------------------------------------------------------------- */
 
 void FixKineticsDiffusion::update_nus() {
-  if ((xbcflag == PP || xbcflag == NN) && (ybcflag == PP || ybcflag == NN) && (zbcflag == PP || zbcflag == NN)) {
+  if (closed_flag) {
     double **nus = kinetics->nus;
     double **nur = kinetics->nur;
 

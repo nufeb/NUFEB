@@ -351,19 +351,19 @@ void FixKinetics::integration() {
   if (diffusion != NULL) {
     if (diffusion->dcflag) diffusion->update_diff_coeff();
 
-    while (!converge) {
+    while (!diffusion->closed_flag && !converge) {
       converge = true;
 
       // solve for reaction term, no growth happens here
       if (iteration % devery == 0) {
-        reset_nur();
-        if (energy != NULL) {
-          ph->solve_ph();
-          thermo->thermo(diff_dt * devery);
-          energy->growth(diff_dt * devery, grow_flag);
-        } else if (monod != NULL) {
-          monod->growth(diff_dt * devery, grow_flag);
-        }
+	reset_nur();
+	if (energy != NULL) {
+	  ph->solve_ph();
+	  thermo->thermo(diff_dt * devery);
+	  energy->growth(diff_dt * devery, grow_flag);
+	} else if (monod != NULL) {
+	  monod->growth(diff_dt * devery, grow_flag);
+	}
       }
 
       iteration++;
@@ -373,15 +373,15 @@ void FixKinetics::integration() {
 
       // check for convergence
       for (int i = 1; i <= nnus; i++) {
-        if (!nuconv[i]) {
-          converge = false;
-          reset_isconv();
-          break;
-        }
+	if (!nuconv[i]) {
+	  converge = false;
+	  reset_isconv();
+	  break;
+	}
       }
 
       if (niter > 0 && iteration >= niter)
-        converge = true;
+	converge = true;
     }
 
     if (comm->me == 0 && logfile)
@@ -408,7 +408,8 @@ void FixKinetics::integration() {
 
   if (diffusion != NULL) {
     // manually update reaction if none of the surface is using dirichlet BC
-    diffusion->update_nus();
+    if (diffusion->closed_flag) diffusion->closed_diff(update->dt * nevery);
+    // diffusion->update_nus();
     // update concentration in bulk liquid
     diffusion->compute_bulk();
     // update grids

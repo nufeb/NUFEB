@@ -80,9 +80,12 @@ public:
   AtomVecBio *avec;
 
   bool setup_exchange_flag; // flags that setup_exchange needs to be called in the next call to diffusion
+
+  bool closed_flag; // flags if it is a closed system
   
   int setmask();
   void init();
+  void closed_diff(double);
   int *diffusion(int*, int, double);
   void update_nus();
   void update_grids();
