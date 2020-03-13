@@ -291,12 +291,10 @@ void FixKineticsDiffusion::closed_diff(double dt) {
     }
     MPI_Allreduce(MPI_IN_PLACE, &sum, 1, MPI_DOUBLE, MPI_SUM, world);
     sum *= dt / (nx * ny * nz);
-    if (comm->me == 0) fprintf(screen,"-->sum: %e\n", sum);
     for (int grid = 0; grid < kinetics->ngrids; grid++) {
       nus[nu][grid] += sum;
       if (nus[nu][grid] <= 0)
 	nus[nu][grid] = 1e-20;
-      if (grid == 0 && comm->me == 0) fprintf(screen,"-->nus: %e\n", nus[nu][grid]);
     }
   }
 }
