@@ -6,7 +6,7 @@ cd ${0%/*} || exit 1 # Run from this directory
 echo "Installing lammpsFoam (for mac/linux).."
 sedifoamDir=$PWD/sedifoam
 cd ..
-ompiDir=$PWD/thirdparty/openmpi-1.10.2/ompi-build
+ompiDir=$PWD/thirdparty/openmpi-3.0.6/ompi-build
 nufebDir=$PWD
 lammpsDir=$PWD/lammps
 lammpsSRC=$lammpsDir/src
