@@ -59,6 +59,12 @@ FixKineticsDiffusion::FixKineticsDiffusion(LAMMPS *lmp, int narg, char **arg) :
   srate = 0;
   dcflag = 0;
 
+  xgrid = NULL;
+  nugrid = NULL;
+  nuprev = NULL;
+  ghost = NULL;
+  grid_diff_coeff = NULL;
+
   var = new char*[1];
   ivar = new int[1];
 
@@ -253,18 +259,22 @@ void FixKineticsDiffusion::init() {
   
   int nnus = bio->nnu;
 
+  int create = 0;
+  if (xgrid == NULL)
+    create = 1;
+  
   //inlet concentration and maximum boundary condition conc value
+  if (create) {
+    xgrid = memory->create(xgrid, snxx_yy_zz, 3, "diffusion:xgrid");
+    nugrid = memory->create(nugrid, nnus + 1, snxx_yy_zz, "diffusion:nugrid");
+    nuprev = memory->create(nuprev, nnus + 1, snxx_yy_zz, "diffusion:nuprev");
+    ghost = memory->create(ghost, snxx_yy_zz, "diffusion:ghost");
+    grid_diff_coeff = memory->create(grid_diff_coeff, nnus + 1, snxx_yy_zz, "diffusion:grid_diff_coeff");
+    
+    init_grid();
 
-  xgrid = memory->create(xgrid, snxx_yy_zz, 3, "diffusion:xgrid");
-  nugrid = memory->create(nugrid, nnus + 1, snxx_yy_zz, "diffusion:nugrid");
-  nuprev = memory->create(nuprev, nnus + 1, snxx_yy_zz, "diffusion:nuprev");
-  ghost = memory->create(ghost, snxx_yy_zz, "diffusion:ghost");
-  grid_diff_coeff = memory->create(grid_diff_coeff, nnus + 1, snxx_yy_zz, "diffusion:grid_diff_coeff");
-
-  init_grid();
-
-  // create request vector
-  requests = new MPI_Request[MAX(2 * comm->nprocs, nnus + 1)];
+    requests = new MPI_Request[MAX(2 * comm->nprocs, nnus + 1)];
+  }
 
   setup_exchange(kinetics->grid, kinetics->subgrid.get_box(), { xbcflag == 0, ybcflag == 0, zbcflag == 0 });
 
