@@ -15,7 +15,8 @@ of the GNU Public License.
 NUFEB development has been funded by the UK’s EPSRC EP/K039083/1 
 Newcastle University Frontiers in Engineering Biology (NUFEB) project.
 
-You can find tutorial and example videos in the [NUFEB Wiki page](https://github.com/nufeb/NUFEB/wiki).
+Installation guide, tutorial, example videos, and more details can be found in [NUFEB Wiki page](https://github.com/nufeb/NUFEB/wiki) and
+[User Manual](https://github.com/nufeb/NUFEB/tree/master/doc)
 
 ---------------------------------------------------------------------------
 
