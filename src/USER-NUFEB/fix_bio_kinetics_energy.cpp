@@ -55,6 +55,8 @@ FixKineticsEnergy::FixKineticsEnergy(LAMMPS *lmp, int narg, char **arg) :
   if (narg != 4)
     error->all(FLERR, "Not enough arguments in fix kinetics/monod command");
 
+  growrate = NULL;
+  
   var = new char*[1];
   ivar = new int[1];
 
@@ -143,7 +145,8 @@ void FixKineticsEnergy::init() {
   ny = kinetics->ny;
   nz = kinetics->nz;
 
-  growrate = memory->create(growrate, atom->ntypes+1, kinetics->ngrids, "monod:growrate");
+  if (growrate == NULL)
+    growrate = memory->create(growrate, atom->ntypes+1, kinetics->ngrids, "monod:growrate");
 
   //Get computational domain size
   if (domain->triclinic == 0) {

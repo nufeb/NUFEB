@@ -54,6 +54,8 @@ FixKineticsPH::FixKineticsPH(LAMMPS *lmp, int narg, char **arg) :
   phlo = 6.5;
   phhi = 9;
 
+  keq = NULL;
+  
   if (strcmp(arg[3], "fix") == 0)
     phflag = 0;
   else if (strcmp(arg[3], "dynamic") == 0)
@@ -110,9 +112,11 @@ void FixKineticsPH::init() {
   else if (bio->nucharge == NULL)
     error->all(FLERR, "fix_kinetics/ph requires Nutrient Charge inputs");
 
-  keq = memory->create(keq, nnus + 1, 4, "kinetics/ph:keq");
-
-  init_keq();
+  if (keq == NULL) {
+    keq = memory->create(keq, nnus + 1, 4, "kinetics/ph:keq");
+    init_keq();
+  }
+  
   compute_activity(0, kinetics->ngrids, iph);
 }
 

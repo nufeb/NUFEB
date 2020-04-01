@@ -259,12 +259,8 @@ void FixKineticsDiffusion::init() {
   
   int nnus = bio->nnu;
 
-  int create = 0;
-  if (xgrid == NULL)
-    create = 1;
-  
   //inlet concentration and maximum boundary condition conc value
-  if (create) {
+  if (xgrid == NULL) {
     xgrid = memory->create(xgrid, snxx_yy_zz, 3, "diffusion:xgrid");
     nugrid = memory->create(nugrid, nnus + 1, snxx_yy_zz, "diffusion:nugrid");
     nuprev = memory->create(nuprev, nnus + 1, snxx_yy_zz, "diffusion:nuprev");

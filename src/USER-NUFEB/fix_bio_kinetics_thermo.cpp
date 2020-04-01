@@ -50,6 +50,10 @@ FixKineticsThermo::FixKineticsThermo(LAMMPS *lmp, int narg, char **arg) :
   gvol = 8e-14;
   rg = 0.08205746;
 
+  khv = NULL;
+  liqtogas = NULL;
+  dgzero = NULL;
+
   int iarg = 3;
   while (iarg < narg) {
     if (strcmp(arg[iarg], "yield") == 0) {
@@ -127,12 +131,14 @@ void FixKineticsThermo::init() {
 
   int nnus = bio->nnu;
 
-  khv = memory->create(khv, nnus + 1, "kinetics/thermo:khv");
-  liqtogas = memory->create(liqtogas, nnus + 1, "kinetics/thermo:liqtogas");
-  dgzero = memory->create(dgzero, atom->ntypes + 1, 2, "kinetics/thermo:dgzero");
+  if (khv == NULL) {
+    khv = memory->create(khv, nnus + 1, "kinetics/thermo:khv");
+    liqtogas = memory->create(liqtogas, nnus + 1, "kinetics/thermo:liqtogas");
+    dgzero = memory->create(dgzero, atom->ntypes + 1, 2, "kinetics/thermo:dgzero");
 
-  init_khv();
-  init_dgzero();
+    init_khv();
+    init_dgzero();
+  }
 
   //Get computational domain size
   if (domain->triclinic == 0) {

@@ -53,6 +53,9 @@ FixKineticsMonod::FixKineticsMonod(LAMMPS *lmp, int narg, char **arg) :
   if (narg < 5)
     error->all(FLERR, "Not enough arguments in fix kinetics/growth/monod command");
 
+  species = NULL;
+  growrate = NULL;
+  
   var = new char*[2];
   ivar = new int[2];
 
@@ -150,9 +153,11 @@ void FixKineticsMonod::init() {
   ny = kinetics->ny;
   nz = kinetics->nz;
 
-  species = memory->create(species, atom->ntypes+1, "monod:species");
-  growrate = memory->create(growrate, atom->ntypes+1, 2, kinetics->ngrids, "monod:growrate");
-
+  if (species == NULL) {
+    species = memory->create(species, atom->ntypes+1, "monod:species");
+    growrate = memory->create(growrate, atom->ntypes+1, 2, kinetics->ngrids, "monod:growrate");
+  }
+  
   //Get computational domain size
   if (domain->triclinic == 0) {
     xlo = domain->boxlo[0];

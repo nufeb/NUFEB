@@ -74,6 +74,18 @@ FixKinetics::FixKinetics(LAMMPS *lmp, int narg, char **arg) :
   if (nevery < 0)
     error->all(FLERR, "Illegal fix kinetics command: calling steps should be positive integer");
 
+  nuconv = NULL;
+  nus = NULL;
+  nur = NULL;
+  nubs = NULL;
+  grid_yield = NULL;
+  activity = NULL;
+  gibbs_cata = NULL;
+  gibbs_anab = NULL;
+  sh = NULL;
+  fv = NULL;
+  xdensity = NULL;
+
   nx = force->inumeric(FLERR, arg[4]);
   ny = force->inumeric(FLERR, arg[5]);
   nz = force->inumeric(FLERR, arg[6]);
@@ -257,18 +269,22 @@ void FixKinetics::init() {
   int ntypes = atom->ntypes;
   int nnus = bio->nnu;
 
-  nuconv = new int[nnus + 1]();
-  nus = memory->create(nus, nnus + 1, ngrids, "kinetics:nus");
-  nur = memory->create(nur, nnus + 1, ngrids, "kinetics:nur");
-  nubs = memory->create(nubs, nnus + 1, "kinetics:nubs");
-  grid_yield = memory->create(grid_yield, ntypes + 1, ngrids, "kinetic:grid_yield");
-  activity = memory->create(activity, nnus + 1, 5, ngrids, "kinetics:activity");
-  gibbs_cata = memory->create(gibbs_cata, ntypes + 1, ngrids, "kinetics:gibbs_cata");
-  gibbs_anab = memory->create(gibbs_anab, ntypes + 1, ngrids, "kinetics:gibbs_anab");
-  sh = memory->create(sh, ngrids, "kinetics:sh");
-  fv = memory->create(fv, 3, ngrids, "kinetcis:fv");
-  xdensity = memory->create(xdensity, ntypes + 1, ngrids, "kinetics:xdensity");
+  if (nuconv == NULL) {
+    nuconv = new int[nnus + 1]();
+    nus = memory->create(nus, nnus + 1, ngrids, "kinetics:nus");
+    nur = memory->create(nur, nnus + 1, ngrids, "kinetics:nur");
+    nubs = memory->create(nubs, nnus + 1, "kinetics:nubs");
+    grid_yield = memory->create(grid_yield, ntypes + 1, ngrids, "kinetic:grid_yield");
+    activity = memory->create(activity, nnus + 1, 5, ngrids, "kinetics:activity");
+    gibbs_cata = memory->create(gibbs_cata, ntypes + 1, ngrids, "kinetics:gibbs_cata");
+    gibbs_anab = memory->create(gibbs_anab, ntypes + 1, ngrids, "kinetics:gibbs_anab");
+    sh = memory->create(sh, ngrids, "kinetics:sh");
+    fv = memory->create(fv, 3, ngrids, "kinetcis:fv");
+    xdensity = memory->create(xdensity, ntypes + 1, ngrids, "kinetics:xdensity");
 
+    init_param();
+  }
+  
   // Fitting initial domain decomposition to the grid 
   for (int i = 0; i < comm->procgrid[0]; i++) {
     int n = nx * i * 1.0 / comm->procgrid[0];
@@ -284,8 +300,8 @@ void FixKinetics::init() {
   }
   domain->set_local_box();
 
-  init_param();
   update_bgrids();
+
   if (diffusion != NULL) reset_isconv();
 }
 
