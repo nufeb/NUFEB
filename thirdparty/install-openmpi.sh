@@ -14,15 +14,21 @@ echo $intallpath
 make all install
 
 version=`uname`
-# set DYLD_LIBRARY_PATH and PATH according to different versions
-if [ $version == "Linux" ] 
-then
-echo "export LD_LIBRARY_PATH=$currentDir/openmpi-3.0.6/ompi-build/lib:\$LD_LIBRARY_PATH" >> ~/.bashrc
-echo "export PATH=$currentDir/openmpi-3.0.6/ompi-build/bin:\$PATH" >> ~/.bashrc
-elif [ $version == "Darwin" ] 
-then
-echo "export DYLD_LIBRARY_PATH=$currentDir/openmpi-3.0.6/ompi-build/lib:\$DYLD_LIBRARY_PATH" >> ~/.bashrc
-echo "export PATH=$currentDir/openmpi-3.0.6/ompi-build/bin:\$PATH" >> ~/.bashrc
+# set LD_LIBRARY_PATH and PATH according to different versions
+
+if grep -q $intallpath ~/.bashrc; then
+  echo -n
+else
+  echo "Writing path to .bashrc"
+  echo "export PATH=$intallpath/bin:\$PATH" >> ~/.bashrc
+
+  if [ $version == "Linux" ]; then
+    echo "export LD_LIBRARY_PATH=$intallpath/lib:\$LD_LIBRARY_PATH" >> ~/.bashrc
+  elif [ $version == "Darwin" ]; then
+    echo "export DYLD_LIBRARY_PATH=$intallpath/lib:\$DYLD_LIBRARY_PATH" >> ~/.bashrc
+  fi
 fi
+
+exit 1
 
 

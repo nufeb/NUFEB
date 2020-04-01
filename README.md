@@ -29,7 +29,7 @@ doc                     user manual and other documentation
 examples                test problems and cases used in publications 
 lib                     libraries NUFEB can be linked with 
 lammps                  LAMMPS source code
-post-processing         visualisation routine 
+post-processing         Povray visualisation routine 
 src                     source files 
 thirdparty              thirdparty tools
 </pre>
@@ -52,7 +52,7 @@ Build NUFEB:
 Run a case in /examples after building NUFEB, for example:
 <pre>
 cd examples/biofilm-monod
-mpirun -np 4 ../../lammps/src/./lmp_mpi -in Inputscript.lammps
+mpirun -np 4 lmp_mpi -in Inputscript.lammps
 </pre>
 
 ---------------------------------------------------------------------------

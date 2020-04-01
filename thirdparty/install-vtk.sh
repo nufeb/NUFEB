@@ -17,10 +17,16 @@ make install
 
 version=`uname`
 # set LD path according to different versions
-if [ $version == "Linux" ] 
-then
-echo "export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:$currentDir/vtk/vtk-build/vtk-8.0/lib" >> ~/.bashrc
-elif [ $version == "Darwin" ] 
-then
-echo "export DYLD_LIBRARY_PATH=\$LD_LIBRARY_PATH:$currentDir/vtk/vtk-build/vtk-8.0/lib" >> ~/.bashrc
+
+if grep -q $intallpath ~/.bashrc; then
+  echo -n
+else
+  echo "Writing path to .bashrc"
+  if [ $version == "Linux" ]; then
+    echo "export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:$intallpath/lib" >> ~/.bashrc
+  elif [ $version == "Darwin" ]; then
+    echo "export DYLD_LIBRARY_PATH=\$DYLD_LIBRARY_PATH:$intallpath/lib" >> ~/.bashrc
+  fi
 fi
+
+exit 1
