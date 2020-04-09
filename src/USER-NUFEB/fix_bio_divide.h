@@ -45,7 +45,7 @@ class FixDivide : public Fix {
   class RanPark *random;
   class AtomVecBio *avec;
   class BIO *bio;
-  class FixFluid *nufebFoam;
+  class FixSedifoam *sedifoam;
 };
 
 }

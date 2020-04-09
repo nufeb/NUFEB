@@ -43,3 +43,7 @@ lubricationForce        0;
 particleLift            0;
 particleHistoryForce    0;
 
+deleteParticle 1;
+
+
+deleteParticleBox (0 0.000002 0 0.00004 0 0.00004 0 0 0); // x1x2y1y2z1z2;

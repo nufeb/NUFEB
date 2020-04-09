@@ -9,7 +9,7 @@
    the GNU General Public License.
 ------------------------------------------------------------------------- */
 
-#include "fix_bio_fluid.h"
+#include "fix_bio_sedifoam.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -28,40 +28,39 @@ using namespace FixConst;
 
 /* ---------------------------------------------------------------------- */
 
-FixFluid::FixFluid(LAMMPS *lmp, int narg, char **arg) :
+FixSedifoam::FixSedifoam(LAMMPS *lmp, int narg, char **arg) :
   Fix(lmp, narg, arg)
 {
-  if (narg < 7) error->all(FLERR,"Illegal fix cfddem command");
+  if (narg < 6) error->all(FLERR,"Illegal fix sedifoam command");
 
-  var = new char*[4];
-  ivar = new int[4];
+  var = new char*[3];
+  ivar = new int[3];
 
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 3; i++) {
     int n = strlen(&arg[3+i][2]) + 1;
     var[i] = new char[n];
     strcpy(var[i], &arg[3+i][2]);
   }
 
-  dem_steps = -1;
   bio_steps = 1;
   bio_dt = 1;
   nloops = 1;
 }
 
-FixFluid::~FixFluid()
+FixSedifoam::~FixSedifoam()
 {
   int i;
-  for (i = 0; i < 4; i++) {
+  for (i = 0; i < 3; i++) {
     delete[] var[i];
   }
   delete[] var;
   delete[] ivar;
 }
 
-void FixFluid::init()
+void FixSedifoam::init()
 {
 
-  for (int n = 0; n < 4; n++) {
+  for (int n = 0; n < 3; n++) {
     ivar[n] = input->variable->find(var[n]);
     if (ivar[n] < 0)
       error->all(FLERR, "Variable name for fix cfddem does not exist");
@@ -69,13 +68,10 @@ void FixFluid::init()
       error->all(FLERR, "Variable for fix cfddem is invalid style");
   }
 
-  dem_steps = input->variable->compute_equal(ivar[0]);
-  bio_steps = input->variable->compute_equal(ivar[1]);
-  bio_dt = input->variable->compute_equal(ivar[2]);
-  nloops = input->variable->compute_equal(ivar[3]);
+  bio_steps = input->variable->compute_equal(ivar[0]);
+  bio_dt = input->variable->compute_equal(ivar[1]);
+  nloops = input->variable->compute_equal(ivar[2]);
 
-  if (dem_steps < 0)
-    error->warning(FLERR, "Negative input value for DEM steps, steps will be calculated and adjusted in sediFoam");
   if (bio_steps < 0)
     error->all(FLERR, "Bio steps can not be negative");
   if (bio_dt < 0)
@@ -85,28 +81,11 @@ void FixFluid::init()
 
   demflag = 0;
   dem_dt = update->dt;
-
-  //Get computational domain size
-  if (domain->triclinic == 0) {
-    xlo = domain->boxlo[0];
-    xhi = domain->boxhi[0];
-    ylo = domain->boxlo[1];
-    yhi = domain->boxhi[1];
-    zlo = domain->boxlo[2];
-    zhi = domain->boxhi[2];
-  } else {
-    xlo = domain->boxlo_bound[0];
-    xhi = domain->boxhi_bound[0];
-    ylo = domain->boxlo_bound[1];
-    yhi = domain->boxhi_bound[1];
-    zlo = domain->boxlo_bound[2];
-    zhi = domain->boxhi_bound[2];
-  }
 }
 
 /* ---------------------------------------------------------------------- */
 
-int FixFluid::setmask()
+int FixSedifoam::setmask()
 {
   int mask = 0;
   return mask;

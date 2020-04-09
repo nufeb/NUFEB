@@ -11,32 +11,30 @@
 
 #ifdef FIX_CLASS
 
-FixStyle(cfddem,FixFluid)
+FixStyle(sedifoam,FixSedifoam)
 
 #else
 
-#ifndef LMP_FIX_FLUID_H
-#define LMP_FIX_FLUID_H
+#ifndef LMP_FIX_SEDIFOAM_H
+#define LMP_FIX_SEDIFOAM_H
 
 #include "fix.h"
 
 namespace LAMMPS_NS {
 
-class FixFluid : public Fix {
+class FixSedifoam : public Fix {
  public:
-  FixFluid(class LAMMPS *, int, char **);
- ~FixFluid();
+  FixSedifoam(class LAMMPS *, int, char **);
+ ~FixSedifoam();
   void init();
   int setmask();
 
-  int dem_steps;         // # of DEM steps run in each CFD step
   int bio_steps;         // # of biological steps run in each loop
   double bio_dt;         // biological timestep
   double dem_dt;         // DEM timestep
   int nloops;            // # of loop
   int demflag;           // 0 = biological run; 1 = DEM run
 
-  double xlo, xhi, ylo, yhi, zlo, zhi, bzhi;
 
  private:
   char **var;

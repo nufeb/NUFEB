@@ -12,3 +12,5 @@ rm -rf probes
 rm -rf sets
 rm log.*
 rm snapshot.*
+rm log
+rm -rf Results

@@ -36,7 +36,7 @@
 #include "fix_bio_kinetics_energy.h"
 #include "fix_bio_kinetics_monod.h"
 #include "comm.h"
-#include "fix_bio_fluid.h"
+#include "fix_bio_sedifoam.h"
 #include "compute.h"
 #include "compute_bio_height.h"
 #include "compute_bio_rough.h"
@@ -218,7 +218,7 @@ void FixKinetics::init() {
   ph = NULL;
   thermo = NULL;
   monod = NULL;
-  nufebfoam = NULL;
+  sedifoam = NULL;
 
   int nfix = modify->nfix;
   for (int j = 0; j < nfix; j++) {
@@ -232,8 +232,8 @@ void FixKinetics::init() {
       thermo = static_cast<FixKineticsThermo *>(lmp->modify->fix[j]);
     } else if (strcmp(modify->fix[j]->style, "kinetics/growth/monod") == 0) {
       monod = static_cast<FixKineticsMonod *>(lmp->modify->fix[j]);
-    } else if (strcmp(modify->fix[j]->style, "nufebFoam") == 0) {
-      nufebfoam = static_cast<FixFluid *>(lmp->modify->fix[j]);
+    } else if (strcmp(modify->fix[j]->style, "sedifoam") == 0) {
+    	sedifoam = static_cast<FixSedifoam *>(lmp->modify->fix[j]);
     }
   }
 
@@ -326,7 +326,7 @@ void FixKinetics::pre_force(int vflag) {
     flag = false;
   if (update->ntimestep % nevery)
     flag = false;
-  if (nufebfoam != NULL && nufebfoam->demflag)
+  if (sedifoam != NULL && sedifoam->demflag)
     flag = false;
   if (demflag)
     flag = false;
@@ -564,7 +564,7 @@ int FixKinetics::get_elem_per_cell() const {
     result += 5 * bio->nnu; // qGas + activity
     result += 3 * atom->ntypes; // gYield + DRGCat + DRGAn 
   }
-  if (nufebfoam) {
+  if (sedifoam) {
     result += 3; // fV
   }
   return result;
@@ -603,7 +603,7 @@ void FixKinetics::resize(const Subgrid<double, 3> &subgrid) {
     gibbs_anab = memory->grow(gibbs_anab, ntypes + 1, ngrids, "kinetics:gibbs_anab");
     sh = memory->grow(sh, ngrids, "kinetics:sh");
   }
-  if (nufebfoam) {
+  if (sedifoam) {
     fv = memory->grow(fv, 3, ngrids, "kinetcis:fV");
   }
   if (monod != NULL)
