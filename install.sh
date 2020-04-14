@@ -6,12 +6,12 @@ currentDir=$PWD
 
 #### Copy package and lib files to LAMMPS directory #####
 echo "Copying packages to LAMMPS.."
-cp -rf $currentDir/src/* $currentDir/lammps/src/
-cp -rf $currentDir/lib/* $currentDir/lammps/lib/
+cp -rf "$currentDir"/src/* "$currentDir"/lammps/src/
+cp -rf "$currentDir"/lib/* "$currentDir"/lammps/lib/
 
 echo "Configuring Makefile.lammps.."
 
-cd $currentDir/lammps/lib/nufeb
+cd "$currentDir"/lammps/lib/nufeb
 cp Makefile.lammps_essential Makefile.lammps
 
 declare -i vtk_hdf=0
@@ -25,6 +25,7 @@ do
     elif [ $var == "--enable-hdf5" ]; then
        cp Makefile.lammps_hdf5 Makefile.lammps
        vtk_hdf=$((vtk_hdf+1))
+    elif [ $var == "--enable-misc" ]; then continue
     elif [ $var == "--static" ]; then continue
     elif [ $var == "--shared" ]; then continue
     elif [ $var == "--serial" ]; then continue
@@ -42,7 +43,7 @@ fi
 #### Build LAMMPS with NUFEB and VTK packages#####
 echo "Installing required packages.."
 
-cd $currentDir/lammps/src
+cd "$currentDir"/lammps/src
 make yes-user-nufeb
 make yes-granular
 
@@ -50,6 +51,8 @@ for var in "$@"
 do 
     if [ $var == "--enable-vtk" ]; then
 	make yes-user-vtk
+    elif [ $var == "--enable-misc" ]; then
+	make yes-misc
     fi
 done
 
@@ -85,4 +88,4 @@ make -j4 mpi
 exit 1
 
 #echo "Writing path to .bashrc"
-#echo "export PATH=\$PATH:$currentDir/lammps/src/" >> ~/.bashrc
+#echo "export PATH=\$PATH:"$currentDir"/lammps/src/" >> ~/.bashrc
