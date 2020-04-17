@@ -352,8 +352,12 @@ void ReadDataBIO::command(int narg, char **arg)
   nbonds = nangles = ndihedrals = nimpropers = 0;
   nbondtypes = nangletypes = ndihedraltypes = nimpropertypes = 0;
 
-  boxlo[0] = boxlo[1] = boxlo[2] = -0.5;
-  boxhi[0] = boxhi[1] = boxhi[2] = 0.5;
+  boxlo[0] = domain->boxlo[0];
+  boxlo[1] = domain->boxlo[1];
+  boxlo[2] = domain->boxlo[2];
+  boxhi[0] = domain->boxhi[0];
+  boxhi[1] = domain->boxhi[1];
+  boxhi[2] = domain->boxhi[2];
   triclinic = 0;
   keyword[0] = '\0';
 
