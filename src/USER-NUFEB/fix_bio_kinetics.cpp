@@ -366,7 +366,7 @@ void FixKinetics::integration() {
   // update grid biomass to calculate diffusion coeff
   if (diffusion != NULL) {
     if (diffusion->dcflag) diffusion->update_diff_coeff();
-
+    if (diffusion->closed_flag) diffusion->closed_diff(update->dt * nevery);
     while (!diffusion->closed_flag && !converge) {
       converge = true;
 
@@ -414,8 +414,13 @@ void FixKinetics::integration() {
   reset_nur();
 
   // microbe growth
-  if (energy != NULL)
+  if (energy != NULL) {
+    if (diffusion->closed_flag) {
+      ph->solve_ph();
+      thermo->thermo(update->dt * devery);
+    }
     energy->growth(update->dt * nevery, grow_flag);
+  }
   if (monod != NULL)
     monod->growth(update->dt * nevery, grow_flag);
 
@@ -423,9 +428,6 @@ void FixKinetics::integration() {
     ph->buffer_ph();
 
   if (diffusion != NULL) {
-    // manually update reaction if none of the surface is using dirichlet BC
-    if (diffusion->closed_flag) diffusion->closed_diff(update->dt * nevery);
-    // diffusion->update_nus();
     // update concentration in bulk liquid
     diffusion->compute_bulk();
     // update grids
