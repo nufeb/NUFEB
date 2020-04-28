@@ -10,6 +10,7 @@ intallpath=$PWD/vtk-8.0
 echo $intallpath
 
 cmake \
+ -DBUILD_TESTING=OFF \
  -DCMAKE_INSTALL_PREFIX:PATH=$intallpath ../
 
 make -j4
