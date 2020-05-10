@@ -508,7 +508,7 @@ int FixKinetics::position(int i) {
   int pos = xpos + ypos * subn[0] + zpos * subn[0] * subn[1];
 
   if (pos >= bgrids) {
-    printf("Too big! pos=%d   size = %i\n", pos, bgrids);
+    printf("Cannot find grid index for atom[%i]: position=%i bgrids=%i \n", i,  pos, bgrids);
   }
 
   return pos;

@@ -31,20 +31,20 @@ class FixUtilities : public Fix {
   int setmask();
   void init();
   virtual void post_force(int);
-  void get_floc (int, std::vector<int>&);
-  void neighbor_list ();
 
  private:
 
   int nall;
   int *visit;
   double fourThirdsPI;
-  std::vector<bigint> id;
+  std::vector<bigint> floc_tags;
   FILE* pFile;
 
   std::vector< std::vector<int> > list;
 
-//  class NeighList *list;
+  void get_floc (int, std::vector<int>&);
+  void neighbor_list (double**, double*);
+  void comunicator (int*, double*, double*);
 };
 
 }

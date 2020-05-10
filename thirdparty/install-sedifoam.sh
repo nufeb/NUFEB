@@ -11,7 +11,7 @@ echo "  1) Ubuntu14.x/Ubuntu16.x"
 echo "  2) Ubuntu18.x"
 echo "  3) Centos"
 echo "  4) Mac" 
-echo "  5) Other (use local openmpi, this will take a while)" 
+echo "  5) Other (install openmpi locally, this will take a while)" 
 echo "*******************************************"
 read n
 
