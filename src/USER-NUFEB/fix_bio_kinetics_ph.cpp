@@ -143,8 +143,8 @@ void FixKineticsPH::init_keq() {
   double **nugibbs_coeff = bio->nugibbs_coeff;
 
   for (int i = 1; i < nnus + 1; i++) {
-    for (int j = 0; j < 4; j++) {
-      int k = (j == 3) ? j : j+1;
+    for (int j = 0; j < 5; j++) {
+      int k = (j == 4) ? j : j+1;
 
       if (nugibbs_coeff[i][k] == INF || nugibbs_coeff[i][j] == INF) {
         keq[i][j] = 0;
