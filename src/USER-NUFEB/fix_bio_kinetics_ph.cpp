@@ -115,9 +115,8 @@ void FixKineticsPH::init() {
   if (keq == NULL) {
     keq = memory->create(keq, nnus + 1, 4, "kinetics/ph:keq");
     init_keq();
+    compute_activity(0, kinetics->ngrids, iph);
   }
-  
-  compute_activity(0, kinetics->ngrids, iph);
 }
 
 /* ---------------------------------------------------------------------- */
