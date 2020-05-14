@@ -313,7 +313,6 @@ int *FixKineticsDiffusion::diffusion(int *nuConv, int iter, double diff_dt) {
   int nnus = bio->nnu;
   this->diff_dt = diff_dt;
   double **nur = kinetics->nur;
-  double **extnur = kinetics->extnur;
   double **nus = kinetics->nus;
   double *nubs = kinetics->nubs;
   double **ini_nus = bio->ini_nus;
@@ -355,7 +354,7 @@ int *FixKineticsDiffusion::diffusion(int *nuConv, int iter, double diff_dt) {
         if (ghost[grid] == REGULAR) {
           count++;
           int ind = get_index(grid);
-          double nur_ = (unit == KG) ? nur[i][ind] + extnur[i][ind] : (nur[i][ind] + extnur[i][ind]) * 1000;
+          double nur_ = (unit == KG) ? nur[i][ind] : nur[i][ind] * 1000;
           double diff_coeff;
 
           if (dcflag) diff_coeff = grid_diff_coeff[i][grid];

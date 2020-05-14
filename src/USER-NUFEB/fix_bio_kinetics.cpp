@@ -191,7 +191,6 @@ FixKinetics::~FixKinetics() {
   memory->destroy(grid_yield);
   memory->destroy(activity);
   memory->destroy(nur);
-  memory->destroy(extnur);
   memory->destroy(nus);
   memory->destroy(nubs);
   memory->destroy(gibbs_cata);
@@ -274,7 +273,6 @@ void FixKinetics::init() {
     nuconv = new int[nnus + 1]();
     nus = memory->create(nus, nnus + 1, ngrids, "kinetics:nus");
     nur = memory->create(nur, nnus + 1, ngrids, "kinetics:nur");
-    extnur = memory->create(extnur, nnus + 1, ngrids, "kinetics:extnur");
     nubs = memory->create(nubs, nnus + 1, "kinetics:nubs");
     grid_yield = memory->create(grid_yield, ntypes + 1, ngrids, "kinetic:grid_yield");
     activity = memory->create(activity, nnus + 1, 5, ngrids, "kinetics:activity");
@@ -325,7 +323,6 @@ void FixKinetics::init_param() {
     for (int i = 0; i <= bio->nnu; i++) {
       if (bio->ini_nus != NULL) nus[i][j] = bio->ini_nus[i][0];
       nur[i][j] = 0;
-      extnur[i][j] = 0;
 
       activity[i][0][j] = 0;
       activity[i][1][j] = 0;
@@ -615,7 +612,6 @@ void FixKinetics::resize(const Subgrid<double, 3> &subgrid) {
   update_bgrids();
   nus = memory->grow(nus, nnus + 1, ngrids, "kinetics:nus");
   nur = memory->grow(nur, nnus + 1, ngrids, "kinetics:nur");
-  extnur = memory->grow(extnur, nnus + 1, ngrids, "kinetics:extnur");
   if (energy) {
     grid_yield = memory->grow(grid_yield, ntypes + 1, ngrids, "kinetic:grid_yield");
     activity = memory->grow(activity, nnus + 1, 5, ngrids, "kinetics:activity");
