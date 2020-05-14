@@ -366,8 +366,7 @@ void FixKinetics::integration() {
   // update grid biomass to calculate diffusion coeff
   if (diffusion != NULL) {
     if (diffusion->dcflag) diffusion->update_diff_coeff();
-    if (diffusion->closed_flag) diffusion->closed_diff(update->dt * nevery);
-    while (!diffusion->closed_flag && !converge) {
+    while (!converge) {
       converge = true;
 
       // solve for reaction term, no growth happens here
@@ -385,7 +384,10 @@ void FixKinetics::integration() {
       iteration++;
 
       // solve for diffusion and advection
-      nuconv = diffusion->diffusion(nuconv, iteration, diff_dt);
+      if (diffusion->closed_flag)
+	diffusion->closed_diff(update->dt * nevery);
+      else
+	nuconv = diffusion->diffusion(nuconv, iteration, diff_dt);
 
       // check for convergence
       for (int i = 1; i <= nnus; i++) {
@@ -396,7 +398,7 @@ void FixKinetics::integration() {
 	}
       }
 
-      if (niter > 0 && iteration >= niter)
+      if (niter > 0 && iteration >= niter || diffusion->closed_flag)
 	converge = true;
     }
 
@@ -414,13 +416,8 @@ void FixKinetics::integration() {
   reset_nur();
 
   // microbe growth
-  if (energy != NULL) {
-    if (diffusion->closed_flag) {
-      ph->solve_ph();
-      thermo->thermo(update->dt * devery);
-    }
+  if (energy != NULL)
     energy->growth(update->dt * nevery, grow_flag);
-  }
   if (monod != NULL)
     monod->growth(update->dt * nevery, grow_flag);
 
