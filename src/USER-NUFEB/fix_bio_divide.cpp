@@ -20,7 +20,7 @@
 #include "domain.h"
 #include "error.h"
 #include "bio.h"
-#include "fix_bio_fluid.h"
+#include "fix_bio_sedifoam.h"
 #include "force.h"
 #include "input.h"
 #include "lmptype.h"
@@ -147,12 +147,12 @@ void FixDivide::init() {
   eps_density = input->variable->compute_equal(ivar[0]);
   div_dia = input->variable->compute_equal(ivar[1]);
 
-  nufebFoam = NULL;
+  sedifoam = NULL;
 
   int nfix = modify->nfix;
   for (int j = 0; j < nfix; j++) {
-    if (strcmp(modify->fix[j]->style, "nufebFoam") == 0) {
-      nufebFoam = static_cast<FixFluid *>(lmp->modify->fix[j]);
+    if (strcmp(modify->fix[j]->style, "sedifoam") == 0) {
+    	sedifoam = static_cast<FixSedifoam *>(lmp->modify->fix[j]);
       break;
     }
   }
@@ -163,7 +163,7 @@ void FixDivide::post_integrate() {
     return;
   if (update->ntimestep % nevery)
     return;
-  if (nufebFoam != NULL && nufebFoam->demflag)
+  if (sedifoam != NULL && sedifoam->demflag)
     return;
   if (demflag)
     return;

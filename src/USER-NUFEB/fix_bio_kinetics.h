@@ -53,6 +53,7 @@ class FixKinetics : public Fix, public DecompGrid<FixKinetics> {
 
   double **nus;                    // nutrient concentration [nutrient][grid]
   double **nur;                    // nutrient consumption [nutrient][grid]
+  double **extnur;                 // external nutrient consumption [nutrient][grid]
   double *nubs;                    // concentration in boundary layer [nutrient]
   double **fv;                     // velocity field [velo][grid]
   double **grid_yield;             // grid yield [type][grid]
@@ -88,7 +89,7 @@ class FixKinetics : public Fix, public DecompGrid<FixKinetics> {
   class FixKineticsMonod *monod;
   class FixKineticsPH *ph;
   class FixKineticsThermo *thermo;
-  class FixFluid *nufebfoam;
+  class FixSedifoam *sedifoam;
 
   void init_param();
   void integration();
@@ -122,10 +123,10 @@ class FixKinetics : public Fix, public DecompGrid<FixKinetics> {
 	  *result++ = gibbs_anab[i][*it];
 	}
       }
-      if (nufebfoam) {
-	for (int i = 0; i < 3; i++) {
-	  *result++ = fv[i][*it];
-	}
+    if (sedifoam) {
+		for (int i = 0; i < 3; i++) {
+		  *result++ = fv[i][*it];
+		}
       }
     }
     return result;
@@ -149,7 +150,7 @@ class FixKinetics : public Fix, public DecompGrid<FixKinetics> {
 	  gibbs_anab[i][*it] = *input++;
 	}
       }
-      if (nufebfoam) {
+      if (sedifoam) {
 	for (int i = 0; i < 3; i++) {
 	  fv[i][*it] = *input++;
 	}

@@ -36,7 +36,7 @@
 #include "fix_bio_kinetics_energy.h"
 #include "fix_bio_kinetics_monod.h"
 #include "comm.h"
-#include "fix_bio_fluid.h"
+#include "fix_bio_sedifoam.h"
 #include "compute.h"
 #include "compute_bio_height.h"
 #include "compute_bio_rough.h"
@@ -191,6 +191,7 @@ FixKinetics::~FixKinetics() {
   memory->destroy(grid_yield);
   memory->destroy(activity);
   memory->destroy(nur);
+  memory->destroy(extnur);
   memory->destroy(nus);
   memory->destroy(nubs);
   memory->destroy(gibbs_cata);
@@ -230,7 +231,7 @@ void FixKinetics::init() {
   ph = NULL;
   thermo = NULL;
   monod = NULL;
-  nufebfoam = NULL;
+  sedifoam = NULL;
 
   int nfix = modify->nfix;
   for (int j = 0; j < nfix; j++) {
@@ -244,8 +245,8 @@ void FixKinetics::init() {
       thermo = static_cast<FixKineticsThermo *>(lmp->modify->fix[j]);
     } else if (strcmp(modify->fix[j]->style, "kinetics/growth/monod") == 0) {
       monod = static_cast<FixKineticsMonod *>(lmp->modify->fix[j]);
-    } else if (strcmp(modify->fix[j]->style, "nufebFoam") == 0) {
-      nufebfoam = static_cast<FixFluid *>(lmp->modify->fix[j]);
+    } else if (strcmp(modify->fix[j]->style, "sedifoam") == 0) {
+    	sedifoam = static_cast<FixSedifoam *>(lmp->modify->fix[j]);
     }
   }
 
@@ -273,6 +274,7 @@ void FixKinetics::init() {
     nuconv = new int[nnus + 1]();
     nus = memory->create(nus, nnus + 1, ngrids, "kinetics:nus");
     nur = memory->create(nur, nnus + 1, ngrids, "kinetics:nur");
+    extnur = memory->create(extnur, nnus + 1, ngrids, "kinetics:extnur");
     nubs = memory->create(nubs, nnus + 1, "kinetics:nubs");
     grid_yield = memory->create(grid_yield, ntypes + 1, ngrids, "kinetic:grid_yield");
     activity = memory->create(activity, nnus + 1, 5, ngrids, "kinetics:activity");
@@ -284,7 +286,7 @@ void FixKinetics::init() {
 
     init_param();
   }
-  
+
   // Fitting initial domain decomposition to the grid 
   for (int i = 0; i < comm->procgrid[0]; i++) {
     int n = nx * i * 1.0 / comm->procgrid[0];
@@ -323,6 +325,7 @@ void FixKinetics::init_param() {
     for (int i = 0; i <= bio->nnu; i++) {
       if (bio->ini_nus != NULL) nus[i][j] = bio->ini_nus[i][0];
       nur[i][j] = 0;
+      extnur[i][j] = 0;
 
       activity[i][0][j] = 0;
       activity[i][1][j] = 0;
@@ -342,7 +345,7 @@ void FixKinetics::pre_force(int vflag) {
     flag = false;
   if (update->ntimestep % nevery)
     flag = false;
-  if (nufebfoam != NULL && nufebfoam->demflag)
+  if (sedifoam != NULL && sedifoam->demflag)
     flag = false;
   if (demflag)
     flag = false;
@@ -524,7 +527,7 @@ int FixKinetics::position(int i) {
   int pos = xpos + ypos * subn[0] + zpos * subn[0] * subn[1];
 
   if (pos >= bgrids) {
-    printf("Too big! pos=%d   size = %i\n", pos, bgrids);
+    printf("Cannot find grid index for atom[%i]: position=%i bgrids=%i \n", i,  pos, bgrids);
   }
 
   return pos;
@@ -580,7 +583,7 @@ int FixKinetics::get_elem_per_cell() const {
     result += 5 * bio->nnu; // qGas + activity
     result += 3 * atom->ntypes; // gYield + DRGCat + DRGAn 
   }
-  if (nufebfoam) {
+  if (sedifoam) {
     result += 3; // fV
   }
   return result;
@@ -612,6 +615,7 @@ void FixKinetics::resize(const Subgrid<double, 3> &subgrid) {
   update_bgrids();
   nus = memory->grow(nus, nnus + 1, ngrids, "kinetics:nus");
   nur = memory->grow(nur, nnus + 1, ngrids, "kinetics:nur");
+  extnur = memory->grow(extnur, nnus + 1, ngrids, "kinetics:extnur");
   if (energy) {
     grid_yield = memory->grow(grid_yield, ntypes + 1, ngrids, "kinetic:grid_yield");
     activity = memory->grow(activity, nnus + 1, 5, ngrids, "kinetics:activity");
@@ -619,7 +623,7 @@ void FixKinetics::resize(const Subgrid<double, 3> &subgrid) {
     gibbs_anab = memory->grow(gibbs_anab, ntypes + 1, ngrids, "kinetics:gibbs_anab");
     sh = memory->grow(sh, ngrids, "kinetics:sh");
   }
-  if (nufebfoam) {
+  if (sedifoam) {
     fv = memory->grow(fv, 3, ngrids, "kinetcis:fV");
   }
   if (monod != NULL)
