@@ -1,0 +1,77 @@
+  Granular Flow Simulation 
+
+       0 atoms 
+       5 atom types 
+       5 nutrients
+
+   0.000000e-04   1e-04  xlo xhi 
+   0.000000e-04   1e-04  ylo yhi 
+   0.000000e-04   1e-04 zlo zhi 
+
+ Atoms
+
+ Nutrients
+
+     1 sub l 3e-3 3e-3 3e-3 3e-3 3e-3 3e-3 3e-3
+     2 o2 l 1e-2 1e-2 1e-2 1e-2 1e-2 1e-2 1e-2
+     3 no2 l 1e-20 1e-20 1e-20 1e-20 1e-20 1e-20 1e-20
+     4 no3 l 1e-20 1e-20 1e-20 1e-20 1e-20 1e-20 1e-20
+     5 nh4 l 1e-2 1e-2 1e-2 1e-2 1e-2 1e-2 1e-2 
+
+ Diffusion Coeffs
+    
+     sub 1.1574e-9
+     o2 2.3e-9
+     no2 1.85e-9
+     no3 1.85e-9
+     nh4 1.97e-9
+
+ Type Name
+
+     1 het
+     2 aob
+     3 nob
+     4 eps
+     5 dead
+
+ Ks
+     
+     het 4e-3 2e-4 0.0003 0.0003 0
+     aob 0 5e-4 0 0 1e-3
+     nob 0 6.8e-4 1.3e-3 0 0
+     eps 0 0 0 0 0
+     dead 0 0 0 0 0
+
+Growth Rate
+
+     het 0.000069
+     aob 0.000023727
+     nob 0.000016782
+     eps 0
+     dead 0
+
+ Yield
+    
+     het 0.61
+     aob 0.15
+     nob 0.041
+     eps 0.18
+     dead 0
+
+ Maintenance
+ 
+     het 0.000003694
+     aob 0.000001505
+     nob 0.000000694
+     eps 0
+     dead 0
+
+ Decay
+
+     het 0.000000917
+     aob 0.00000127314
+     nob 0.00000127314
+     eps 0.00000196759
+     dead 0
+
+

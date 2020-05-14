@@ -1,0 +1,188 @@
+ Granular Flow Simulation
+
+       0 atoms
+       4 atom types
+       14 nutrients
+
+   0.0   1e-04  xlo xhi
+   0.0   2e-05  ylo yhi
+   0.0   3.0e-04  zlo zhi
+
+ Atoms
+
+ Nutrients
+
+     1 glu l 5.21e-04 5.21e-04 5.21e-04 5.21e-04 5.21e-04 5.21e-04 5.21e-04
+     2 ach l 1.00e-05 1.00e-05 1.00e-05 1.00e-05 1.00e-05 1.00e-05 1.00e-05
+     3 nh3 l 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04 
+     4 ch4 l 1.56e-10 1.56e-10 1.56e-10 1.56e-10 1.56e-10 1.56e-10 1.56e-10 
+     5 co2 l 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04 
+     6 h2 l 6.25e-7 6.25e-7 6.25e-7 6.25e-7 6.25e-7 6.25e-7 6.25e-7 
+     7 gco2 g 0 0 0 0 0 0 0
+     8 gch4 g 0 0 0 0 0 0 0
+     9 gh2 g 0 0 0 0 0 0 0
+     10 gn2 g 1 1 1 1 1 1 1
+     11 h2o l 1 1 1 1 1 1 1
+     12 h l 0 0 0 0 0 0 0
+     13 na l 1e-5 1e-5 1e-5 1e-5 1e-5 1e-5 1e-5
+     14 cl l 1e-5 1e-5 1e-5 1e-5 1e-5 1e-5 1e-5
+
+ Type Name
+
+     1 xglu_ac
+     2 xco2_ch4
+     3 xac_ch4
+     4 dead
+
+ Diffusion Coeffs
+
+     glu 6.69444e-10
+     ach 1.288889e-9
+     nh3 1.638889e-9
+     ch4 1.488889e-9
+     co2 1.186111e-9
+     h2 4.5e-9
+     gco2 0
+     gch4 0
+     gh2 0
+     gn2 0
+     h2o 0
+     h 0
+     na 1.3e-9
+     cl 2.03e-9
+
+ Ks
+
+     xglu_ac 1.44e-3 0 0 0 0 0 0 0 0 0 0 0 0 0
+     xco2_ch4 0 0 0 0 0 8.65e-04 0 0 0 0 0 0 0 0
+     xac_ch4 0 5e-5 0 0 0 0 0 0 0 0 0 0 0 0
+     dead 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+
+ Consumption Rate
+
+     xglu_ac 0.000088039
+     xco2_ch4 0.00016055
+     xac_ch4 0.000431235
+     dead 0
+
+ Yield
+
+     xglu_ac 0.6562732997
+     xco2_ch4 0.07467279
+     xac_ch4 0.02774346
+     dead 0
+
+ Maintenance
+
+     xglu_ac 0.000000914
+     xco2_ch4 0.000002636
+     xac_ch4 0.000000855
+     dead 0
+
+ Electron Donor
+
+     xglu_ac glu
+     xco2_ch4 h2
+     xac_ch4 ach
+     dead h
+
+ Decay
+
+     xglu_ac 0.000009259
+     xco2_ch4 0.000003472
+     xac_ch4 0.000000579
+     dead 0 
+
+ Catabolism Coeffs
+
+     xglu_ac -1 2 0 0 2 4 0 0 0 0 -4 4 0 0
+     xco2_ch4  0 0 0 0.25 -0.25 -1 0 0 0 0 0.75 -0.25 0 0
+     xac_ch4 0 -1 0 1 1 0 0 0 0 0 -1 0 0 0
+     dead 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+
+ Anabolism Coeffs
+
+     xglu_ac -0.175 0 -0.2 0 0.05 0 0 0 0 0 0.4 0.05 0 0
+     xco2_ch4 0 0 -0.2 0 -1 -2.1 0 0 0 0 2.5 -1 0 0
+     xac_ch4 0 -0.525 -0.2 0 0.05 0 0 0 0 0 0.4 -0.475 0 0
+     dead 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+
+ Decay Coeffs
+
+     xglu_ac 0.1666666667 0 0 0 0 0 0 0 0 0 0 0 0 0
+     xco2_ch4 0 0 0 0 1 0 0 0 0 0 0 0 0 0
+     xac_ch4 0 1 0 0 0 0 0 0 0 0 0 0 0 0
+     dead 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+
+ Nutrient Energy
+
+glu	inf	-9.16E+02	inf	inf	inf 2
+ach	inf	-3.97E+02	-3.69E+02	inf	inf 3
+nh3	inf	-7.94E+01	-2.66E+01	inf	inf 3
+ch4	inf	-3.44E+01	inf	inf	inf 2 
+co2	-386.00	-623.16	-586.85	-527.80	inf 3
+h2	inf	1.76E+01	inf	inf	inf 2
+gco2	inf	-3.94E+02	inf	inf	inf 2
+gch4	inf	-5.08E+01	inf	inf	inf 2
+gh2	inf	0.00E+00	inf	inf	inf 2
+gn2	inf	0.00E+00	inf	inf	inf 2
+h2o	inf	-2.37E+02	-1.57E+02	inf	inf 2
+h	inf	0	inf	inf	inf 2
+na	inf	0	inf	inf	inf 2
+cl	inf	0	inf	inf	inf 2
+
+ Type Energy
+
+    xglu_ac inf -67 inf inf inf 2
+    xco2_ch4 inf -67 inf inf inf 2
+    xac_ch4 inf -67 inf inf inf 2
+    dead  inf -67 inf inf inf 2
+
+ Dissipation
+
+    xglu_ac 236.05
+    xco2_ch4 700
+    xac_ch4 500
+    dead 0
+
+ Nutrient Charge
+  
+glu	na	0	na	na	na
+ach	na	0	-1	na	na
+nh3	na	1	0	na	na
+ch4	na	0	-1	na	na
+co2	0	0	-1	-2	na
+h2	na	0	na	na	na
+gco2	na	0	na	na	na
+gch4	na	0	na	na	na
+gh2	na	0	na	na	na
+gn2	na	0	na	na	na
+h2o	na	0	-1	na	na
+h	na	1	na	na	na
+na na 1 na na na 
+cl na -1 na na na
+
+ Type Charge
+  
+    xglu_ac na 0 na na na
+    xco2_ch4 na 0 na na na
+    xac_ch4 na 0 na na na 
+    dead na 0 na na na 
+                                                                                                           
+ Mass Transfer Coeffs
+
+     glu 0
+     ach 0 
+     nh3 0
+     ch4 0.000716667
+     co2 0.000555556
+     h2 0.000236944
+     gco2 0
+     gch4 0
+     gh2 0
+     gn2 0
+     h2o 0
+     h 0
+     na 0 
+     cl 0
+

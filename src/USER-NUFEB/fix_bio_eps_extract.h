@@ -47,7 +47,7 @@ class FixEPSExtract : public Fix {
 
   class RanPark *random;
   class AtomVecBio *avec;
-  class FixFluid *nufebFoam;
+  class FixSedifoam *sedifoam;
 };
 }
 

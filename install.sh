@@ -2,16 +2,16 @@
 cd ${0%/*} || exit 1 # Run from this directory
 
 echo "Installing NUFEB.."
-currentDir=$PWD
+rootDir=$PWD
 
 #### Copy package and lib files to LAMMPS directory #####
 echo "Copying packages to LAMMPS.."
-cp -rf $currentDir/src/* $currentDir/lammps/src/
-cp -rf $currentDir/lib/* $currentDir/lammps/lib/
+cp -rf $rootDir/src/* $rootDir/lammps/src/
+cp -rf $rootDir/lib/* $rootDir/lammps/lib/
 
 echo "Configuring Makefile.lammps.."
 
-cd $currentDir/lammps/lib/nufeb
+cd $rootDir/lammps/lib/nufeb
 cp Makefile.lammps_essential Makefile.lammps
 
 declare -i vtk_hdf=0
@@ -42,7 +42,7 @@ fi
 #### Build LAMMPS with NUFEB and VTK packages#####
 echo "Installing required packages.."
 
-cd $currentDir/lammps/src
+cd $rootDir/lammps/src
 make yes-user-nufeb
 make yes-granular
 
@@ -82,7 +82,16 @@ do
 done
 
 make -j4 mpi
+
+path=$rootDir/lammps/src
+if grep -q $path ~/.bashrc; then
+  echo -n
+else
+  echo "Writing path to .bashrc"
+  echo "export PATH=\$PATH:$path" >> ~/.bashrc
+fi
+
 exit 1
 
-#echo "Writing path to .bashrc"
-#echo "export PATH=\$PATH:$currentDir/lammps/src/" >> ~/.bashrc
+
+

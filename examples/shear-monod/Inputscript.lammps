@@ -4,7 +4,7 @@ atom_style	bio
 atom_modify	map array sort 1000 5.0e-7
 boundary	pp pp ff
 newton		off
-processors  4 1 1
+processors  * 1 1
 
 comm_modify	vel yes
 read_data_bio atom.in
@@ -61,19 +61,16 @@ compute myBiomass all biomass
 
 ##############Simulation outputs##############
 
-dump		id all custom 2000 snapshot.bubblemd id type diameter x y z
-#dump		du1 all vtk 2000 atom_*.vtu id type diameter x y z
-#dump		du2 all grid 2000 grid_%_*.vti con
+#dump		id all custom 2000 snapshot.bubblemd id type diameter x y z
+dump		du1 all vtk 2000 atom_*.vtu id type diameter x y z
+dump		du2 all grid 2000 grid_%_*.vti con
 thermo_style    custom step cpu atoms c_myNtypes[*]
 thermo		100
 thermo_modify	lost ignore
 
 ##############Define IBm Commands##############
 
-label       loopa
-variable    a loop 1
-
-fix k1 all kinetics 100 60 12 30 v_diffT v_layer niter 10000
+fix k1 all kinetics 100 60 12 30 v_diffT v_layer niter 5000
 fix kgm all kinetics/growth/monod v_EPSdens v_etaHET
 fix g1 all kinetics/diffusion v_tol pp pp nd kg
 fix d1 all divide 100 v_EPSdens v_divDia 31233
@@ -83,7 +80,6 @@ run 40000
 
 timestep 2.5
 
-unfix k1
 unfix kgm
 unfix g1
 unfix d1
@@ -91,10 +87,7 @@ unfix e1
 
 fix s1 all shear 1 v_viscosity v_shearRate v_height zx 0 800000
 
-run 300000
-
-next a
-jump SELF loopa
+run 200000
 
 
 

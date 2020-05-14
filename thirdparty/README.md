@@ -20,12 +20,4 @@ https://openfoamwiki.net/index.php/Installation/Linux/OpenFOAM-2.4.0 for the ins
 ### SediFoam
 A hybrid CFD-DEM solver for simulating microbial community in fluid dynamics. 
 
-> **NOTE**: A 'mpi.h no such file' error may occur in some Linux systems 
-due to the inconsistent openmpi path provided in */thirdparty/sediFoam/lammpsFoam/Make/options-* * files. 
-To resolve the problem, you can either correct the path in the files, 
-or use the following way to build the solver:
 
-> <pre>
-> ./install-openmpi.sh
-> ./install-sedifoam.sh --local-ompi
-> </pre>
