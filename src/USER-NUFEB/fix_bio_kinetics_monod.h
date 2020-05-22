@@ -34,14 +34,29 @@ class FixKineticsMonod : public Fix {
   int external_gflag;
 
  private:
-  char **var;
-  int *ivar;
+  double *mu;
+  double *decay;
+  double *maintain;
+  double *yield;
+  double **ks;
+
+  int ntypes;
+
+  double *radius;
+  double *rmass;
+  double *outer_mass;
+  double *outer_radius;
+
+  double **nus;
+  double **nur;
+
+  double **xdensity;
 
   int isub, io2, inh4, ino2, ino3;  // nutrient index
-  int idead, ieps;                  // type id for EPS and DEAD
+  int ieps;			    // eps index
 
   int *species;                     // species index 0 = unknow, 1 = het, 2 = aob, 3 = nob, 4 = eps, 5 = dead
-  double ***growrate;               // growth rate [type][2][grid]
+  double ***growrate;               // growth rate [type][epsflag][grid]
 
   double stepx, stepy, stepz;       // grids size
   double xlo,xhi,ylo,yhi,zlo,zhi;   // computational domain size
@@ -56,6 +71,14 @@ class FixKineticsMonod : public Fix {
 
   void init_param();
   void update_biomass(double***, double);
+
+  void growth_het(int, int);
+  void growth_aob(int, int);
+  void growth_nob(int, int);
+  void growth_eps(int, int);
+  void growth_dead(int, int);
+  void growth_ana(int, int);
+  void growth_com(int, int);
 };
 
 }

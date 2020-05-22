@@ -81,7 +81,6 @@ variable divDia equal 1.36e-6
 #variables used in fix kinetics 
 variable diffT equal 1e-4
 variable tol equal 5e-7
-variable etaHET equal 0.6
 variable layer equal 2e-5 
 
 #variables used in fix death
@@ -90,7 +89,7 @@ variable deadDia equal 5e-7
 ##############Define IBm Commands##############
 
 fix k1 all kinetics 1 25 25 25 v_diffT v_layer niter 20000
-fix kgm all kinetics/growth/monod v_EPSdens v_etaHET
+fix kgm all kinetics/growth/monod epsdens 30 etahet 0.6
 fix g1 all kinetics/diffusion v_tol pp pp nd kg bulk 2.31e-7 1.25e-3 0.1
 fix d1 all divide 1 v_EPSdens v_divDia 41341 demflag 0
 fix e1 HET eps_extract 1 v_EPSratio v_EPSdens 5234 demflag 0
@@ -113,7 +112,7 @@ thermo_modify   lost ignore
 
 ##############Define Bio-loop and DEM-subloop##############
 
-run 14400 pre no post no every 1 &
+run 240 pre no post no every 1 &
 "fix_modify k1 demflag 1" &
 "fix_modify d2 demflag 1" &
 "fix_modify d1 demflag 1" &

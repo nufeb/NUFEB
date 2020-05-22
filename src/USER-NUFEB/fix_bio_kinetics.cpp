@@ -245,7 +245,7 @@ void FixKinetics::init() {
     } else if (strcmp(modify->fix[j]->style, "kinetics/growth/monod") == 0) {
       monod = static_cast<FixKineticsMonod *>(lmp->modify->fix[j]);
     } else if (strcmp(modify->fix[j]->style, "sedifoam") == 0) {
-    	sedifoam = static_cast<FixSedifoam *>(lmp->modify->fix[j]);
+      sedifoam = static_cast<FixSedifoam *>(lmp->modify->fix[j]);
     }
   }
 

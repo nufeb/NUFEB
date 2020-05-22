@@ -31,9 +31,6 @@ variable kanc equal 50
 
 fix zwa all walladh v_kanc zplane  0.0  1e-04
 
-variable ke equal 5e+10
-#fix j1 all epsadh 1 v_ke 1
-
 ##############Define IBm Variables##############
 
 #variables used in fix eps_extract
@@ -46,7 +43,6 @@ variable divDia equal 1.36e-6
 #variables used in fix kinetics 
 variable diffT equal 1e-4
 variable tol equal 1e-6
-variable etaHET equal 0.6
 variable layer equal -1
 
 #variables used in fix death
@@ -56,7 +52,7 @@ variable deadDia equal 9e-7
 ##############Define IBm Commands##############
 
 fix k1 all kinetics 100 25 10 25 v_diffT v_layer niter 5000
-fix kgm all kinetics/growth/monod v_EPSdens v_etaHET
+fix kgm all kinetics/growth/monod epsdens 30
 fix g1 all kinetics/diffusion v_tol pp pp nd kg dcflag 2
 fix d1 all divide 100 v_EPSdens v_divDia 64564
 fix e1 HET eps_extract 100 v_EPSratio v_EPSdens 53453
@@ -66,14 +62,15 @@ fix e1 HET eps_extract 100 v_EPSratio v_EPSdens 53453
 compute myNtypes all ntypes
 compute myHeight all avg_height
 compute myRough all roughness
+compute myMass all biomass
 
 ##############Simulation Output##############
 
-dump		id all custom 1000 output.lammmps id type diameter x y z
+dump		id all custom 1000 output.lammps id type diameter x y z
 #dump		du1 all vtk 1000 atom_*.vtu id type diameter x y z
 #dump		du2 all grid 1000 grid_%_*.vti con
 dump            du3 all bio 1000 avg_height roughness
-thermo_style    custom step cpu atoms c_myNtypes[2] c_myNtypes[3] 
+thermo_style    custom step cpu atoms c_myNtypes[2] c_myNtypes[3] c_myMass[*]
 thermo		100
 thermo_modify	lost ignore
 

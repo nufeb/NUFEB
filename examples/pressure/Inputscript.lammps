@@ -59,7 +59,6 @@ variable divDia equal 1.36e-6
 #variables used in fix kinetics 
 variable diffT equal 1e-6
 variable tol equal 1e-6
-variable etaHET equal 0.6
 variable layer equal -1
 
 #variables used in fix death
@@ -69,7 +68,7 @@ variable deadDia equal 9e-7
 ##############Define IBm Commands##############
 
 fix k1 all kinetics 100 10 5 8 v_diffT v_layer niter 5000
-fix kgm all kinetics/growth/monod v_EPSdens v_etaHET
+fix kgm all kinetics/growth/monod epsdens 30
 fix g1 all kinetics/diffusion v_tol pp pp nd kg dcflag 2
 fix d1 all divide 100 v_EPSdens v_divDia 64564
 fix e1 HET eps_extract 100 v_EPSratio v_EPSdens 53453
@@ -83,9 +82,9 @@ compute myRough all roughness
 
 ##############Simulation Output##############
 
-dump		id all custom 100 output.lammmps id type radius x y z
-#dump		du1 all vtk 1000 atom_*.vtu id type diameter x y z
-#dump		du2 all grid 1000 grid_%_*.vti con
+dump		id all custom 100 output.lammps id type radius x y z
+dump		du1 all vtk 1000 atom_*.vtu id type diameter x y z
+dump		du2 all grid 1000 grid_%_*.vti con
 dump            du3 all bio 1000 avg_height roughness
 thermo_style    custom step cpu atoms c_myNtypes[*]
 thermo		100

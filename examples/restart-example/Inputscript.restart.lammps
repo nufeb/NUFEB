@@ -9,13 +9,11 @@ processors  * * 1
 comm_modify	vel yes
 
 read_data_bio atom.restart.in 
-read_bio_restart restart.1000
+read_bio_restart restart.40000
 
 group HET type 1
-group AOB type 2
-group NOB type 3
-group EPS type 4
-group DEAD type 5
+group EPS type 2
+group DEAD type 3
 
 neighbor	5e-7 bin
 neigh_modify	delay 0 one 5000
@@ -55,7 +53,6 @@ variable divDia equal 1.36e-6
 #variables used in fix kinetics 
 variable diffT equal 1e-4
 variable tol equal 1e-6
-variable etaHET equal 0.6
 variable layer equal -1
 
 #variables used in fix death
@@ -65,7 +62,7 @@ variable deadDia equal 9e-7
 ##############Define IBm Commands##############
 
 fix k1 all kinetics 100 30 12 30 v_diffT v_layer niter -1
-fix kgm all kinetics/growth/monod v_EPSdens v_etaHET
+fix kgm all kinetics/growth/monod epsdens 30
 fix g1 all kinetics/diffusion v_tol pp pp nd kg
 fix d1 all divide 100 v_EPSdens v_divDia 978595
 fix e1 HET eps_extract 100 v_EPSratio v_EPSdens 6274

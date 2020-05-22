@@ -51,9 +51,6 @@ fix zw all wall/gran hooke/history 2000 NULL 500.0 NULL 1.5 0 zplane  0.0  6e-04
 
 fix zwa all walladh v_kanc zplane  0.0   6e-04
 
-variable ke equal 5e+10
-#fix j1 all epsadh 1 v_ke 1
-
 ##############Define IBm Variables##############
 
 #EPS density, ratio variables and division diameter
@@ -62,7 +59,6 @@ variable EPSratio equal 1.25
 variable divDia equal 1e-5
 
 #kinetics variables
-variable etaHET equal 0.0
 variable diffT equal 1e-3
 variable tol equal 1e-5
 variable layer equal 0
@@ -70,7 +66,7 @@ variable layer equal 0
 ##############Define IBm Commands##############
 
 fix k1 all kinetics 1 40 3 60 v_diffT v_layer niter 5000 demflag 0
-fix kgm all kinetics/growth/monod v_EPSdens v_etaHET
+fix kgm all kinetics/growth/monod epsdens 30
 fix g1 all kinetics/diffusion v_tol pp pp nd kg bulk 2.31e-7 1.25e-3 0.1
 fix d1 all divide 1 v_EPSdens v_divDia 1235 demflag 0
 fix vf1 all verify 1 bm3 demflag 0

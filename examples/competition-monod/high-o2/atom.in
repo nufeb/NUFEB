@@ -2,11 +2,11 @@
 
        80 atoms 
        2 atom types 
-       5 nutrients
+       2 nutrients
 
    0.0   1.0e-04  xlo xhi 
    0.0   4.0e-05  ylo yhi 
-   0.0   1.0e-04  zlo zhi 
+   0.0   5.0e-05  zlo zhi 
 
  Atoms
 
@@ -95,9 +95,6 @@
 
      1 sub l 1e-20 1e-20 1e-20 1e-20 1e-20 1e-20 1e-20
      2 o2 l 1e-3 1e-3 1e-3 1e-3 1e-3 1e-3 1e-3
-     3 no2 l 1e-20 1e-20 1e-20 1e-20 1e-20 1e-20 1e-20
-     4 no3 l 1e-20 1e-20 1e-20 1e-20 1e-20 1e-20 1e-20
-     5 nh4 l 1e-20 1e-20 1e-20 1e-20 1e-20 1e-20 1e-20
 
  Type Name
 
@@ -105,17 +102,14 @@
      2 hety
 
  Diffusion Coeffs
-    
+
      sub 0
      o2 2e-9
-     no2 0
-     no3 0
-     nh4 0
 
  Ks
      
-     hety 0 3e-4 0 0 0
-     hetr 0 6e-4 0 0 0
+     hety 0 3e-4
+     hetr 0 6e-4
 
  Growth Rate
 

@@ -18,7 +18,6 @@
 #include <vector>
 
 #include "atom.h"
-#include "atom_vec_bio.h"
 #include "domain.h"
 #include "error.h"
 #include "force.h"
@@ -28,6 +27,7 @@
 #include "memory.h"
 
 #include "bio.h"
+#include "atom_vec_bio.h"
 #include "fix_bio_kinetics.h"
 #include "fix_bio_kinetics_monod.h"
 #include "modify.h"
@@ -42,40 +42,47 @@ using namespace MathConst;
 
 using namespace std;
 
+enum{HET, AOB, NOB, ANA, COM, EPS, DEAD};
 /* ---------------------------------------------------------------------- */
 
 FixKineticsMonod::FixKineticsMonod(LAMMPS *lmp, int narg, char **arg) :
     Fix(lmp, narg, arg) {
+
   avec = (AtomVecBio *) atom->style_match("bio");
   if (!avec)
     error->all(FLERR, "Fix kinetics requires atom style bio");
 
-  if (narg < 5)
+  if (narg < 3)
     error->all(FLERR, "Not enough arguments in fix kinetics/growth/monod command");
 
   species = NULL;
   growrate = NULL;
   
-  var = new char*[2];
-  ivar = new int[2];
-
-  for (int i = 0; i < 2; i++) {
-    int n = strlen(&arg[3 + i][2]) + 1;
-    var[i] = new char[n];
-    strcpy(var[i], &arg[3 + i][2]);
-  }
+  eps_dens = 30;
+  eta_het = 0;
 
   kinetics = NULL;
 
   external_gflag = 1;
 
-  int iarg = 5;
+  int iarg = 3;
+
   while (iarg < narg){
     if (strcmp(arg[iarg],"gflag") == 0) {
       external_gflag = force->inumeric(FLERR, arg[iarg+1]);
       if (external_gflag != 0 && external_gflag != 1)
         error->all(FLERR, "Illegal fix kinetics/growth/monod command: gflag");
       iarg += 2;
+    } else if (strcmp(arg[iarg],"epsdens") == 0){
+	eps_dens = force->numeric(FLERR, arg[iarg+1]);
+	if (eps_dens <= 0)
+	  error->all(FLERR, "Illegal fix kinetics/growth/monod command: eps_dens cannot be less or equal than zero");
+	iarg += 2;
+    } else if (strcmp(arg[iarg],"etahet") == 0){
+	eta_het = force->numeric(FLERR, arg[iarg+1]);
+	if (eta_het < 0)
+	  error->all(FLERR, "Illegal fix kinetics/growth/monod command: eta_het cannot be less than zero");
+	iarg += 2;
     } else
       error->all(FLERR, "Illegal fix kinetics/growth/monod command");
   }
@@ -84,13 +91,6 @@ FixKineticsMonod::FixKineticsMonod(LAMMPS *lmp, int narg, char **arg) :
 /* ---------------------------------------------------------------------- */
 
 FixKineticsMonod::~FixKineticsMonod() {
-  int i;
-  for (i = 0; i < 2; i++) {
-    delete[] var[i];
-  }
-  delete[] var;
-  delete[] ivar;
-
   memory->destroy(species);
   memory->destroy(growrate);
 }
@@ -109,14 +109,6 @@ void FixKineticsMonod::init() {
   if (!atom->radius_flag)
     error->all(FLERR, "Fix requires atom attribute diameter");
 
-  for (int n = 0; n < 2; n++) {
-    ivar[n] = input->variable->find(var[n]);
-    if (ivar[n] < 0)
-      error->all(FLERR, "Variable name for fix kinetics/monod does not exist");
-    if (!input->variable->equalstyle(ivar[n]))
-      error->all(FLERR, "Variable for fix kinetics/monod is invalid style");
-  }
-
   // register fix kinetics with this class
   kinetics = NULL;
 
@@ -130,9 +122,6 @@ void FixKineticsMonod::init() {
 
   if (kinetics == NULL)
     lmp->error->all(FLERR, "fix kinetics command is required for running IbM simulation");
-
-  eps_dens = input->variable->compute_equal(ivar[0]);
-  eta_het = input->variable->compute_equal(ivar[1]);
 
   bio = kinetics->bio;
 
@@ -157,7 +146,7 @@ void FixKineticsMonod::init() {
     species = memory->create(species, atom->ntypes+1, "monod:species");
     growrate = memory->create(growrate, atom->ntypes+1, 2, kinetics->ngrids, "monod:growrate");
   }
-  
+
   //Get computational domain size
   if (domain->triclinic == 0) {
     xlo = domain->boxlo[0];
@@ -185,13 +174,19 @@ void FixKineticsMonod::init() {
 }
 
 /* ----------------------------------------------------------------------
- initialize growth parameters
+ initialize parameters for monod growth
  ------------------------------------------------------------------------- */
 void FixKineticsMonod::init_param() {
-  isub = io2 = inh4 = ino2 = ino3 = 0;
-  ieps = idead = 0;
+  mu = bio->mu;
+  decay = bio->decay;
+  maintain = bio->maintain;
+  yield = bio->yield;
+  ks = bio->ks;
+  ntypes = atom->ntypes;
 
-  // initialize nutrient
+  isub = 0; io2 = 0; inh4 = 0; ino2 = 0; ino3 = 0;
+
+  // initialize nutrients
   for (int nu = 1; nu <= bio->nnu; nu++) {
     if (strcmp(bio->nuname[nu], "sub") == 0)
       isub = nu;
@@ -203,155 +198,261 @@ void FixKineticsMonod::init_param() {
       ino2 = nu;
     else if (strcmp(bio->nuname[nu], "no3") == 0)
       ino3 = nu;
-    else
-      error->all(FLERR, "unknow nutrient in fix_kinetics/kinetics/monod");
   }
 
-  if (isub == 0)
-    error->all(FLERR, "fix_kinetics/kinetics/monod requires nutrient sub (substrate)");
-  if (io2 == 0)
-    error->all(FLERR, "fix_kinetics/kinetics/monod requires nutrient o2");
-  if (inh4 == 0)
-    error->all(FLERR, "fix_kinetics/kinetics/monod requires nutrient nh4");
-  if (ino2 == 0)
-    error->all(FLERR, "fix_kinetics/kinetics/monod requires nutrient no2");
-  if (ino3 == 0)
-    error->all(FLERR, "fix_kinetics/kinetics/monod requires nutrient no3");
-
-  // initialize type
-  for (int i = 1; i <= atom->ntypes; i++) {
-    if (strcmp(bio->tname[i], "eps") == 0) {
-      species[i] = 4;
+  // initialize species
+  for (int i = 1; i <= ntypes; i++) {
+    if (strcmp(bio->tname[i], "eps" || strcmp(name, "EPS") == 0) == 0) {
+      species[i] = EPS;
       ieps = i;
-    } else if (strcmp(bio->tname[i], "dead") == 0) {
-      species[i] = 5;
-      idead = i;
-    } else {
-      // take first three char
+    } else if (strcmp(bio->tname[i], "dead" || strcmp(name, "DEAD") == 0) == 0)
+      species[i] = DEAD;
+    else {
+      // take the first three chars from type name;
       char *name = new char[4];
       strncpy(name, bio->tname[i], 3);
       name[3] = 0;
 
-      if (strcmp(name, "het") == 0)
-        species[i] = 1;
-      else if (strcmp(name, "aob") == 0)
-        species[i] = 2;
-      else if (strcmp(name, "nob") == 0)
-        species[i] = 3;
-      else
-        error->all(FLERR, "unknow species in fix_kinetics/kinetics/monod");
+      if (strcmp(name, "het") == 0 || strcmp(name, "HET") == 0) {
+        species[i] = HET;
+        if (isub == 0) error->all(FLERR, "het growth requires nutrient 'sub' (substrate) to be defined in Nutrients section");
+        if (io2 == 0) error->all(FLERR, "het growth requires nutrient 'o2' to be defined in Nutrients section");
+        if (eta_het > 0) {
+          if (ino2 == 0) error->all(FLERR, "het anaerobic growth requires nutrient 'no2' to be defined in Nutrients section");
+          if (ino3 == 0) error->all(FLERR, "het anaerobic growth requires nutrient 'no3' to be defined in Nutrients section");
+        }
+      } else if (strcmp(name, "aob") == 0 || strcmp(name, "AOB") == 0) {
+        species[i] = AOB;
+        if (inh4 == 0) error->all(FLERR, "aob growth requires nutrient 'nh4' to be defined in Nutrients section");
+        if (ino2 == 0) error->all(FLERR, "aob growth requires nutrient 'no2' to be defined in Nutrients section");
+        if (io2 == 0) error->all(FLERR, "aob growth requires nutrient 'o2' to be defined in Nutrients section");
+      } else if (strcmp(name, "nob") == 0 || strcmp(name, "NOB") == 0) {
+        species[i] = NOB;
+        if (ino2 == 0) error->all(FLERR, "nob growth requires nutrient 'no2' to be defined in Nutrients section");
+        if (ino3 == 0) error->all(FLERR, "nob growth requires nutrient 'no3' to be defined in Nutrients section");
+        if (io2 == 0) error->all(FLERR, "nob growth requires nutrient 'o2' to be defined in Nutrients section");
+      } else if (strcmp(name, "ana") == 0 || strcmp(name, "ANA") == 0) {
+        species[i] = ANA;
+        if (inh4 == 0) error->all(FLERR, "anammox growth requires nutrient 'nh4' to be defined in Nutrients section");
+        if (ino2 == 0) error->all(FLERR, "anammox growth requires nutrient 'no2' to be defined in Nutrients section");
+        if (io2 == 0) error->all(FLERR, "anammox growth requires nutrient 'o2' to be defined in Nutrients section");
+      } else if (strcmp(name, "com") == 0 || strcmp(name, "COM") == 0) {
+        species[i] = COM;
+        if (inh4 == 0) error->all(FLERR, "comammox growth requires nutrient 'nh4' to be defined in Nutrients section");
+        if (ino3 == 0) error->all(FLERR, "comammox growth requires nutrient 'no3' to be defined in Nutrients section");
+        if (io2 == 0) error->all(FLERR, "comammox growth requires nutrient 'o2' to be defined in Nutrients section");
+      } else {
+	error->warning(FLERR, "unrecognized species found in fix_kinetics/kinetics/monod:");
+	error->warning(FLERR, bio->tname[i]);
+      }
 
       delete[] name;
     }
   }
-
-  if (ieps == 0)
-    (error->warning(FLERR, "EPS is not defined in fix_kinetics/kinetics/monod"));
 }
 
+/* ---------------------------------------------------------------------- */
 void FixKineticsMonod::grow_subgrid(int n) {
-  growrate = memory->create(growrate, atom->ntypes + 1, 2, n, "monod:growrate");
+  growrate = memory->create(growrate, atom->ntypes+1, 2, n, "monod:growrate");
 }
 
 /* ----------------------------------------------------------------------
  metabolism and atom update
  ------------------------------------------------------------------------- */
 void FixKineticsMonod::growth(double dt, int gflag) {
-  int *mask = atom->mask;
-  int nlocal = atom->nlocal;
-  int *type = atom->type;
-  int ntypes = atom->ntypes;
+  radius = atom->radius;
+  rmass = atom->rmass;
+  outer_mass = avec->outer_mass;
+  outer_radius = avec->outer_radius;
 
-  double *radius = atom->radius;
-  double *rmass = atom->rmass;
-  double *outer_mass = avec->outer_mass;
-  double *outer_radius = avec->outer_radius;
+  nus = kinetics->nus;
+  nur = kinetics->nur;
 
-  double *mu = bio->mu;
-  double *decay = bio->decay;
-  double *maintain = bio->maintain;
-  double *yield = bio->yield;
-  double **ks = bio->ks;
+  xdensity = kinetics->xdensity;
 
-  double **nus = kinetics->nus;
-  double **nur = kinetics->nur;
-
-  double **xdensity = kinetics->xdensity;
-
-  int *nuconv = kinetics->nuconv;
-  double yield_eps = 0;
-
-  if (ieps != 0) yield_eps = yield[ieps];
-
+  //update growth rate
   for (int grid = 0; grid < kinetics->bgrids; grid++) {
-    //empty grid is not considered
+    //grid without atom is not considered
     if(!xdensity[0][grid]) continue;
 
     for (int i = 1; i <= ntypes; i++) {
       int spec = species[i];
 
-      // HET monod model
-      if (spec == 1) {
-        double R1 = mu[i] * (nus[isub][grid] / (ks[i][isub] + nus[isub][grid])) * (nus[io2][grid] / (ks[i][io2] + nus[io2][grid]));
-        double R4 = eta_het * mu[i] * (nus[isub][grid] / (ks[i][isub] + nus[isub][grid])) * (nus[ino3][grid] / (ks[i][ino3] + nus[ino3][grid])) * (ks[i][io2] / (ks[i][io2] + nus[io2][grid]));
-        double R5 = eta_het * mu[i] * (nus[isub][grid] / (ks[i][isub] + nus[isub][grid])) * (nus[ino2][grid] / (ks[i][ino2] + nus[ino2][grid])) * (ks[i][io2] / (ks[i][io2] + nus[io2][grid]));
-        double R6 = decay[i];
-
-        double R10 = maintain[i] * (nus[io2][grid] / (ks[i][io2] + nus[io2][grid]));
-        double R13 = (1 / 2.86) * maintain[i] * eta_het * (nus[ino3][grid] / (ks[i][ino3] + nus[ino3][grid])) * (ks[i][io2] / (ks[i][io2] + nus[io2][grid]));
-        double R14 = (1 / 1.17) * maintain[i] * eta_het * (nus[ino2][grid] / (ks[i][ino2] + nus[ino2][grid])) * (ks[i][io2] / (ks[i][io2] + nus[io2][grid]));
-
-        nur[isub][grid] += ((-1 / yield[i]) * ((R1 + R4 + R5) * xdensity[i][grid]));
-      //if (xtype[i][grid] != 0) printf("nuR = %e \n", xtype[i][grid]);
-        nur[io2][grid] += (-((1 - yield[i] - yield_eps) / yield[i]) * R1 * xdensity[i][grid]);
-        nur[ino2][grid] += -(((1 - yield[i] - yield_eps) / (1.17 * yield[i])) * R5 * xdensity[i][grid]);
-        nur[ino3][grid] += -(((1 - yield[i] - yield_eps) / (2.86 * yield[i])) * R4 * xdensity[i][grid]);
-        nur[io2][grid] += -(R10 * xdensity[i][grid]);
-        nur[ino2][grid] += -(R14 * xdensity[i][grid]);
-        nur[ino3][grid] += -(R13 * xdensity[i][grid]);
-
-        growrate[i][0][grid] = R1 + R4 + R5 - R6 - R10 - R13 - R14;
-        growrate[i][1][grid] = (yield_eps / yield[i]) * (R1 + R4 + R5);
-      } else if (spec == 2) {
-        // AOB monod model
-        double R2 = mu[i] * (nus[inh4][grid] / (ks[i][inh4] + nus[inh4][grid])) * (nus[io2][grid] / (ks[i][io2] + nus[io2][grid]));
-        double R7 = decay[i];
-        double R11 = maintain[i] * (nus[io2][grid] / (ks[i][io2] + nus[io2][grid]));
-        nur[io2][grid] += -(((3.42 - yield[i]) / yield[i]) * R2 * xdensity[i][grid]);
-        // For BM3
-        //nur[io2][grid] += -(((4.57 - yield[i]) / yield[i]) * R2 * xdensity[i][grid]);
-        nur[inh4][grid] += -(1 / yield[i]) * R2 * xdensity[i][grid];
-        nur[ino2][grid] += (1 / yield[i]) * R2 * xdensity[i][grid];
-        nur[io2][grid] += -(R11 * xdensity[i][grid]);
-
-        growrate[i][0][grid] = R2 - R7 - R11;
-      } else if (spec == 3) {
-        // NOB monod model
-        double R3 = mu[i] * (nus[ino2][grid] / (ks[i][ino2] + nus[ino2][grid])) * (nus[io2][grid] / (ks[i][io2] + nus[io2][grid]));
-        double R8 = decay[i];
-        double R12 = maintain[i] * (nus[io2][grid] / (ks[i][io2] + nus[io2][grid]));
-
-        nur[io2][grid] += -(((1.15 - yield[i]) / yield[i]) * R3 * xdensity[i][grid]);
-        nur[ino2][grid] += -(1 / yield[i]) * R3 * xdensity[i][grid];
-        nur[ino3][grid] += (1 / yield[i]) * R3 * xdensity[i][grid];
-        nur[io2][grid] += -(R12 * xdensity[i][grid]);
-
-        growrate[i][0][grid] = R3 - R8 - R12;
-      } else if (spec == 4) {
-        // EPS monod model
-        double R9 = decay[i];
-
-        nur[isub][grid] += R9 * xdensity[i][grid];
-        growrate[i][0][grid] = -decay[i];
-      } else if (spec == 5) {
-        // DEAD monod model
-        nur[isub][grid] += (decay[i] * xdensity[i][grid]);
-        growrate[i][0][grid] = -decay[i];
+      if (spec == HET) {
+	growth_het(i, grid);
+      } else if (spec == AOB) {
+	growth_aob(i, grid);
+      } else if (spec == NOB) {
+	growth_nob(i, grid);
+      } else if (spec == ANA) {
+	growth_ana(i, grid);
+      } else if (spec == COM) {
+	growth_com(i, grid);
+      } else if (spec == EPS) {
+	growth_eps(i, grid);
+      } else if (spec == DEAD) {
+	growth_dead(i, grid);
       }
     }
   }
 
+  //update atom physical attributes
   if (gflag && external_gflag) update_biomass(growrate, dt);
+}
+
+/* ----------------------------------------------------------------------
+ Monod growth model for heterotrophic bacteria
+ ------------------------------------------------------------------------- */
+void FixKineticsMonod::growth_het(int i, int grid) {
+  double yield_eps = 0;
+  double r1, r2, r3, r4, r5, r6, r7;
+  r1 = 0; r2 = 0; r3 = 0; r4 = 0; r5 = 0; r6 =0; r7 = 0;
+
+  if (ieps != 0) yield_eps = yield[ieps];
+  //het aerobic growth rate
+  r1 = mu[i] * (nus[isub][grid] / (ks[i][isub] + nus[isub][grid])) * (nus[io2][grid] / (ks[i][io2] + nus[io2][grid]));
+  //het anaerobic growth rate
+  if (eta_het > 0) {
+    r2 = eta_het * mu[i] * (nus[isub][grid] / (ks[i][isub] + nus[isub][grid])) * (nus[ino3][grid] / (ks[i][ino3] + nus[ino3][grid])) * (ks[i][io2] / (ks[i][io2] + nus[io2][grid]));
+    r3 = eta_het * mu[i] * (nus[isub][grid] / (ks[i][isub] + nus[isub][grid])) * (nus[ino2][grid] / (ks[i][ino2] + nus[ino2][grid])) * (ks[i][io2] / (ks[i][io2] + nus[io2][grid]));
+  }
+  //decay rate
+  r4 = decay[i];
+  //maintenance rate
+  r5 = maintain[i] * (nus[io2][grid] / (ks[i][io2] + nus[io2][grid]));
+  if (eta_het > 0) {
+    r6 = (1 / 2.86) * maintain[i] * eta_het * (nus[ino3][grid] / (ks[i][ino3] + nus[ino3][grid])) * (ks[i][io2] / (ks[i][io2] + nus[io2][grid]));
+    r7 = (1 / 1.17) * maintain[i] * eta_het * (nus[ino2][grid] / (ks[i][ino2] + nus[ino2][grid])) * (ks[i][io2] / (ks[i][io2] + nus[io2][grid]));
+  }
+  //nutrient utilization
+  nur[isub][grid] += ((-1 / yield[i]) * ((r1 + r2 + r3) * xdensity[i][grid]));
+  nur[io2][grid] += (-((1 - yield[i] - yield_eps) / yield[i]) * r1 * xdensity[i][grid]);
+  nur[io2][grid] += -(r5 * xdensity[i][grid]);
+  if (eta_het > 0) {
+    nur[ino2][grid] += -(((1 - yield[i] - yield_eps) / (1.17 * yield[i])) * r3 * xdensity[i][grid]);
+    nur[ino3][grid] += -(((1 - yield[i] - yield_eps) / (2.86 * yield[i])) * r2 * xdensity[i][grid]);
+    nur[ino2][grid] += -(r7 * xdensity[i][grid]);
+    nur[ino3][grid] += -(r6 * xdensity[i][grid]);
+  }
+
+  //het overall growth rate
+  growrate[i][0][grid] = r1 + r2 + r3 - r4 - r5 - r6 - r7;
+  //eps shell growth rate
+  growrate[i][1][grid] = (yield_eps / yield[i]) * (r1 + r2 + r3);
+}
+
+/* ----------------------------------------------------------------------
+ Monod growth model for ammonia-oxidizing bacteria
+ ------------------------------------------------------------------------- */
+void FixKineticsMonod::growth_aob(int i, int grid) {
+  //growth rate
+  double r1 = mu[i] * (nus[inh4][grid] / (ks[i][inh4] + nus[inh4][grid])) * (nus[io2][grid] / (ks[i][io2] + nus[io2][grid]));
+  //decay rate
+  double r2 = decay[i];
+  //maintenance rate
+  double r3 = maintain[i] * (nus[io2][grid] / (ks[i][io2] + nus[io2][grid]));
+
+  //nutrient utilization
+  nur[io2][grid] += -(((3.42 - yield[i]) / yield[i]) * r1 * xdensity[i][grid]);
+  // For BM3
+  //nur[io2][grid] += -(((4.57 - yield[i]) / yield[i]) * R2 * xdensity[i][grid]);
+  nur[inh4][grid] += -(1 / yield[i]) * r1 * xdensity[i][grid];
+  nur[ino2][grid] += (1 / yield[i]) * r1 * xdensity[i][grid];
+  nur[io2][grid] += -(r3 * xdensity[i][grid]);
+
+  //aob overall growth rate
+  growrate[i][0][grid] = r1 - r2 - r3;
+}
+
+/* ----------------------------------------------------------------------
+ Monod growth model for nitrite-oxidizing bacteria
+ ------------------------------------------------------------------------- */
+void FixKineticsMonod::growth_nob(int i, int grid) {
+  //growth rate
+  double r1 = mu[i] * (nus[ino2][grid] / (ks[i][ino2] + nus[ino2][grid])) * (nus[io2][grid] / (ks[i][io2] + nus[io2][grid]));
+  //decay rate
+  double r2 = decay[i];
+  //maintenance rate
+  double r3 = maintain[i] * (nus[io2][grid] / (ks[i][io2] + nus[io2][grid]));
+
+  //nutrient utilization
+  nur[io2][grid] += -(((1.15 - yield[i]) / yield[i]) * r1 * xdensity[i][grid]);
+  nur[ino2][grid] += -(1 / yield[i]) * r1 * xdensity[i][grid];
+  nur[ino3][grid] += (1 / yield[i]) * r1 * xdensity[i][grid];
+  nur[io2][grid] += -(r3 * xdensity[i][grid]);
+
+  //nob overall growth rate
+  growrate[i][0][grid] = r1 - r2 - r3;
+}
+
+/* ----------------------------------------------------------------------
+ Monod growth model for anammox bacteria
+ ------------------------------------------------------------------------- */
+void FixKineticsMonod::growth_ana(int i, int grid) {
+  //growth rate
+  double r1 = mu[i] * (nus[inh4][grid] / (ks[i][inh4] + nus[inh4][grid])) * (nus[ino2][grid] / (ks[i][ino2] + nus[ino2][grid])) * (ks[i][io2] / (ks[i][io2] + nus[io2][grid]));
+  //decay rate
+  double r2 = decay[i];
+  //maintenance rate
+  double r3 = maintain[i] * (nus[io2][grid] / (ks[i][io2] + nus[io2][grid]));
+
+  //nutrient utilization
+  nur[inh4][grid] +=  -(1 / yield[i]) * r1 * xdensity[i][grid];
+  nur[ino2][grid] +=  -((1 / yield[i]) + (1 / 1.14)) * r1 * xdensity[i][grid];
+  nur[ino3][grid] +=  (1 / 1.14) * r1 * xdensity[i][grid];
+
+  //ana overall growth rate
+  growrate[i][0][grid] = r1 - r2 -r3;
+}
+
+/* ----------------------------------------------------------------------
+ Monod growth model for comammox bacteria
+ ------------------------------------------------------------------------- */
+void FixKineticsMonod::growth_com(int i, int grid) {
+  //growth rate
+  double r1 = mu[i] * (nus[inh4][grid] / (ks[i][inh4] + nus[inh4][grid])) * (nus[io2][grid] / (ks[i][io2] + nus[io2][grid]));
+  //decay rate
+  double r2 = decay[i];
+  //maintenance rate
+  double r3 = maintain[i] * (nus[io2][grid] / (ks[i][io2] + nus[io2][grid]));
+
+  //nutrient utilization
+  //TODO reciprocal for oxygen utilization is unknown
+  nur[io2][grid] += -(((1.14 - yield[i]) / yield[i]) * r1 * xdensity[i][grid]);
+  nur[inh4][grid] += -(1 / yield[i]) * r1 * xdensity[i][grid];
+  nur[ino3][grid] += (1 / yield[i]) * r1 * xdensity[i][grid];
+  nur[io2][grid] += -(r3 * xdensity[i][grid]);
+
+  //ana overall growth rate
+  growrate[i][0][grid] = r1 - r2 -r3;
+}
+
+/* ----------------------------------------------------------------------
+ Monod growth model for extracellular polymeric substances
+ ------------------------------------------------------------------------- */
+void FixKineticsMonod::growth_eps(int i, int grid) {
+  //decay rate
+  double r1 = decay[i];
+
+  //nutrient utilization
+  nur[isub][grid] += r1 * xdensity[i][grid];
+
+  //eps overall growth rate
+  growrate[i][0][grid] = -r1;
+}
+
+/* ----------------------------------------------------------------------
+ Monod growth model for dead cells
+ ------------------------------------------------------------------------- */
+void FixKineticsMonod::growth_dead(int i, int grid) {
+  //decay rate
+  double r1 = decay[i];
+
+  //nutrient utilization
+  nur[isub][grid] += r1 * xdensity[i][grid];
+
+  //eps overall growth rate
+  growrate[i][0][grid] = -r1;
 }
 
 /* ----------------------------------------------------------------------
@@ -362,11 +463,6 @@ void FixKineticsMonod::update_biomass(double ***growrate, double dt) {
   int nlocal = atom->nlocal;
   int *type = atom->type;
 
-  double *radius = atom->radius;
-  double *rmass = atom->rmass;
-  double *outer_mass = avec->outer_mass;
-  double *outer_radius = avec->outer_radius;
-
   const double three_quarters_pi = (3.0 / (4.0 * MY_PI));
   const double four_thirds_pi = 4.0 * MY_PI / 3.0;
   const double third = 1.0 / 3.0;
@@ -375,19 +471,17 @@ void FixKineticsMonod::update_biomass(double ***growrate, double dt) {
     if (mask[i] & groupbit) {
       int t = type[i];
       int pos = kinetics->position(i);
-
       double density = rmass[i] / (four_thirds_pi * radius[i] * radius[i] * radius[i]);
-      rmass[i] = rmass[i] * (1 + growrate[t][0][pos] * dt);
 
-      if (species[t] == 1) {
+      rmass[i] = rmass[i] * (1 + growrate[t][0][pos] * dt);
+      if (species[t] == HET && ieps != 0) {
         outer_mass[i] = four_thirds_pi * (outer_radius[i] * outer_radius[i] * outer_radius[i] - radius[i] * radius[i] * radius[i]) * eps_dens + growrate[t][1][pos] * rmass[i] * dt;
         outer_radius[i] = pow(three_quarters_pi * (rmass[i] / density + outer_mass[i] / eps_dens), third);
-        radius[i] = pow(three_quarters_pi * (rmass[i] / density), third);
       } else {
-        radius[i] = pow(three_quarters_pi * (rmass[i] / density), third);
         outer_mass[i] = rmass[i];
         outer_radius[i] = radius[i];
       }
+      radius[i] = pow(three_quarters_pi * (rmass[i] / density), third);
     }
   }
 }
