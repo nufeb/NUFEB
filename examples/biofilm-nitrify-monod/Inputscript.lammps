@@ -85,7 +85,7 @@ variable deadDia equal 5e-7
 
 ##############Define IBm Commands##############
 
-fix k1 all kinetics 1 25 25 25 v_diffT v_layer niter 20000
+fix k1 all kinetics 1 20 20 20 v_diffT v_layer niter 20000
 fix kgm all kinetics/growth/monod epsdens 20 etahet 0.6
 fix g1 all kinetics/diffusion v_tol pp pp nd kg bulk 2.31e-7 1.25e-3 0.1
 fix d1 all divide 1 v_EPSdens v_divDia 41341 demflag 0
@@ -101,10 +101,10 @@ compute myCon all avg_con
 ##############Simulation Output##############
 
 thermo_style    custom step cpu atoms c_myNtypes[*]
-dump du0 all bio 18006 biomass ntypes bulk avg_con
-dump du2 all grid 30030 grid_%_*.vti con 
-dump du3 all vtk 30030 snapshot_*.vtu id type diameter x y z 
-thermo 3001
+dump du0 all bio 1001 biomass ntypes bulk avg_con
+dump du2 all grid 10010 grid_%_*.vti con 
+dump du3 all vtk 10010 snapshot_*.vtu id type diameter x y z 
+thermo 1001
 thermo_modify   lost ignore
 
 ##############Define Bio-loop and DEM-subloop##############
@@ -115,7 +115,7 @@ run 240 pre no post no every 1 &
 "fix_modify d1 demflag 1" &
 "fix_modify e1 demflag 1" &
 "timestep 1e-3" &
-"run 3000 pre no post no" &
+"run 1000 pre no post no" &
 "timestep 1200" &
 "fix_modify k1 demflag 0" &
 "fix_modify d2 demflag 0" &
