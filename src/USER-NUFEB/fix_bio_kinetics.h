@@ -100,6 +100,7 @@ class FixKinetics : public Fix, public DecompGrid<FixKinetics> {
   int position(int);
   void reset_nur();
   void reset_isconv();
+  bool is_equal(double, double, double);
 
   Subgrid<double, 3> get_subgrid() const { return subgrid; }
   int get_elem_per_cell() const;

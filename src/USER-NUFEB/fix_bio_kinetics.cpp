@@ -156,6 +156,11 @@ FixKinetics::FixKinetics(LAMMPS *lmp, int narg, char **arg) :
   stepy = (yhi - ylo) / ny;
   stepz = (zhi - zlo) / nz;
 
+  if (!is_equal(stepx, stepy, stepz))
+    error->all(FLERR, "Non-cubic Cartesian grid: NUFEB requires cubic Cartesian coordinate system. "
+	"Set nx ny nz parameters in fix kinetics to make sure the equal width of grid edges.\n"
+	"fix id group-id kinetics Nevery nx ny nz v_diffT v_layer");
+
   grid = Grid<double, 3>(Box<double, 3>(domain->boxlo, domain->boxhi), { nx, ny, nz });
   double tmpsublo[3], tmpsubhi[3];
   const double small = 1e-12;
@@ -570,6 +575,18 @@ int FixKinetics::modify_param(int narg, char **arg) {
     return 2;
   }
   return 0;
+}
+
+
+/* ----------------------------------------------------------------------
+ Compare double values for equality
+ ------------------------------------------------------------------------- */
+bool FixKinetics::is_equal(double a, double b, double c) {
+  double epsilon = 1e-10;
+  if ((fabs(a - b) > epsilon) || (fabs(a - c) > epsilon) || (fabs(b - c) > epsilon))
+    return false;
+
+  return true;
 }
 
 /* ---------------------------------------------------------------------- */

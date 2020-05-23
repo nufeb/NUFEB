@@ -96,7 +96,6 @@ public:
   void compute_blayer();
   void compute_flux(double, double &, double *, double, int, int);
 
-  bool is_equal(double, double, double);
   int get_index(int);
   void migrate(const Grid<double, 3> &, const Box<int, 3> &, const Box<int, 3> &);
 

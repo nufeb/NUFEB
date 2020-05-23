@@ -202,52 +202,50 @@ void FixKineticsMonod::init_param() {
 
   // initialize species
   for (int i = 1; i <= ntypes; i++) {
-    if (strcmp(bio->tname[i], "eps" || strcmp(name, "EPS") == 0) == 0) {
+    // take the first three chars from type name;
+    char *name = new char[4];
+    strncpy(name, bio->tname[i], 3);
+    name[3] = 0;
+
+    if (strcmp(name, "het") == 0 || strcmp(name, "HET") == 0) {
+      species[i] = HET;
+      if (isub == 0) error->all(FLERR, "het growth requires nutrient 'sub' (substrate) to be defined in Nutrients section");
+      if (io2 == 0) error->all(FLERR, "het growth requires nutrient 'o2' to be defined in Nutrients section");
+      if (eta_het > 0) {
+	if (ino2 == 0) error->all(FLERR, "het anaerobic growth requires nutrient 'no2' to be defined in Nutrients section");
+	if (ino3 == 0) error->all(FLERR, "het anaerobic growth requires nutrient 'no3' to be defined in Nutrients section");
+      }
+    } else if (strcmp(name, "aob") == 0 || strcmp(name, "AOB") == 0) {
+      species[i] = AOB;
+      if (inh4 == 0) error->all(FLERR, "aob growth requires nutrient 'nh4' to be defined in Nutrients section");
+      if (ino2 == 0) error->all(FLERR, "aob growth requires nutrient 'no2' to be defined in Nutrients section");
+      if (io2 == 0) error->all(FLERR, "aob growth requires nutrient 'o2' to be defined in Nutrients section");
+    } else if (strcmp(name, "nob") == 0 || strcmp(name, "NOB") == 0) {
+      species[i] = NOB;
+      if (ino2 == 0) error->all(FLERR, "nob growth requires nutrient 'no2' to be defined in Nutrients section");
+      if (ino3 == 0) error->all(FLERR, "nob growth requires nutrient 'no3' to be defined in Nutrients section");
+      if (io2 == 0) error->all(FLERR, "nob growth requires nutrient 'o2' to be defined in Nutrients section");
+    } else if (strcmp(name, "ana") == 0 || strcmp(name, "ANA") == 0) {
+      species[i] = ANA;
+      if (inh4 == 0) error->all(FLERR, "anammox growth requires nutrient 'nh4' to be defined in Nutrients section");
+      if (ino2 == 0) error->all(FLERR, "anammox growth requires nutrient 'no2' to be defined in Nutrients section");
+      if (io2 == 0) error->all(FLERR, "anammox growth requires nutrient 'o2' to be defined in Nutrients section");
+    } else if (strcmp(name, "com") == 0 || strcmp(name, "COM") == 0) {
+      species[i] = COM;
+      if (inh4 == 0) error->all(FLERR, "comammox growth requires nutrient 'nh4' to be defined in Nutrients section");
+      if (ino3 == 0) error->all(FLERR, "comammox growth requires nutrient 'no3' to be defined in Nutrients section");
+      if (io2 == 0) error->all(FLERR, "comammox growth requires nutrient 'o2' to be defined in Nutrients section");
+    } else if(strcmp(name, "eps") == 0 || strcmp(name, "EPS") == 0) {
       species[i] = EPS;
       ieps = i;
-    } else if (strcmp(bio->tname[i], "dead" || strcmp(name, "DEAD") == 0) == 0)
+    } else if(strcmp(name, "dead") == 0 || strcmp(name, "DEAD") == 0) {
       species[i] = DEAD;
-    else {
-      // take the first three chars from type name;
-      char *name = new char[4];
-      strncpy(name, bio->tname[i], 3);
-      name[3] = 0;
-
-      if (strcmp(name, "het") == 0 || strcmp(name, "HET") == 0) {
-        species[i] = HET;
-        if (isub == 0) error->all(FLERR, "het growth requires nutrient 'sub' (substrate) to be defined in Nutrients section");
-        if (io2 == 0) error->all(FLERR, "het growth requires nutrient 'o2' to be defined in Nutrients section");
-        if (eta_het > 0) {
-          if (ino2 == 0) error->all(FLERR, "het anaerobic growth requires nutrient 'no2' to be defined in Nutrients section");
-          if (ino3 == 0) error->all(FLERR, "het anaerobic growth requires nutrient 'no3' to be defined in Nutrients section");
-        }
-      } else if (strcmp(name, "aob") == 0 || strcmp(name, "AOB") == 0) {
-        species[i] = AOB;
-        if (inh4 == 0) error->all(FLERR, "aob growth requires nutrient 'nh4' to be defined in Nutrients section");
-        if (ino2 == 0) error->all(FLERR, "aob growth requires nutrient 'no2' to be defined in Nutrients section");
-        if (io2 == 0) error->all(FLERR, "aob growth requires nutrient 'o2' to be defined in Nutrients section");
-      } else if (strcmp(name, "nob") == 0 || strcmp(name, "NOB") == 0) {
-        species[i] = NOB;
-        if (ino2 == 0) error->all(FLERR, "nob growth requires nutrient 'no2' to be defined in Nutrients section");
-        if (ino3 == 0) error->all(FLERR, "nob growth requires nutrient 'no3' to be defined in Nutrients section");
-        if (io2 == 0) error->all(FLERR, "nob growth requires nutrient 'o2' to be defined in Nutrients section");
-      } else if (strcmp(name, "ana") == 0 || strcmp(name, "ANA") == 0) {
-        species[i] = ANA;
-        if (inh4 == 0) error->all(FLERR, "anammox growth requires nutrient 'nh4' to be defined in Nutrients section");
-        if (ino2 == 0) error->all(FLERR, "anammox growth requires nutrient 'no2' to be defined in Nutrients section");
-        if (io2 == 0) error->all(FLERR, "anammox growth requires nutrient 'o2' to be defined in Nutrients section");
-      } else if (strcmp(name, "com") == 0 || strcmp(name, "COM") == 0) {
-        species[i] = COM;
-        if (inh4 == 0) error->all(FLERR, "comammox growth requires nutrient 'nh4' to be defined in Nutrients section");
-        if (ino3 == 0) error->all(FLERR, "comammox growth requires nutrient 'no3' to be defined in Nutrients section");
-        if (io2 == 0) error->all(FLERR, "comammox growth requires nutrient 'o2' to be defined in Nutrients section");
-      } else {
-	error->warning(FLERR, "unrecognized species found in fix_kinetics/kinetics/monod:");
-	error->warning(FLERR, bio->tname[i]);
-      }
-
-      delete[] name;
+    } else {
+      error->warning(FLERR, "unrecognized species found in fix_kinetics/kinetics/monod:");
+      error->warning(FLERR, bio->tname[i]);
     }
+
+    delete[] name;
   }
 }
 

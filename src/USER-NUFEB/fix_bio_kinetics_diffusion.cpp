@@ -245,9 +245,6 @@ void FixKineticsDiffusion::init() {
   vol = stepx * stepy * stepz;
   bzhi = kinetics->bnz * stepz;
 
-  if (!is_equal(stepx, stepy, stepz))
-    error->all(FLERR, "Grid is not cubic");
-
   snxyz = kinetics->subn[0] * kinetics->subn[1] * kinetics->subn[2];
 
   snxx = kinetics->subn[0] + 2;
@@ -772,18 +769,6 @@ void FixKineticsDiffusion::compute_flux(double cellDNu, double &nuCell, double *
 
   //Updating the value: Ratesub*diffT + nuCell[cell](previous)
   nuCell = nuPrev[grid] + res * diff_dt;
-}
-
-/* ----------------------------------------------------------------------
- Compare double values for equality
- ------------------------------------------------------------------------- */
-
-bool FixKineticsDiffusion::is_equal(double a, double b, double c) {
-  double epsilon = 1e-10;
-  if ((fabs(a - b) > epsilon) || (fabs(a - c) > epsilon) || (fabs(b - c) > epsilon))
-    return false;
-
-  return true;
 }
 
 /* ----------------------------------------------------------------------
