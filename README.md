@@ -52,7 +52,7 @@ Build NUFEB:
 ### Running
 Run a case in /examples after building NUFEB, for example:
 <pre>
-cd examples/biofilm-monod
+cd examples/biofilm-het
 mpirun -np 4 lmp_mpi -in Inputscript.lammps
 </pre>
 
