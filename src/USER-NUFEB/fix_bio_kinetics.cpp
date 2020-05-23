@@ -158,7 +158,7 @@ FixKinetics::FixKinetics(LAMMPS *lmp, int narg, char **arg) :
 
   if (!is_equal(stepx, stepy, stepz))
     error->all(FLERR, "Non-cubic Cartesian grid: NUFEB requires cubic Cartesian coordinate system. "
-	"Set nx ny nz parameters in fix kinetics to make sure the equal width of grid edges.\n"
+	"Set nx ny nz parameters in fix kinetics to make sure the equal length of grid edges.\n"
 	"fix id group-id kinetics Nevery nx ny nz v_diffT v_layer");
 
   grid = Grid<double, 3>(Box<double, 3>(domain->boxlo, domain->boxhi), { nx, ny, nz });
