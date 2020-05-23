@@ -4,9 +4,9 @@
        5 atom types 
        5 nutrients
 
-   0.000000e-04   1e-04  xlo xhi 
-   0.000000e-04   1e-04  ylo yhi 
-   0.000000e-04   1e-04 zlo zhi 
+   0.000000e-04   5e-05  xlo xhi 
+   0.000000e-04   5e-05  ylo yhi 
+   0.000000e-04   5e-05 zlo zhi 
 
  Atoms
 

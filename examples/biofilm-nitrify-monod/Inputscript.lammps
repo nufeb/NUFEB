@@ -13,7 +13,7 @@ read_data_bio atom.in
 ##############Define initial particle distribution##############
 
 lattice sc 1e-6 origin 0 0 0
-region reg block 0 100 0 100 0 1
+region reg block 0 50 0 50 0 1
 
 create_atoms 1 random 100 3124 reg
 create_atoms 2 random 100 1321 reg
@@ -60,20 +60,17 @@ timestep 1e-3
 fix 1 all nve/limit 1e-8
 fix fv all viscous 1e-8
 
-fix zw all wall/gran hooke/history 1e-4 NULL 1e-4 NULL 0 1 zplane 0.0e-4 2e-04
+fix zw all wall/gran hooke/history 1e-4 NULL 1e-4 NULL 0 1 zplane 0.0 5e-05
 
 variable kanc equal 5e+8
 
-fix zwa all walladh v_kanc zplane  0.0 2e-04
-
-variable ke equal 5e+8
-#fix j1 all epsadh 1 v_ke 1
+fix zwa all walladh v_kanc zplane  0.0 5e-5
 
 ##############Define IBm Variables##############
 
 #variables used in fix eps_extract
-variable EPSdens equal 30
-variable EPSratio equal 1.10
+variable EPSdens equal 20
+variable EPSratio equal 1.12
 
 #variables used in fix division
 variable divDia equal 1.36e-6
@@ -81,7 +78,7 @@ variable divDia equal 1.36e-6
 #variables used in fix kinetics 
 variable diffT equal 1e-4
 variable tol equal 5e-7
-variable layer equal 2e-5 
+variable layer equal 1e-5 
 
 #variables used in fix death
 variable deadDia equal 5e-7
@@ -89,7 +86,7 @@ variable deadDia equal 5e-7
 ##############Define IBm Commands##############
 
 fix k1 all kinetics 1 25 25 25 v_diffT v_layer niter 20000
-fix kgm all kinetics/growth/monod epsdens 30 etahet 0.6
+fix kgm all kinetics/growth/monod epsdens 20 etahet 0.6
 fix g1 all kinetics/diffusion v_tol pp pp nd kg bulk 2.31e-7 1.25e-3 0.1
 fix d1 all divide 1 v_EPSdens v_divDia 41341 demflag 0
 fix e1 HET eps_extract 1 v_EPSratio v_EPSdens 5234 demflag 0
@@ -105,8 +102,8 @@ compute myCon all avg_con
 
 thermo_style    custom step cpu atoms c_myNtypes[*]
 dump du0 all bio 18006 biomass ntypes bulk avg_con
-dump du2 all grid 90030 grid_%_*.vti con 
-dump du3 all vtk 90030 snapshot_*.vtu id type diameter x y z 
+dump du2 all grid 30030 grid_%_*.vti con 
+dump du3 all vtk 30030 snapshot_*.vtu id type diameter x y z 
 thermo 3001
 thermo_modify   lost ignore
 

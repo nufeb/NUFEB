@@ -238,9 +238,10 @@ void FixKineticsMonod::init_param() {
     } else if(strcmp(name, "eps") == 0 || strcmp(name, "EPS") == 0) {
       species[i] = EPS;
       ieps = i;
-    } else if(strcmp(name, "dead") == 0 || strcmp(name, "DEAD") == 0) {
+    } else if(strcmp(name, "dea") == 0 || strcmp(name, "DEA") == 0) {
       species[i] = DEAD;
     } else {
+      species[i] = -1;
       error->warning(FLERR, "unrecognized species found in fix_kinetics/kinetics/monod:");
       error->warning(FLERR, bio->tname[i]);
     }
@@ -274,6 +275,8 @@ void FixKineticsMonod::growth(double dt, int gflag) {
     if(!xdensity[0][grid]) continue;
 
     for (int i = 1; i <= ntypes; i++) {
+      growrate[i][0][grid] = 0;
+      growrate[i][1][grid] = 0;
       int spec = species[i];
 
       if (spec == HET) {
