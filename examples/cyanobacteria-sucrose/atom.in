@@ -1,0 +1,60 @@
+ NUFEB Simulation
+
+     0 atoms
+     2 atom types
+     5 nutrients
+
+  0.0e-4   1.00e-04  xlo xhi
+  0.0e-4   1.00e-04  ylo yhi
+  0.0e-4   1.00e-05  zlo zhi
+
+ Atoms
+
+ Nutrients
+
+     1 sub g 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04
+     2 o2 l 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04
+     3 no2 l 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04
+     4 no3 l 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04
+     5 nh4 l 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04
+     #6 suc l 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04
+     ##7 co2 l 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04
+ Type Name
+
+     1 cyano
+     2 dead
+
+ Diffusion Coeffs
+
+     sub 0
+     o2 2.3e-09
+     no2 1.15e-09
+     no3 1.15e-09
+     nh4 1.15e-09
+     #suc 1.15e-09
+    ## co2 2.3e-09
+
+ Ks
+
+     cyano 3.5e-05 0 0 0 0 #0 #0
+     dead 0 0 0 0 0 #0 #0
+
+ Growth Rate
+
+     cyano 0.0000225
+     dead 0
+
+ Yield
+
+     cyano 0.6
+     dead 0
+
+ Maintenance
+
+     cyano 0
+     dead 0
+
+ Decay
+
+     cyano 0
+     dead 0

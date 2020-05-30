@@ -57,7 +57,7 @@ FixKineticsMonod::FixKineticsMonod(LAMMPS *lmp, int narg, char **arg) :
 
   species = NULL;
   growrate = NULL;
-  
+
   eps_dens = 30;
   eta_het = 0;
 
@@ -198,6 +198,10 @@ void FixKineticsMonod::init_param() {
       ino2 = nu;
     else if (strcmp(bio->nuname[nu], "no3") == 0)
       ino3 = nu;
+    else if (strcmp(bio->nuname[nu], "suc") == 0)
+      isuc = nu;
+    else if (strcmp(bio->nuname[nu], "co2") == 0)
+      ico2 = nu;
   }
 
   // initialize species
@@ -240,6 +244,15 @@ void FixKineticsMonod::init_param() {
       ieps = i;
     } else if(strcmp(name, "dea") == 0 || strcmp(name, "DEA") == 0) {
       species[i] = DEAD;
+    } else if (strcmp(name, "cya") == 0 || strcmp(name, "CYA") == 0) {
+      species[i] = CYANO;
+      if (isub == 0) error->all(FLERR, "cyano growth requires nutrient 'sub' (substrate) to be defined in Nutrients section");
+      if (ico2 == 0) error->all(FLERR, "cyano growth requires nutrient 'co2' to be defined in Nutrients section");
+    } else if (strcmp(name, "ecw") == 0 || strcmp(name, "ECW") == 0) {
+      species[i] = ECW;
+      if (isuc == 0) error->all(FLERR, "E. coli W growth requires nutrient 'suc' (substrate) to be defined in Nutrients section");
+      if (io2 == 0) error->all(FLERR, "E. coli W growth requires nutrient 'o2' to be defined in Nutrients section");
+
     } else {
       species[i] = -1;
       error->warning(FLERR, "unrecognized species found in fix_kinetics/kinetics/monod:");
@@ -293,6 +306,10 @@ void FixKineticsMonod::growth(double dt, int gflag) {
 	growth_eps(i, grid);
       } else if (spec == DEAD) {
 	growth_dead(i, grid);
+      } else if (spec == CYANO) {
+	growth_cyano(i, grid);
+      } else if (spec == ECW) {
+	growth_ecw(i, grid);
       }
     }
   }
@@ -455,6 +472,65 @@ void FixKineticsMonod::growth_dead(int i, int grid) {
   //eps overall growth rate
   growrate[i][0][grid] = -r1;
 }
+
+/* ----------------------------------------------------------------------
+ Monod growth model for photoautotrophic cyanobacteria
+ ------------------------------------------------------------------------- */
+void FixKineticsMonod::growth_cyano(int i, int grid) {
+  double r1, r2, r3, r4, r5, r6, r7;
+  r1 = 0; r2 = 0; r3 = 0; r4 = 0; r5 = 0; r6 =0; r7 = 0;
+
+
+  //cyanobacterial growth rate based on light and co2
+  r1 = mu[i] * (nus[isub][grid] / (ks[i][isub] + nus[isub][grid])) * (nus[ico2][grid] / (ks[i][ico2] + nus[ico2][grid]));
+
+  //decay rate
+  r2 = decay[i];
+  //maintenance rate
+  r3 = maintain[i]; //* (nus[ico2][grid] / (ks[i][ico2] + nus[ico2][grid]));
+
+  //nutrient utilization
+  nur[isub][grid] += ((-1 / yield[i]) * ((r1 + r2 + r3) * xdensity[i][grid]));
+  nur[ico2][grid] += (-((1 - yield[i] - yield_eps) / yield[i]) * r1 * xdensity[i][grid]);
+  nur[ico2][grid] += -(r5 * xdensity[i][grid]);
+
+  //oxygen evolution
+  nur[io2][grid] +=  (1 / 1.14) * r1 * xdensity[i][grid];
+  //sucrose export
+  r4 = r1*.1;
+  nur[isuc][grid] += r4 * xdensity[i][grid];
+
+
+  //het overall growth rate
+  growrate[i][0][grid] = r1 - r2 - r3 - r4
+}
+
+/* ----------------------------------------------------------------------
+ Monod growth model for heterotrophic E. coli W
+ ------------------------------------------------------------------------- */
+
+void FixKineticsMonod::growth_ecw(int i, int grid) {
+  double r1, r2, r3, r4, r5, r6, r7;
+  r1 = 0; r2 = 0; r3 = 0; r4 = 0; r5 = 0; r6 =0; r7 = 0;
+
+  //het aerobic growth rate
+  r1 = mu[i] * (nus[isuc][grid] / (ks[i][isuc] + nus[isuc][grid])) * (nus[io2][grid] / (ks[i][io2] + nus[io2][grid]));
+
+  //decay rate
+  r2 = decay[i];
+  //maintenance rate
+  r3 = maintain[i] * (nus[io2][grid] / (ks[i][io2] + nus[io2][grid]));
+
+  //nutrient utilization
+  nur[isuc][grid] += ((-1 / yield[i]) * r1 * xdensity[i][grid]));
+  nur[io2][grid] += (-((1 - yield[i]) / yield[i]) * r1 * xdensity[i][grid]);
+  nur[io2][grid] += -(r3 * xdensity[i][grid]);
+
+
+  //ecw overall growth rate
+  growrate[i][0][grid] = r1 - r2 - r3;
+}
+
 
 /* ----------------------------------------------------------------------
  update particle attributes: biomass, outer mass, radius etc
