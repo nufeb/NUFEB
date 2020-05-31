@@ -42,7 +42,7 @@ using namespace MathConst;
 
 using namespace std;
 
-enum{HET, AOB, NOB, ANA, COM, EPS, DEAD};
+enum{HET, AOB, NOB, ANA, COM, EPS, DEAD, CYANO, ECW};
 /* ---------------------------------------------------------------------- */
 
 FixKineticsMonod::FixKineticsMonod(LAMMPS *lmp, int narg, char **arg) :
@@ -60,6 +60,7 @@ FixKineticsMonod::FixKineticsMonod(LAMMPS *lmp, int narg, char **arg) :
 
   eps_dens = 30;
   eta_het = 0;
+  suc_exp = 0;
 
   kinetics = NULL;
 
@@ -83,6 +84,9 @@ FixKineticsMonod::FixKineticsMonod(LAMMPS *lmp, int narg, char **arg) :
 	if (eta_het < 0)
 	  error->all(FLERR, "Illegal fix kinetics/growth/monod command: eta_het cannot be less than zero");
 	iarg += 2;
+  if (suc_exp < 0)
+    error->all(FLERR, "Illegal fix kinetics/growth/monod command: suc_exp cannot be less than zero");
+  iarg += 2;
     } else
       error->all(FLERR, "Illegal fix kinetics/growth/monod command");
   }
@@ -184,7 +188,7 @@ void FixKineticsMonod::init_param() {
   ks = bio->ks;
   ntypes = atom->ntypes;
 
-  isub = 0; io2 = 0; inh4 = 0; ino2 = 0; ino3 = 0;
+  isub = 0; io2 = 0; inh4 = 0; ino2 = 0; ino3 = 0; isuc = 0; ico2 = 0;
 
   // initialize nutrients
   for (int nu = 1; nu <= bio->nnu; nu++) {
@@ -477,8 +481,8 @@ void FixKineticsMonod::growth_dead(int i, int grid) {
  Monod growth model for photoautotrophic cyanobacteria
  ------------------------------------------------------------------------- */
 void FixKineticsMonod::growth_cyano(int i, int grid) {
-  double r1, r2, r3, r4, r5, r6, r7;
-  r1 = 0; r2 = 0; r3 = 0; r4 = 0; r5 = 0; r6 =0; r7 = 0;
+  double r1, r2, r3, r4;
+  r1 = 0; r2 = 0; r3 = 0; r4 = 0;
 
 
   //cyanobacterial growth rate based on light and co2
@@ -491,18 +495,18 @@ void FixKineticsMonod::growth_cyano(int i, int grid) {
 
   //nutrient utilization
   nur[isub][grid] += ((-1 / yield[i]) * ((r1 + r2 + r3) * xdensity[i][grid]));
-  nur[ico2][grid] += (-((1 - yield[i] - yield_eps) / yield[i]) * r1 * xdensity[i][grid]);
-  nur[ico2][grid] += -(r5 * xdensity[i][grid]);
+  nur[ico2][grid] += (-((1 - yield[i]) / yield[i]) * r1 * xdensity[i][grid]);
+  nur[ico2][grid] += -(r3 * xdensity[i][grid]);
 
   //oxygen evolution
   nur[io2][grid] +=  (1 / 1.14) * r1 * xdensity[i][grid];
   //sucrose export
-  r4 = r1*.1;
+  r4 = r1*suc_exp;
   nur[isuc][grid] += r4 * xdensity[i][grid];
 
 
   //het overall growth rate
-  growrate[i][0][grid] = r1 - r2 - r3 - r4
+  growrate[i][0][grid] = r1 - r2 - r3 - r4;
 }
 
 /* ----------------------------------------------------------------------
@@ -510,8 +514,8 @@ void FixKineticsMonod::growth_cyano(int i, int grid) {
  ------------------------------------------------------------------------- */
 
 void FixKineticsMonod::growth_ecw(int i, int grid) {
-  double r1, r2, r3, r4, r5, r6, r7;
-  r1 = 0; r2 = 0; r3 = 0; r4 = 0; r5 = 0; r6 =0; r7 = 0;
+  double r1, r2, r3;
+  r1 = 0; r2 = 0; r3 = 0;
 
   //het aerobic growth rate
   r1 = mu[i] * (nus[isuc][grid] / (ks[i][isuc] + nus[isuc][grid])) * (nus[io2][grid] / (ks[i][io2] + nus[io2][grid]));
@@ -522,7 +526,7 @@ void FixKineticsMonod::growth_ecw(int i, int grid) {
   r3 = maintain[i] * (nus[io2][grid] / (ks[i][io2] + nus[io2][grid]));
 
   //nutrient utilization
-  nur[isuc][grid] += ((-1 / yield[i]) * r1 * xdensity[i][grid]));
+  nur[isuc][grid] += ((-1 / yield[i]) * r1 * xdensity[i][grid]);
   nur[io2][grid] += (-((1 - yield[i]) / yield[i]) * r1 * xdensity[i][grid]);
   nur[io2][grid] += -(r3 * xdensity[i][grid]);
 

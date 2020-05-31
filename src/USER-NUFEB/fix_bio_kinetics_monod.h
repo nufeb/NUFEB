@@ -64,6 +64,7 @@ class FixKineticsMonod : public Fix {
   double vol;                       // grid volume and gas volume
   double eps_dens;                  // EPS density
   double eta_het;                   // HET reduction factor in anoxic condition
+  double suc_exp;                   // Sucrose export rate (0->1)
 
   class AtomVecBio *avec;
   class FixKinetics *kinetics;
