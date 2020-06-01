@@ -84,11 +84,12 @@ FixKineticsMonod::FixKineticsMonod(LAMMPS *lmp, int narg, char **arg) :
 	if (eta_het < 0)
 	  error->all(FLERR, "Illegal fix kinetics/growth/monod command: eta_het cannot be less than zero");
 	iarg += 2;
+    } else if (strcmp(arg[iarg], "sucexp") == 0){
   if (suc_exp < 0)
     error->all(FLERR, "Illegal fix kinetics/growth/monod command: suc_exp cannot be less than zero");
   iarg += 2;
     } else
-      error->all(FLERR, "Illegal fix kinetics/growth/monod command");
+    error->all(FLERR, "Illegal fix kinetics/growth/monod command");
   }
 }
 
