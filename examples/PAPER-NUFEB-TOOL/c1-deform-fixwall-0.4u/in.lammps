@@ -24,6 +24,7 @@ group moving subtract all bed1
 group deleting subtract all del1 
 
 velocity all set 0.0 0.0 0.0
+change_box all z final 0 4e-05
 
 change_box all boundary p p p
 

@@ -26,6 +26,7 @@ group deleting subtract all del1
 velocity all set 0.0 0.0 0.0
 
 change_box all boundary p p p
+change_box all z final 0 4e-05
 
 set type 1 diameter 0.8e-6
 set type 2 diameter 0.8e-6
