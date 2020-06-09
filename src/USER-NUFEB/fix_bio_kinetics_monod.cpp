@@ -483,6 +483,7 @@ void FixKineticsMonod::growth_dead(int i, int grid) {
  ------------------------------------------------------------------------- */
 void FixKineticsMonod::growth_cyano(int i, int grid) {
   double r1, r2, r3, r4;
+
   r1 = 0; r2 = 0; r3 = 0; r4 = 0;
 
 
@@ -500,7 +501,7 @@ void FixKineticsMonod::growth_cyano(int i, int grid) {
   nur[ico2][grid] += -(r3 * xdensity[i][grid]);
 
   //oxygen evolution
-  nur[io2][grid] +=  (1 / 1.14) * r1 * xdensity[i][grid];
+  nur[io2][grid] +=  r1 * xdensity[i][grid];
   //sucrose export
   r4 = r1*suc_exp;
   nur[isuc][grid] += r4 * xdensity[i][grid];
