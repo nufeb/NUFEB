@@ -50,6 +50,7 @@ public:
   int xbcflag, ybcflag, zbcflag;          // boundary condition flag, 0=PERIODIC-PERIODIC, 1=DIRICH-DIRICH, 2=NEU-DIRICH, 3=NEU-NEU, 4=DIRICH-NEU
   int bulkflag;                           // 1=solve mass balance for bulk liquid
   int shearflag, dragflag, dcflag;        // flags for shear, drag(nufebfoam), and diffusion coefficent
+  double dcratio;                         // ratio of diffusion coefficent in biomass region
 
   int *grid_type;                         // ghost grid flag [gird] 1=ghost gird, 0=non-ghost grid
 
@@ -72,7 +73,7 @@ public:
   int snxx_yy_zz;                         // total # of local + ghost grids
 
   double diff_dt;
-  int closed_flag;                        // flag for close system 1 = gradient is negligible (no diffusion), 2 = manual calculate nur
+  int closed_flag;                        // flag for close system 1 = gradient is negligible (no diffusion)
 
   double xlo, xhi, ylo, yhi, zlo, zhi, bzhi;
   double xbcm, xbcp, ybcm, ybcp, zbcm, zbcp; // inlet BC concentrations for each surface

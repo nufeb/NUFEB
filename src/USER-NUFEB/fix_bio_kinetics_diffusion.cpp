@@ -52,7 +52,7 @@ enum{REGULAR, BOUNDARY, GHOST};
 FixKineticsDiffusion::FixKineticsDiffusion(LAMMPS *lmp, int narg, char **arg) :
     Fix(lmp, narg, arg) {
 
-  if (narg < 8)
+  if (narg < 7)
     error->all(FLERR, "Not enough arguments in fix diffusion command");
 
   shearflag = dragflag = 0;
@@ -60,6 +60,8 @@ FixKineticsDiffusion::FixKineticsDiffusion(LAMMPS *lmp, int narg, char **arg) :
   srate = 0;
   dcflag = 0;
   closed_flag = 0;
+  unit = KG;
+  dcratio = 0.8;
 
   xgrid = NULL;
   nugrid = NULL;
@@ -117,14 +119,7 @@ FixKineticsDiffusion::FixKineticsDiffusion(LAMMPS *lmp, int narg, char **arg) :
   else
     error->all(FLERR, "Illegal z-axis boundary condition command");
 
-  if (strcmp(arg[7], "kg") == 0)
-    unit = KG;
-  else if (strcmp(arg[7], "mol") == 0)
-    unit = MOL;
-  else
-    error->all(FLERR, "Illegal unit in fix kinetics/diffusion command: specify 'kg' or 'mol'");
-
-  int iarg = 8;
+  int iarg = 7;
   while (iarg < narg) {
     if (strcmp(arg[iarg], "srate") == 0) {
       srate = force->numeric(FLERR, arg[iarg + 1]);
@@ -134,13 +129,18 @@ FixKineticsDiffusion::FixKineticsDiffusion(LAMMPS *lmp, int narg, char **arg) :
     } else if (strcmp(arg[iarg], "closedflag") == 0) {
       closed_flag = force->inumeric(FLERR, arg[iarg + 1]);
       iarg += 2;
-      if (closed_flag > 2 || closed_flag < 0)
+      if (closed_flag > 1 || closed_flag < 0)
 	error->all(FLERR, "Illegal fix kinetics/diffusion command: closeflag");
     } else if (strcmp(arg[iarg], "dcflag") == 0) {
       dcflag = force->inumeric(FLERR, arg[iarg + 1]);
       if (dcflag < 0 || dcflag > 2)
         error->all(FLERR, "Illegal fix kinetics/diffusion command: dcflag");
       iarg += 2;
+    } else if (strcmp(arg[iarg], "dcratio") == 0) {
+      dcratio = force->numeric(FLERR, arg[iarg + 1]);
+      iarg += 2;
+      if (dcratio <= 0)
+	error->all(FLERR, "Illegal fix kinetics/diffusion command: dcratio");
     } else if (strcmp(arg[iarg], "bulk") == 0) {
       bulkflag = 1;
       q = force->numeric(FLERR, arg[iarg + 1]);
@@ -207,6 +207,7 @@ void FixKineticsDiffusion::init() {
 
   // register fix kinetics with this class
   int nfix = modify->nfix;
+  int energy = 0;
   for (int j = 0; j < nfix; j++) {
     if (strcmp(modify->fix[j]->style, "kinetics") == 0) {
       kinetics = static_cast<FixKinetics *>(lmp->modify->fix[j]);
@@ -214,6 +215,8 @@ void FixKineticsDiffusion::init() {
       shearflag = 1;
     } else if (strcmp(modify->fix[j]->style, "fdrag") == 0) {
       dragflag = 1;
+    } else if (strcmp(modify->fix[j]->style, "kinetics/growth/energy") == 0) {
+      energy = 1;
     }
   }
 
@@ -222,6 +225,8 @@ void FixKineticsDiffusion::init() {
 
   bio = kinetics->bio;
   tol = input->variable->compute_equal(ivar[0]);
+
+  if (energy) unit = MOL;
 
   //set diffusion grid size
   nx = kinetics->nx;
@@ -278,30 +283,28 @@ void FixKineticsDiffusion::init() {
 
   setup_exchange(kinetics->grid, kinetics->subgrid.get_box(), { xbcflag == 0, ybcflag == 0, zbcflag == 0 });
 
-  int close_system = (xbcflag == PP || xbcflag == NN) && (ybcflag == PP || ybcflag == NN) && (zbcflag == PP || zbcflag == NN);
-  if (!closed_flag && close_system){
-    closed_flag = 1;
-    lmp->error->warning(FLERR, "Model is defined as a closed system (no Dirichlet BC). "
-	"By default, nutrient concentration only vary due to reaction rate, diffusion will not be solved. "
-	"Use close_flag to enable diffusion.");
-  } else if (closed_flag > 0 && !close_system) {
-    lmp->error->all(FLERR, "Illegal close_flag: model is not a closed system.");
-  }
+//  int close_system = (xbcflag == PP || xbcflag == NN) && (ybcflag == PP || ybcflag == NN) && (zbcflag == PP || zbcflag == NN);
+//  if (!closed_flag && close_system){
+//    closed_flag = 1;
+//    lmp->error->warning(FLERR, "Model is defined as a closed system (no Dirichlet BC). "
+//	"By default, nutrient concentration only vary due to reaction rate, diffusion will not be solved. "
+//	"Use close_flag to enable diffusion.");
+//  } else if (closed_flag > 0 && !close_system) {
+//    lmp->error->all(FLERR, "Illegal close_flag: model is not a closed system.");
+//  }
 }
 
 /* ----------------------------------------------------------------------
  Update nutrient concentrations in closed system
  if closed_flag = 1. Consider that the gradient will be negligible
  so the concentration will only vary due to the reaction rate (no diffusion).
- if closed_flag = 2. Manual calculate nutrient consumption in current bio tiemstep,
- gradient will be solved by diffusion
  ------------------------------------------------------------------------- */
 
 void FixKineticsDiffusion::closed_diff(double dt) {
   double **nus = kinetics->nus;
   double **nur = kinetics->nur;
 
-  if (closed_flag == 1) {
+  if (closed_flag) {
     for (int nu = 1; nu < bio->nnu + 1; nu++) {
       if (bio->nustate[nu] != 0)
 	continue;
@@ -313,17 +316,6 @@ void FixKineticsDiffusion::closed_diff(double dt) {
       sum *= dt / (nx * ny * kinetics->bnz);
       for (int grid = 0; grid < kinetics->bgrids; grid++) {
 	nus[nu][grid] += sum;
-	if (nus[nu][grid] <= 0)
-	  nus[nu][grid] = MIN_NUS;
-      }
-    }
-  } else if (closed_flag == 2) {
-    for (int nu = 1; nu < bio->nnu + 1; nu++) {
-      if (bio->nustate[nu] != 0)
-        continue;
-      for (int grid = 0; grid < kinetics->ngrids; grid++) {
-	double r = nur[nu][grid] * dt;
-	nus[nu][grid] += r;
 	if (nus[nu][grid] <= 0)
 	  nus[nu][grid] = MIN_NUS;
       }
@@ -502,7 +494,7 @@ void FixKineticsDiffusion::update_diff_coeff() {
         if(dcflag == 1) {
           grid_diff_coeff[i][grid] = bio->diff_coeff[i] * (1 - (0.43 * pow(kinetics->xdensity[0][ind]/vol,0.92)) / (11.19 + 0.27 * pow(kinetics->xdensity[0][ind]/vol,0.99)));
         } else if (dcflag == 2) {
-          grid_diff_coeff[i][grid] = bio->diff_coeff[i] * 0.8;
+          grid_diff_coeff[i][grid] = bio->diff_coeff[i] * dcratio;
         }
         continue;
       }

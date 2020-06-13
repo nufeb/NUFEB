@@ -358,7 +358,7 @@ void FixKinetics::pre_force(int vflag) {
  integration loop
  ------------------------------------------------------------------------- */
 void FixKinetics::integration() {
-  int iteration = 0;
+  int iter = 0;
   bool converge = false;
   int nnus = bio->nnu;
 
@@ -372,8 +372,8 @@ void FixKinetics::integration() {
     while (!converge) {
       converge = true;
 
-      // solve for reaction term, no growth happens here
-      if (iteration % devery == 0) {
+      // solve for reaction term, no growth happens here unless external growth flag is on
+      if (iter % devery == 0) {
 	reset_nur();
 	if (energy != NULL) {
 	  ph->solve_ph();
@@ -384,14 +384,13 @@ void FixKinetics::integration() {
 	}
       }
 
-      iteration++;
+      iter++;
 
       // solve for diffusion and advection
-      if (diffusion->closed_flag == 1) {
+      if (diffusion->closed_flag) {
 	diffusion->closed_diff(update->dt * nevery);
       } else {
-	diffusion->closed_diff(update->dt * nevery);
-	nuconv = diffusion->diffusion(nuconv, iteration, diff_dt);
+	nuconv = diffusion->diffusion(nuconv, iter, diff_dt);
       }
 
       // check for convergence
@@ -403,14 +402,14 @@ void FixKinetics::integration() {
 	}
       }
 
-      if (niter > 0 && iteration >= niter || diffusion->closed_flag == 1)
+      if (niter > 0 && iter >= niter || diffusion->closed_flag)
 	converge = true;
     }
 
     if (comm->me == 0 && logfile)
-      fprintf(logfile, "number of iterations: %i \n", iteration);
+      fprintf(logfile, "number of iterations: %i \n", iter);
     if (comm->me == 0 && screen)
-      fprintf(screen, "number of iterations: %i \n", iteration);
+      fprintf(screen, "number of iterations: %i \n", iter);
 
     reset_isconv();
   } else {

@@ -67,7 +67,7 @@ variable layer equal 0
 
 fix k1 all kinetics 1 40 3 60 v_diffT v_layer niter 5000 demflag 0
 fix kgm all kinetics/growth/monod epsdens 30
-fix g1 all kinetics/diffusion v_tol pp pp nd kg bulk 2.31e-7 1.25e-3 0.1
+fix g1 all kinetics/diffusion v_tol pp pp nd bulk 2.31e-7 1.25e-3 0.1
 fix d1 all divide 1 v_EPSdens v_divDia 1235 demflag 0
 fix vf1 all verify 1 bm3 demflag 0
 

@@ -71,7 +71,7 @@ thermo_modify	lost ignore
 
 fix k1 all kinetics 100 60 12 30 v_diffT v_layer niter 5000
 fix kgm all kinetics/growth/monod epsdens 30
-fix g1 all kinetics/diffusion v_tol pp pp nd kg
+fix g1 all kinetics/diffusion v_tol pp pp nd
 fix d1 all divide 100 v_EPSdens v_divDia 31233
 fix e1 HET eps_extract 100 v_EPSratio v_EPSdens 12422423
 
