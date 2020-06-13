@@ -184,7 +184,7 @@ void FixKineticsMonod::init_param() {
   ks = bio->ks;
   ntypes = atom->ntypes;
 
-  isub = 0; io2 = 0; inh4 = 0; ino2 = 0; ino3 = 0;
+  isub = io2 = inh4 = ino2 = ino3 = 0;
 
   // initialize nutrients
   for (int nu = 1; nu <= bio->nnu; nu++) {
@@ -307,7 +307,7 @@ void FixKineticsMonod::growth(double dt, int gflag) {
 void FixKineticsMonod::growth_het(int i, int grid) {
   double yield_eps = 0;
   double r1, r2, r3, r4, r5, r6, r7;
-  r1 = 0; r2 = 0; r3 = 0; r4 = 0; r5 = 0; r6 =0; r7 = 0;
+  r1 = r2 = r3 = r4 = r5 = r6 = r7 = 0;
 
   if (ieps != 0) yield_eps = yield[ieps];
   //het aerobic growth rate

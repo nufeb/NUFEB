@@ -476,7 +476,7 @@ double FixVerify::get_ave_s_sub_base() {
       if (strcmp(bio->nuname[nu], "sub") == 0) {
         int up = grid + nX * nY;
 
-        if (kinetics->diffusion->xgrid[grid][2] < kinetics->zlo && !kinetics->diffusion->ghost[up]) {
+        if (kinetics->diffusion->xgrid[grid][2] < kinetics->zlo && !kinetics->diffusion->grid_type[up]) {
           ave_sub_s += kinetics->diffusion->nugrid[nu][grid];
         }
       }
@@ -500,7 +500,7 @@ double FixVerify::get_ave_s_o2_base() {
       if (strcmp(bio->nuname[nu], "o2") == 0) {
         int up = grid + nX * nY;
 
-        if (kinetics->diffusion->xgrid[grid][2] < kinetics->zlo && !kinetics->diffusion->ghost[up]) {
+        if (kinetics->diffusion->xgrid[grid][2] < kinetics->zlo && !kinetics->diffusion->grid_type[up]) {
           ave_o2_s += kinetics->diffusion->nugrid[nu][grid];
         }
       }
@@ -524,7 +524,7 @@ double FixVerify::get_ave_s_nh4_base() {
       if (strcmp(bio->nuname[nu], "nh4") == 0) {
         int up = grid + nX * nY;
 
-        if (kinetics->diffusion->xgrid[grid][2] < kinetics->zlo && !kinetics->diffusion->ghost[up]) {
+        if (kinetics->diffusion->xgrid[grid][2] < kinetics->zlo && !kinetics->diffusion->grid_type[up]) {
           ave_nh4_s += kinetics->diffusion->nugrid[nu][grid];
         }
       }

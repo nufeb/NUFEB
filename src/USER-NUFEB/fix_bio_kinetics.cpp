@@ -55,8 +55,6 @@ using namespace FixConst;
 
 using namespace std;
 
-#define BUFMIN 1000
-
 /* ---------------------------------------------------------------------- */
 
 FixKinetics::FixKinetics(LAMMPS *lmp, int narg, char **arg) :
@@ -328,7 +326,7 @@ void FixKinetics::init_param() {
     for (int i = 0; i <= bio->nnu; i++) {
       if (bio->ini_nus != NULL) nus[i][j] = bio->ini_nus[i][0];
       nur[i][j] = 0;
-
+      nuconv[i] = 0;
       activity[i][0][j] = 0;
       activity[i][1][j] = 0;
       activity[i][2][j] = 0;
@@ -389,10 +387,12 @@ void FixKinetics::integration() {
       iteration++;
 
       // solve for diffusion and advection
-      if (diffusion->closed_flag)
+      if (diffusion->closed_flag == 1) {
 	diffusion->closed_diff(update->dt * nevery);
-      else
+      } else {
+	diffusion->closed_diff(update->dt * nevery);
 	nuconv = diffusion->diffusion(nuconv, iteration, diff_dt);
+      }
 
       // check for convergence
       for (int i = 1; i <= nnus; i++) {
@@ -403,7 +403,7 @@ void FixKinetics::integration() {
 	}
       }
 
-      if (niter > 0 && iteration >= niter || diffusion->closed_flag)
+      if (niter > 0 && iteration >= niter || diffusion->closed_flag == 1)
 	converge = true;
     }
 
@@ -430,9 +430,7 @@ void FixKinetics::integration() {
     ph->buffer_ph();
 
   if (diffusion != NULL) {
-    // update concentration in bulk liquid
     diffusion->compute_bulk();
-    // update grids
     diffusion->update_grids();
   }
 
