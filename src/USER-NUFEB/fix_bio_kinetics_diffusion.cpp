@@ -283,15 +283,11 @@ void FixKineticsDiffusion::init() {
 
   setup_exchange(kinetics->grid, kinetics->subgrid.get_box(), { xbcflag == 0, ybcflag == 0, zbcflag == 0 });
 
-//  int close_system = (xbcflag == PP || xbcflag == NN) && (ybcflag == PP || ybcflag == NN) && (zbcflag == PP || zbcflag == NN);
-//  if (!closed_flag && close_system){
-//    closed_flag = 1;
-//    lmp->error->warning(FLERR, "Model is defined as a closed system (no Dirichlet BC). "
-//	"By default, nutrient concentration only vary due to reaction rate, diffusion will not be solved. "
-//	"Use close_flag to enable diffusion.");
-//  } else if (closed_flag > 0 && !close_system) {
-//    lmp->error->all(FLERR, "Illegal close_flag: model is not a closed system.");
-//  }
+  int close_system = (xbcflag == PP || xbcflag == NN) && (ybcflag == PP || ybcflag == NN) && (zbcflag == PP || zbcflag == NN);
+  if (!closed_flag && close_system){
+    lmp->error->warning(FLERR, "Model is defined as a closed system (no Dirichlet BC). "
+	"Steady-state approximation cannot be applied in such system. Consider to use closedflag = 1.");
+  }
 }
 
 /* ----------------------------------------------------------------------
