@@ -48,8 +48,8 @@ class FixKinetics : public Fix, public DecompGrid<FixKinetics> {
   int *ivar;
 
   int nx, ny, nz, bnz;             // number of grids in x y z axis
-  int bgrids;                      // # of non-boundary grids
-  int ngrids;                      // # of grids
+  int bgrids;                      // # of local grids below boundary layer
+  int ngrids;                      // # of local grids
 
   double **nus;                    // nutrient concentration [nutrient][grid]
   double **nur;                    // nutrient consumption [nutrient][grid]

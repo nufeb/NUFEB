@@ -82,7 +82,7 @@ variable nloops equal 30
 
 fix k1 all kinetics 1 160 3 38 v_diffT v_layer niter -1
 fix kgm all kinetics/growth/monod v_EPSdens v_etaHET gflag 0
-fix g1 all kinetics/diffusion v_tol dn nn nn kg
+fix g1 all kinetics/diffusion v_tol dn nn nn
 
 fix cfd1 all nufebFoam v_demSteps v_bioSteps v_bioDt v_nloops
 fix vf1 all verify 1 bm2 1 demflag 0

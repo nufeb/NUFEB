@@ -50,7 +50,7 @@ fix k1 all kinetics 1 100 5 100 v_diffT v_layer demflag 0 niter 10000
 fix ki2 all kinetics/thermo
 fix ki3 all kinetics/ph fix 
 fix ki1 all kinetics/growth/energy v_EPSdens	
-fix g1 all kinetics/diffusion v_tol pp pp nd mol
+fix g1 all kinetics/diffusion v_tol pp pp nd
 fix d1 all divide 1 v_EPSdens v_divDia 31231 demflag 0
 
 ##############Define IBm Computes##############

@@ -56,6 +56,16 @@ do
     fi
 done
 
+write_path() {
+  path=$rootDir/lammps/src
+  if grep -q $path ~/.bashrc; then
+    echo -n
+  else
+    echo "Writing path to .bashrc"
+    echo "export PATH=\$PATH:$path" >> ~/.bashrc
+  fi
+}
+
 echo "Building NUFEB.."
 for var in "$@"
 do 
@@ -64,6 +74,7 @@ do
         make
         cd ..
         make -j4 serial
+        write_path
         exit 1
    fi
 done
@@ -73,7 +84,7 @@ do
     if [ $var == "--static" ]; then
         make -j4 mpi mode=lib
         exit 1
-   fi
+    fi
 done
 
 for var in "$@"
@@ -81,17 +92,10 @@ do
     if [ $var == "--shared" ]; then
         make -j4 mpi mode=shlib
         exit 1
-   fi
+    fi
 done
 
 make -j4 mpi
-
-path=$rootDir/lammps/src
-if grep -q $path ~/.bashrc; then
-  echo -n
-else
-  echo "Writing path to .bashrc"
-  echo "export PATH=\$PATH:$path" >> ~/.bashrc
-fi
-
+write_path
 exit 1
+
