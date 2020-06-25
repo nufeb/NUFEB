@@ -190,7 +190,7 @@ void FixKineticsMonod::init_param() {
   ks = bio->ks;
   ntypes = atom->ntypes;
 
-  isub = 0; io2 = 0; inh4 = 0; ino2 = 0; ino3 = 0; isuc = 0; ico2 = 0;
+  isub = 0; io2 = 0; inh4 = 0; ino2 = 0; ino3 = 0; isuc = 0; ico2 = 0; ico2g = 0;
 
   // initialize nutrients
   for (int nu = 1; nu <= bio->nnu; nu++) {
@@ -208,6 +208,8 @@ void FixKineticsMonod::init_param() {
       isuc = nu;
     else if (strcmp(bio->nuname[nu], "co2") == 0)
       ico2 = nu;
+    else if (strcmp(bio->nuname[nu], "co2g") == 0)
+      ico2g = nu;
   }
 
   // initialize species
@@ -487,6 +489,8 @@ void FixKineticsMonod::growth_cyano(int i, int grid) {
 
   r1 = 0; r2 = 0; r3 = 0; r4 = 0;
 
+  //co2 dissolution
+  nur[ico2][grid] += (4.4e-6 * nus[ico2g][grid]) - (4.4e-6 * nus[ico2][grid]);
 
   //cyanobacterial growth rate based on light and co2
   r1 = mu[i] * (nus[isub][grid] / (ks[i][isub] + nus[isub][grid])) * (nus[ico2][grid] / (ks[i][ico2] + nus[ico2][grid]));
@@ -497,17 +501,17 @@ void FixKineticsMonod::growth_cyano(int i, int grid) {
   r3 = maintain[i]; //* (nus[ico2][grid] / (ks[i][ico2] + nus[ico2][grid]));
 
   //nutrient utilization
-  nur[isub][grid] += ((-1 / yield[i]) * ((r1 + r2 + r3) * xdensity[i][grid]));
+  nur[isub][grid] += ((-1 / yield[i]) * (r1 * xdensity[i][grid]));
   nur[ico2][grid] += (-((1 - yield[i]) / yield[i]) * r1 * xdensity[i][grid]);
-  nur[ico2][grid] += -(r3 * xdensity[i][grid]);
+  nur[io2][grid] += -(0.1 * r3 * xdensity[i][grid]);
 
   //oxygen evolution
   nur[io2][grid] +=  r1 * xdensity[i][grid];
   //sucrose export
-  r4 = r1*suc_exp;
+  r4 = 0.037 *r1*suc_exp;
   nur[isuc][grid] += r4 * xdensity[i][grid];
 
-  //het overall growth rate
+  //cyano overall growth rate
   growrate[i][0][grid] = r1 - r2 - r3 - r4;
 }
 
@@ -528,9 +532,9 @@ void FixKineticsMonod::growth_ecw(int i, int grid) {
   r3 = maintain[i] * (nus[io2][grid] / (ks[i][io2] + nus[io2][grid]));
 
   //nutrient utilization
-  nur[isuc][grid] += ((-1 / yield[i]) * r1 * xdensity[i][grid]);
-  nur[io2][grid] += (-((1 - yield[i]) / yield[i]) * r1 * xdensity[i][grid]);
-  nur[io2][grid] += -(r3 * xdensity[i][grid]);
+  nur[isuc][grid] += ((-1.147) * r1 * xdensity[i][grid]);
+  nur[io2][grid] += (-(0.14) * (r1 + r3) * xdensity[i][grid]);
+  nur[ico2][grid] += (0.199 * (r1 + r3) * xdensity[i][grid]);
 
 
   //ecw overall growth rate

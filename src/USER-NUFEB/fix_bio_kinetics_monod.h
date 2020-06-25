@@ -52,7 +52,7 @@ class FixKineticsMonod : public Fix {
 
   double **xdensity;
 
-  int isub, io2, inh4, ino2, ino3, isuc, ico2;  // nutrient index
+  int isub, io2, inh4, ino2, ino3, isuc, ico2, ico2g;  // nutrient index
   int ieps;			    // eps index
 
   int *species;                     // species index 0 = unknown, 1 = het, 2 = aob, 3 = nob, 4 = eps, 5 = dead, 6 = cyano, 7 = ecw
