@@ -33,3 +33,9 @@
 .project
 .cproject
 .settings/
+# Simulation outputs
+*.vtu
+*.vti
+*.vtr
+\Sucrose*
+*.csv

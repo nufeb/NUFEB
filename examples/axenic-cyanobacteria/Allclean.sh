@@ -4,5 +4,6 @@ rm dump_*
 rm atom_*
 rm slurm-*
 rm -rf Results
+rm -rf Sucrose*
 rm output.lammps
 rm log.lammps

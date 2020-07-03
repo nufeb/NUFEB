@@ -149,6 +149,7 @@ int DumpGrid::parse_fields(int narg, char **arg) {
       fields.push_back(arg[iarg]);
     }
   }
+  return i;
 }
 
 void DumpGrid::pack_concentration(vtkSmartPointer<vtkImageData> image) {
