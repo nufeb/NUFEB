@@ -80,7 +80,7 @@ variable deadDia equal 9e-7
 
 ##############Define IBm Commands##############
 
-fix k1 all kinetics 100 50 50 50 v_diffT v_layer niter 5000
+fix k1 all kinetics 100 50 50 5 v_diffT v_layer niter 5000
 fix kgm all kinetics/growth/monod sucexp ${sucRatio} gflag 1
 fix g1 all kinetics/diffusion v_tol pp pp nn #kg dcflag 2
 fix d1 all divide 100 v_EPSdens v_divDia 64564
