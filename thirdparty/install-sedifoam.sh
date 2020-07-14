@@ -7,8 +7,8 @@ echo "Installing SediFOAM (for mac/linux).."
 
 echo "*******************************************"
 echo "select the system you are running, then press enter"
-echo "  1) Ubuntu14.x/Ubuntu16.x"
-echo "  2) Ubuntu18.x"
+echo "  1) Ubuntu14.x - Ubuntu16.x"
+echo "  2) Ubuntu17.x - Ubuntu20.x" 
 echo "  3) Centos"
 echo "  4) Mac" 
 echo "  5) Other (install openmpi locally, this will take a while)" 
@@ -16,8 +16,8 @@ echo "*******************************************"
 read n
 
 case $n in
-  1) echo "You chose 1) Ubuntu14.x/Ubuntu16.x";;
-  2) echo "You chose 2) Ubuntu18.x";;
+  1) echo "You chose 1) Ubuntu14.x - Ubuntu16.x";;
+  2) echo "You chose 2) Ubuntu17.x - Ubuntu20.x";;
   3) echo "You chose 3) Centos";;
   4) echo "You chose 4) Mac";;
   5) echo "You chose 5) Other";;
