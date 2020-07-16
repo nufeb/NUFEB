@@ -1,8 +1,14 @@
 # Instructions for NUFEB + phototroph on CADES CONDO
 
-# To build
 
+# clone repo
 module load env/cades-cnms
+cd $SCRATCH
+git clone https://github.com/Jsakkos/NUFEB --recursive
+git checkout add_phototroph
+git pull
+
+# To build
 . $SOFTWARECNMS/spack/share/spack/setup-env.sh
 spack load openmpi/qnfab5m
 spack load vtk%gcc@8.2.0
