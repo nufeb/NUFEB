@@ -7,7 +7,7 @@ module load env/cades-cnms
 spack load openmpi/qnfab5m
 spack load vtk%gcc@8.2.0
 
-./install_cades.sh
+./install_cades.sh --enable-vtk
 
 # To test
 ## interactively
