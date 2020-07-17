@@ -3,7 +3,7 @@
 #SBATCH -p high_mem
 #SBATCH --nodes 2
 #SBATCH --ntasks-per-node 32
-#SBATCH --cpus-per-task 32
+#SBATCH --cpus-per-task 2
 #SBATCH --exclusive
 #SBATCH --mem=100g
 #SBATCH -A cnms
