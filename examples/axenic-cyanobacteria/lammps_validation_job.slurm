@@ -28,6 +28,6 @@ module list
 printenv
 ldd $LAMMPS
 
-echo "srun -n32 $LAMMPS -in Inputscript-validation.lammps"
+echo "srun -n16 $LAMMPS -in Inputscript-validation.lammps"
 
-srun -n32 $LAMMPS -in Inputscript-validation.lammps
+srun -n16 $LAMMPS -in Inputscript-validation.lammps
