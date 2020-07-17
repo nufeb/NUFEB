@@ -13,10 +13,13 @@ read_data_bio atom.in
 
 lattice sc 1e-6 origin 0 0 0
 region reg block 0 1000 0 1000 0 100
+#shell rm -f rngs.txt
+#shell for s in {1..100};do echo $RANDOM >> rngs.txt; done
+variable seed file rngs.txt
 variable cyanoCells equal 10
 variable cyanoMass equal ${cyanoCells}*1.3e3*4/3*PI*(1.37e-6/2)^3
 
-create_atoms 1 random ${cyanoCells} 3124 reg
+create_atoms 1 random ${cyanoCells} ${seed} reg
 #create_atoms 1 random 10 3124 reg
 create_atoms 2 random 1 56151 reg
 
@@ -66,7 +69,7 @@ variable EPSratio equal 1.3
 variable divDia equal 1.94e-6
 
 #variable used for sucrose export
-variable sucRatio index 0.0 0.1 0.3 0.5 0.7
+variable sucRatio index 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8
 
 #variables used in fix kinetics
 variable diffT equal 1e-4
@@ -110,4 +113,5 @@ run 40000
 shell cd ..
 clear
 next sucRatio
+next seed
 jump SELF
