@@ -30,4 +30,4 @@ ldd $LAMMPS
 
 echo "srun $LAMMPS -in Inputscript.lammps"
 
-srun $LAMMPS -in Inputscript.lammps
+srun $LAMMPS -in Inputscript-validation.lammps
