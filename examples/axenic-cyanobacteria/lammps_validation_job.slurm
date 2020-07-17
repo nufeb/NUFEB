@@ -7,7 +7,7 @@
 #SBATCH --exclusive
 #SBATCH --mem=100g
 #SBATCH -A cnms
-#SBATCH -t 00:30:00
+#SBATCH -t 04:00:00
 
 #launch from a fresh shell with the following loaded
 
