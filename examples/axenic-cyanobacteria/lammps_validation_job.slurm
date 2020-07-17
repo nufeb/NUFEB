@@ -3,7 +3,7 @@
 #SBATCH -p high_mem
 #SBATCH --nodes 2
 #SBATCH --ntasks-per-node 32
-#SBATCH --cpus-per-task 2
+#SBATCH --cpus-per-task 32
 #SBATCH --exclusive
 #SBATCH --mem=100g
 #SBATCH -A cnms
@@ -28,6 +28,6 @@ module list
 printenv
 ldd $LAMMPS
 
-echo "srun -n16 $LAMMPS -in Inputscript-validation.lammps"
+echo "srun -n 64 $LAMMPS -in Inputscript-validation.lammps"
 
-srun -n16 $LAMMPS -in Inputscript-validation.lammps
+srun -n 64 $LAMMPS -in Inputscript-validation.lammps
