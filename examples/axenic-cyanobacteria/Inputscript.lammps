@@ -7,30 +7,27 @@ newton		off
 processors  * * 1
 
 comm_modify	vel yes
-read_data_bio atom.in
+read_data_bio atom_1.in
 
 ##############Define initial particle distribution##############
 
 lattice sc 1e-6 origin 0 0 0
 region reg block 0 1000 0 1000 0 100
-variable cyanoCells equal 10 #round(random(1,100,15934))
-variable cyanoMass equal ${cyanoCells}*1.3e3*4/3*PI*(1.37e-6/2)^3
+#variable cyanoCells equal 10 #round(random(1,100,15934))
+#variable cyanoMass equal 3.8e-13/1e3
 
-create_atoms 1 random ${cyanoCells} 3124 reg
+#create_atoms 1 random ${cyanoCells} 3124 reg
 #create_atoms 1 random 10 3124 reg
-create_atoms 2 random 1 56151 reg
+#create_atoms 2 random 1 56151 reg
 
 
-set type 1 density 1.3e3
-set type 1 diameter 1.37e-6
-set type 1 mass ${cyanoMass}#1.75e-14 #5.1e-15
-#variable vratio equal "${vfinal}/${v0}"
-set type 2 density 1.3e3
-set type 2 diameter 1.55e-6
-set type 2 mass 5.1e-15
+#set type 1 density 1.3e3
+#set type 1 diameter 1.37e-6
+#set type 1 mass ${cyanoMass}#1.75e-14 #5.1e-15
+
 
 group CYANO type 1
-group DEAD type 2
+
 
 
 
@@ -75,7 +72,7 @@ variable etaHET equal 0.6
 variable layer equal -1
 
 #variables used in fix death
-variable deadDia equal 9e-7
+#variable deadDia equal 9e-7
 
 
 ##############Define IBm Commands##############
@@ -84,7 +81,7 @@ fix k1 all kinetics 100 50 50 5 v_diffT v_layer niter 5000
 fix kgm all kinetics/growth/monod sucexp ${sucRatio} gflag 1
 fix g1 all kinetics/diffusion v_tol pp pp nn #kg dcflag 2
 fix d1 all divide 100 v_EPSdens v_divDia 64564
-fix d2 all death 1 v_deadDia demflag 0
+#fix d2 all death 1 v_deadDia demflag 0
 
 
 ##############Define IBm Computes##############
@@ -96,13 +93,13 @@ compute myCon all avg_con
 ##############Simulation Output##############
 
 dump		id all custom 1000 output.lammmps id type diameter x y z
-dump		du1 all vtk 1000 atom_*.vtu id type diameter x y z
-dump		du2 all grid 1000 grid_%_*.vti con
+#dump		du1 all vtk 1000 atom_*.vtu id type diameter x y z
+#dump		du2 all grid 1000 grid_%_*.vti con
 dump            du3 all bio 1000 ntypes biomass avg_con
 #dump        du4 all image 1000 snap_*.jpg type diameter
-thermo_style    custom step cpu atoms c_myNtypes[2] c_myNtypes[3]
+thermo_style    custom step cpu atoms c_myNtypes[2]
 thermo		100
 thermo_modify	lost ignore
 
 
-run 40000
+run 30000
