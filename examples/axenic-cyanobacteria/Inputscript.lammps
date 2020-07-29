@@ -7,7 +7,8 @@ newton		off
 processors  * * 1
 
 comm_modify	vel yes
-read_data_bio atom_1.in
+variable sims loop 5
+read_data_bio atom_${sims}.in
 
 ##############Define initial particle distribution##############
 
@@ -101,5 +102,11 @@ thermo_style    custom step cpu atoms c_myNtypes[2]
 thermo		100
 thermo_modify	lost ignore
 
+shell mkdir Sucrose_${sucRatio}_Rep_${sims}
+shell cd Sucrose_${sucRatio}_Rep_${sims}
 
-run 30000
+run 3000
+shell cd ..
+clear
+next sims
+jump SELF
