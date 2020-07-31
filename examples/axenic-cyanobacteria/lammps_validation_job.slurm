@@ -15,7 +15,7 @@ module load env/cades-cnms
 spack load openmpi/qnfab5m
 spack load vtk%gcc@8.2.0
 module load python
-python3 NUFEBatom.py --n 10
+python NUFEBatom.py --n 10
 #export OMP_NUM_THREADS=1
 
 export LAMMPS=/lustre/or-hydra/cades-cnms/12x/NUFEB/lammps/src/lmp_mpi
