@@ -22,4 +22,4 @@ export LAMMPS=/lustre/or-hydra/cades-cnms/12x/NUFEB/lammps/src/lmp_mpi
 
 ldd $LAMMPS
 
-mpirun -np 16 $LAMMPS -in Inputscript.lammps
+mpirun -np 16 $LAMMPS -in Inputscript-validation.lammps
