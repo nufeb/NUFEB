@@ -5,7 +5,7 @@
 #SBATCH --ntasks-per-node 32
 #SBATCH --cpus-per-task 1
 #SBATCH --exclusive
-#SBATCH --mem=100g
+#SBATCH --mem=50g
 #SBATCH -A cnms
 #SBATCH -t 01:00:00
 
