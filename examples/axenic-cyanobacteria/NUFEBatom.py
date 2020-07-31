@@ -11,14 +11,15 @@ args = parser.parse_args()
 for n in range(1,int(args.num)+1):
     atomType = 'cyano'
     n_cells = int(random.uniform(1,100))
+    K_co2 = random.uniform(1e-1,1e-3)
     min_size = 1.37e-6
     max_size = 1.94e-6
     dimensions = [1e-4,1e-4,1e-5]#x,y,z in meters
     growthRate = round(0.047/3600,7) #0.047-0.087/hr from Brodderick et al 2019 PCC7942
-    Nutrients = {'sub' : 1e-1,'o2' : 9e-3, 'suc' : 1e-20, 'co2' : 4e-1}
+    Nutrients = {'sub' : 1e-1,'o2' : 9e-3, 'suc' : 1e-20, 'co2' : 1.2e-1}
     NutesNum = len(Nutrients)
     Diff_c = {'sub' : 0,'o2' : 2.30e-9, 'suc' : 5.2e-10,'co2' : 1.9e-09}
-    K_s = {'sub' : 3.5e-4,'o2' : 2e-4, 'suc' : 1e-2,'co2' : 5e-2}
+    K_s = {'sub' : 3.5e-4,'o2' : 2e-4, 'suc' : 3.4,'co2' : K_co2}
     Params = {'Yield' : .3,'Maintenance' : 0,'Decay' : 0}
     
     

@@ -57,17 +57,17 @@ ax.set_ylabel('OD')
 ax.legend()
 
 #%%Nutrients
-# Suc = pd.DataFrame([],columns=['Time','Sucrose','Induction'])
-# for path,i in zip(Cons,SucRate):
-#     df = pd.read_csv(path,usecols=[0,2,3,4],names=['Time','O2','Sucrose','CO2(l)'],skiprows=1,index_col=0)
-#     df.index = df.index*tStep2Days
-#     df.O2 = df.O2/O2MW*1e3
-#     df.Sucrose = df.Sucrose/SucroseMW*1e3
-#     df['CO2(l)'] = df['CO2(l)']/CO2MW*1e3
-#     Suc = Suc.append(pd.DataFrame(pd.concat([pd.read_csv(path,usecols=[0,3],names=['Time','Sucrose'],skiprows=1),pd.Series(np.ones(len(df))*i,name='Induction')],axis=1),columns=['Time','Sucrose','Induction']),ignore_index=True)
-#     f, axes = plt.subplots()
-#     df.plot(ax=axes)
-#     axes.set_ylabel('Concentration (mM)')
-#     axes.set_xlabel('Time (days)')
-#     axes.set_title(f'Sucrose Ratio = {i}')
-# Suc.Sucrose = Suc.Sucrose/SucroseMW*1e3
+Suc = pd.DataFrame([],columns=['Time','Sucrose','Induction'])
+for path,i in zip(Cons,SucRate):
+    df = pd.read_csv(path,usecols=[0,2,3,4],names=['Time','O2','Sucrose','CO2(l)'],skiprows=1,index_col=0)
+    df.index = df.index*tStep2Days
+    df.O2 = df.O2/O2MW*1e3
+    df.Sucrose = df.Sucrose/SucroseMW*1e3
+    df['CO2(l)'] = df['CO2(l)']/CO2MW*1e3
+    Suc = Suc.append(pd.DataFrame(pd.concat([pd.read_csv(path,usecols=[0,3],names=['Time','Sucrose'],skiprows=1),pd.Series(np.ones(len(df))*i,name='Induction')],axis=1),columns=['Time','Sucrose','Induction']),ignore_index=True)
+    f, axes = plt.subplots()
+    df.plot(ax=axes)
+    axes.set_ylabel('Concentration (mM)')
+    axes.set_xlabel('Time (days)')
+    axes.set_title(f'Sucrose Ratio = {i}')
+Suc.Sucrose = Suc.Sucrose/SucroseMW*1e3
