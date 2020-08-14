@@ -1,5 +1,6 @@
 import random
 import argparse
+import numpy as np
 
 parser = argparse.ArgumentParser(description='Create atom definition files')
 parser.add_argument('--n', dest='num', action='store',
@@ -7,20 +8,20 @@ parser.add_argument('--n', dest='num', action='store',
                    help='Create atom definition files for NUFEB with --n #files desired (default is 1)')
 
 args = parser.parse_args()
-
+Ks = np.logspace(-2,0,args.num)
 for n in range(1,int(args.num)+1):
     atomType = 'cyano'
-    n_cells = int(random.uniform(1,100))
-    K_co2 = random.uniform(1e-1,1e-3)
+    n_cells = int(random.uniform(10,100))
+    K_co2 = Ks[n-1]#random.uniform(5e0,1e-5)
     min_size = 1.37e-6
     max_size = 1.94e-6
     dimensions = [1e-4,1e-4,1e-5]#x,y,z in meters
     growthRate = round(0.047/3600,7) #0.047-0.087/hr from Brodderick et al 2019 PCC7942
-    Nutrients = {'sub' : 1e-1,'o2' : 9e-3, 'suc' : 1e-20, 'co2' : 1.2e-1}
+    Nutrients = {'sub' : 1e-1,'o2' : 9e-3, 'suc' : 1e-20, 'co2' : 4e-1,'co2g' : 0}
     NutesNum = len(Nutrients)
-    Diff_c = {'sub' : 0,'o2' : 2.30e-9, 'suc' : 5.2e-10,'co2' : 1.9e-09}
-    K_s = {'sub' : 3.5e-4,'o2' : 2e-4, 'suc' : 3.4,'co2' : K_co2}
-    Params = {'Yield' : .3,'Maintenance' : 0,'Decay' : 0}
+    Diff_c = {'sub' : 0,'o2' : 2.30e-9, 'suc' : 5.2e-10,'co2' : 1.9e-09,'co2g' : 0}
+    K_s = {'sub' : 3.5e-4,'o2' : 2e-4, 'suc' : 1e-2,'co2' : K_co2,'co2g' : 0}
+    Params = {'Yield' : .55,'Maintenance' : 0,'Decay' : 0}
     
     
     L = [' NUFEB Simulation\r\n\n',f'     {n_cells} atoms \n',
@@ -31,10 +32,10 @@ for n in range(1,int(args.num)+1):
     
     for i in range(1,n_cells+1):
         size = random.uniform(min_size, max_size)
-        x = random.uniform(0,dimensions[0])
-        y = random.uniform(0,dimensions[1])
-        z = random.uniform(0,dimensions[2])
-        L.append(f'     %d 1 {size :.2e}  1.3e3 {x :.2e} {y :.2e} {z :.2e} {size :.2e} \n'% (i))
+        x = random.uniform(0+size,dimensions[0]-size)
+        y = random.uniform(0+size,dimensions[1]-size)
+        z = random.uniform(0+size,dimensions[2]-size)
+        L.append(f'     %d 1 {size :.2e}  375 {x :.2e} {y :.2e} {z :.2e} {size :.2e} \n'% (i))
     L.append('\n')
     L.append(' Nutrients \n\n')
     for i,nute in enumerate(Nutrients.keys()):

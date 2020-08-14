@@ -14,23 +14,8 @@ read_data_bio atom_${sims}.in
 
 lattice sc 1e-6 origin 0 0 0
 region reg block 0 1000 0 1000 0 100
-#variable cyanoCells equal 10 #round(random(1,100,15934))
-#variable cyanoMass equal 3.8e-13/1e3
-
-#create_atoms 1 random ${cyanoCells} 3124 reg
-#create_atoms 1 random 10 3124 reg
-#create_atoms 2 random 1 56151 reg
-
-
-#set type 1 density 1.3e3
-#set type 1 diameter 1.37e-6
-#set type 1 mass ${cyanoMass}#1.75e-14 #5.1e-15
-
 
 group CYANO type 1
-
-
-
 
 neighbor	5e-7 bin
 neigh_modify	delay 0 one 5000
@@ -45,7 +30,7 @@ timestep 10
 #fix 1 all nve/limit 1e-8
 fix fv all viscous 1e-5
 
-fix zw all wall/gran hooke/history 2000 NULL 500.0 NULL 1.5 0 zplane  0.0  1e-04
+fix zw all wall/gran hooke/history 2000 NULL 500.0 NULL 1.5 0 zplane  0.0  1e-05
 
 variable kanc equal 50
 
