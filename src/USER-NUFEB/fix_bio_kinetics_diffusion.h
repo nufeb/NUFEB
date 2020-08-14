@@ -73,7 +73,8 @@ public:
   int snxx_yy_zz;                         // total # of local + ghost grids
 
   double diff_dt;
-  int closed_flag;                        // flag for close system 1 = gradient is negligible (no diffusion)
+  int close_flag;                        // flag for close system 1 = gradient is negligible (no diffusion)
+  int close_system;
 
   double xlo, xhi, ylo, yhi, zlo, zhi, bzhi;
   double xbcm, xbcp, ybcm, ybcp, zbcm, zbcp; // inlet BC concentrations for each surface
