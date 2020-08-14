@@ -490,7 +490,7 @@ void FixKineticsMonod::growth_cyano(int i, int grid) {
   r1 = 0; r2 = 0; r3 = 0; r4 = 0;
 
   //co2 dissolution
-  nur[ico2][grid] += (4.4e-6 * nus[ico2g][grid]) - (4.4e-6 * nus[ico2][grid]);
+  //nur[ico2][grid] += (4.4e-6 * nus[ico2g][grid]) - (4.4e-6 * nus[ico2][grid]);
 
   //cyanobacterial growth rate based on light and co2
   r1 = mu[i] * (nus[isub][grid] / (ks[i][isub] + nus[isub][grid])) * (nus[ico2][grid] / (ks[i][ico2] + nus[ico2][grid]));
@@ -502,14 +502,14 @@ void FixKineticsMonod::growth_cyano(int i, int grid) {
 
   //nutrient utilization
   nur[isub][grid] += ((-1 / yield[i]) * (r1 * xdensity[i][grid]));
-  nur[ico2][grid] += (-((1 - yield[i]) / yield[i]) * r1 * xdensity[i][grid]);
+  nur[ico2][grid] += (-1 / yield[i]) * (r1 * xdensity[i][grid]);
   nur[io2][grid] += -(0.1 * r3 * xdensity[i][grid]);
 
   //oxygen evolution
-  nur[io2][grid] +=  r1 * xdensity[i][grid];
+  nur[io2][grid] +=  (1.06 / yield[i]) * r1 * xdensity[i][grid];
   //sucrose export
-  r4 = 0.037 *r1*suc_exp;
-  nur[isuc][grid] += r4 * xdensity[i][grid];
+  r4 = r1*suc_exp; //0.037 *
+  nur[isuc][grid] += (1 / (0.65 * yield[i])) * r4 * xdensity[i][grid];
 
   //cyano overall growth rate
   growrate[i][0][grid] = r1 - r2 - r3 - r4;
