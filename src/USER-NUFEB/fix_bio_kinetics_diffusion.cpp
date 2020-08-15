@@ -59,7 +59,8 @@ FixKineticsDiffusion::FixKineticsDiffusion(LAMMPS *lmp, int narg, char **arg) :
   bulkflag = 0;
   srate = 0;
   dcflag = 0;
-  closed_flag = 0;
+  close_flag = 0;
+  close_system = 0;
   unit = KG;
   dcratio = 0.8;
 
@@ -127,9 +128,9 @@ FixKineticsDiffusion::FixKineticsDiffusion(LAMMPS *lmp, int narg, char **arg) :
         error->all(FLERR, "Illegal fix kinetics/diffusion command: srate");
       iarg += 2;
     } else if (strcmp(arg[iarg], "closedflag") == 0) {
-      closed_flag = force->inumeric(FLERR, arg[iarg + 1]);
+      close_flag = force->inumeric(FLERR, arg[iarg + 1]);
       iarg += 2;
-      if (closed_flag > 1 || closed_flag < 0)
+      if (close_flag > 1 || close_flag < 0)
 	error->all(FLERR, "Illegal fix kinetics/diffusion command: closeflag");
     } else if (strcmp(arg[iarg], "dcflag") == 0) {
       dcflag = force->inumeric(FLERR, arg[iarg + 1]);
@@ -283,15 +284,20 @@ void FixKineticsDiffusion::init() {
 
   setup_exchange(kinetics->grid, kinetics->subgrid.get_box(), { xbcflag == 0, ybcflag == 0, zbcflag == 0 });
 
-  int close_system = (xbcflag == PP || xbcflag == NN) && (ybcflag == PP || ybcflag == NN) && (zbcflag == PP || zbcflag == NN);
-  if (!closed_flag && close_system){
-    lmp->error->warning(FLERR, "Model is defined as a closed system (no Dirichlet BC). "
-	"Steady-state approximation cannot be applied in such system. Consider to use closedflag = 1.");
+  close_system = (xbcflag == PP || xbcflag == NN) && (ybcflag == PP || ybcflag == NN) && (zbcflag == PP || zbcflag == NN);
+
+  if (close_system){
+    if (comm->me == 0 && logfile)
+      fprintf(logfile, "Model is defined as a closed system. \n");
+    if (comm->me == 0 && screen)
+      fprintf(screen, "Model is defined as a closed system. \n");
   }
 }
 
 /* ----------------------------------------------------------------------
  Update nutrient concentrations in closed system
+ if closed_flag = 0. Diffusion can be considered, nutrients need to be updated
+ after diffusion w.r.t biological timestep.
  if closed_flag = 1. Consider that the gradient will be negligible
  so the concentration will only vary due to the reaction rate (no diffusion).
  ------------------------------------------------------------------------- */
@@ -300,7 +306,7 @@ void FixKineticsDiffusion::closed_diff(double dt) {
   double **nus = kinetics->nus;
   double **nur = kinetics->nur;
 
-  if (closed_flag) {
+  if (close_flag) {
     for (int nu = 1; nu < bio->nnu + 1; nu++) {
       if (bio->nustate[nu] != 0)
 	continue;
@@ -312,6 +318,17 @@ void FixKineticsDiffusion::closed_diff(double dt) {
       sum *= dt / (nx * ny * kinetics->bnz);
       for (int grid = 0; grid < kinetics->bgrids; grid++) {
 	nus[nu][grid] += sum;
+	if (nus[nu][grid] <= 0)
+	  nus[nu][grid] = MIN_NUS;
+      }
+    }
+  } else {
+    for (int nu = 1; nu < bio->nnu + 1; nu++) {
+      if (bio->nustate[nu] != 0)
+	continue;
+      for (int grid = 0; grid < kinetics->bgrids; grid++) {
+	double r = nur[nu][grid] * dt;
+	nus[nu][grid] += r;
 	if (nus[nu][grid] <= 0)
 	  nus[nu][grid] = MIN_NUS;
       }
@@ -361,12 +378,10 @@ int *FixKineticsDiffusion::diffusion(int *nuconv, int iter, double diff_dt) {
         nuprev[i][grid] = nugrid[i][grid];
       }
 
-      int count = 0;
       // solve diffusion and reaction
       for (int grid = 0; grid < snxx_yy_zz; grid++) {
         // transform nXYZ index to nuR index
         if (grid_type[grid] == REGULAR) {
-          count++;
           int ind = get_index(grid);
           double nur_ = (unit == KG) ? nur[i][ind] : nur[i][ind] * M2L;
           double diff_coeff;
