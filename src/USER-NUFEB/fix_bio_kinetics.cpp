@@ -360,7 +360,7 @@ void FixKinetics::pre_force(int vflag) {
 void FixKinetics::integration() {
   int iter = 0;
   bool converge = false;
-  int nnus = bio->nnu;
+  int nnu = bio->nnu;
 
   grow_flag = 0;
   update_bgrids();
@@ -370,8 +370,10 @@ void FixKinetics::integration() {
     if (diffusion->dcflag)
       diffusion->update_diff_coeff();
 
-    if (diffusion->close_system)
+    if (diffusion->close_system && diffusion->close_flag == 1) {
       diffusion->closed_diff(update->dt * nevery);
+      converge = true;
+    }
 
     while (!converge) {
       converge = true;
@@ -391,11 +393,10 @@ void FixKinetics::integration() {
       iter++;
 
       // solve for diffusion and advection
-      if (!diffusion->close_flag)
-	nuconv = diffusion->diffusion(nuconv, iter, diff_dt);
+      nuconv = diffusion->diffusion(nuconv, iter, diff_dt);
 
       // check for convergence
-      for (int i = 1; i <= nnus; i++) {
+      for (int i = 1; i <= nnu; i++) {
 	if (!nuconv[i]) {
 	  converge = false;
 	  reset_isconv();
@@ -403,9 +404,12 @@ void FixKinetics::integration() {
 	}
       }
 
-      if ((niter > 0 && iter >= niter) || diffusion->close_flag)
+      if (niter > 0 && iter >= niter)
 	converge = true;
     }
+
+    if (diffusion->close_system && diffusion->close_flag == 0)
+      diffusion->closed_diff_residual(update->dt * nevery, diff_dt);
 
     if (comm->me == 0 && logfile)
       fprintf(logfile, "number of iterations: %i \n", iter);

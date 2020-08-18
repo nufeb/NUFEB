@@ -51,10 +51,10 @@ variable deadDia equal 9e-7
 
 ##############Define IBm Commands##############
 
-fix k1 all kinetics 100 25 10 25 v_diffT v_layer niter 5000
+fix k1 all kinetics 1 20 16 20 v_diffT v_layer niter 5000
 fix kgm all kinetics/growth/monod epsdens 30
-fix g1 all kinetics/diffusion v_tol pp pp nn dcflag 2 
-fix d1 all divide 100 v_EPSdens v_divDia 64564
+fix g1 all kinetics/diffusion v_tol nn nn nn dcflag 2 closedflag 0
+fix d1 all divide 1 v_EPSdens v_divDia 64564
 fix e1 HET eps_extract 100 v_EPSratio v_EPSdens 53453
 
 ##############Define IBm Computes##############
@@ -63,18 +63,19 @@ compute myNtypes all ntypes
 compute myHeight all avg_height
 compute myRough all roughness
 compute myMass all biomass
+compute myCon all avg_con
 
 ##############Simulation Output##############
 
 dump		id all custom 100 output.lammps id type diameter x y z
 dump		du1 all vtk 100 atom_*.vtu id type diameter x y z
-dump		du2 all grid 1000 grid_%_*.vti con
-dump            du3 all bio 1000 avg_height roughness
+dump		du2 all grid 100 grid_%_*.vti con
+dump            du3 all bio 100 avg_height roughness avg_con
 thermo_style    custom step cpu atoms c_myNtypes[2] c_myNtypes[3] c_myMass[*]
-thermo		100
+thermo		1
 thermo_modify	lost ignore
 
 
-run 80000
+run 1100
 
 

@@ -295,10 +295,8 @@ void FixKineticsDiffusion::init() {
 }
 
 /* ----------------------------------------------------------------------
- Update nutrient concentrations in closed system
- if closed_flag = 0. Diffusion can be considered, nutrients need to be updated
- after diffusion w.r.t biological timestep.
- if closed_flag = 1. Consider that the gradient will be negligible
+ Update nutrient concentrations in closed system when closed_flag = 1
+ Consider that the gradient will be negligible
  so the concentration will only vary due to the reaction rate (no diffusion).
  ------------------------------------------------------------------------- */
 
@@ -306,38 +304,47 @@ void FixKineticsDiffusion::closed_diff(double dt) {
   double **nus = kinetics->nus;
   double **nur = kinetics->nur;
 
-  if (close_flag) {
-    for (int nu = 1; nu < bio->nnu + 1; nu++) {
-      if (bio->nustate[nu] != 0)
-	continue;
-      double sum = 0;
-      for (int grid = 0; grid < kinetics->ngrids; grid++) {
-	sum += nur[nu][grid];
-      }
-      MPI_Allreduce(MPI_IN_PLACE, &sum, 1, MPI_DOUBLE, MPI_SUM, world);
-      sum *= dt / (nx * ny * kinetics->bnz);
-      for (int grid = 0; grid < kinetics->bgrids; grid++) {
-	nus[nu][grid] += sum;
-	if (nus[nu][grid] <= 0)
-	  nus[nu][grid] = MIN_NUS;
-      }
+  for (int nu = 1; nu < bio->nnu + 1; nu++) {
+    if (bio->nustate[nu] != 0) continue;
+    double sum = 0;
+    for (int grid = 0; grid < kinetics->ngrids; grid++) {
+      sum += nur[nu][grid];
     }
-  } else {
-    for (int nu = 1; nu < bio->nnu + 1; nu++) {
-      if (bio->nustate[nu] != 0)
-	continue;
-      for (int grid = 0; grid < kinetics->bgrids; grid++) {
-	double r = nur[nu][grid] * dt;
-	nus[nu][grid] += r;
-	if (nus[nu][grid] <= 0)
-	  nus[nu][grid] = MIN_NUS;
-      }
+    MPI_Allreduce(MPI_IN_PLACE, &sum, 1, MPI_DOUBLE, MPI_SUM, world);
+    sum *= dt / (nx * ny * kinetics->bnz);
+    for (int grid = 0; grid < kinetics->bgrids; grid++) {
+      nus[nu][grid] += sum;
+      if (unit == MOL) nus[nu][grid] /= M2L;
+      if (nus[nu][grid] <= 0)
+	nus[nu][grid] = MIN_NUS;
     }
   }
 }
 
 /* ----------------------------------------------------------------------
- solve diffusion and reaction
+ Update nutrient concentrations in closed system when closed_flag = 0
+ The update triggered after diffusion process, and based on residual value and
+ biological timestep
+ ------------------------------------------------------------------------- */
+void FixKineticsDiffusion::closed_diff_residual(double dt, double diff_dt) {
+  double **nus = kinetics->nus;
+  for (int nu = 1; nu <= bio->nnu; nu++) {
+    if (bio->nustate[nu] != 0) continue;
+
+    for (int grid = 0; grid < snxx_yy_zz; grid++) {
+      if (grid_type[grid] == REGULAR) {
+	int ind = get_index(grid);
+	double residual = nugrid[nu][grid] - nuprev[nu][grid];
+	nus[nu][ind] += residual/diff_dt*dt;
+	if (unit == MOL) nus[nu][ind] /= M2L;
+	if (nus[nu][ind] <= 0)
+	  nus[nu][ind] = MIN_NUS;
+      }
+    }
+  }
+}
+/* ----------------------------------------------------------------------
+ Solve diffusion and reaction
  ------------------------------------------------------------------------- */
 
 int *FixKineticsDiffusion::diffusion(int *nuconv, int iter, double diff_dt) {
@@ -407,19 +414,16 @@ int *FixKineticsDiffusion::diffusion(int *nuconv, int iter, double diff_dt) {
       }
     }
   }
-
+  // check convergence criteria
   int nrequests = 0;
   for (int i = 1; i <= nnus; i++) {
     // checking if is liquid
     if (bio->nustate[i] == 0 && !nuconv[i]) {
-      // check convergence criteria
       nuconv[i] = false;
       double max_residual = 0;
 
       for (int grid = 0; grid < snxx_yy_zz; grid++) {
         if (grid_type[grid] == REGULAR) {
-          double rate = nugrid[i][grid];
-          double prevRate = nuprev[i][grid];
           double residual = fabs((nugrid[i][grid] - nuprev[i][grid]) / nuprev[i][grid]);
 
           if (residual > max_residual)
