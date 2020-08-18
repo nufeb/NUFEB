@@ -90,6 +90,7 @@ public:
   int setmask();
   void init();
   void closed_diff(double);
+  void closed_diff_residual(double, double);
   int *diffusion(int*, int, double);
   void update_nus();
   void update_grids();
