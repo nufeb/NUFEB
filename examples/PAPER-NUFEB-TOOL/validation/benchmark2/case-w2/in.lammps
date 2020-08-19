@@ -73,7 +73,6 @@ variable etaHET equal 0
 variable layer equal -1
 
 #Defining nufebFoam variables
-variable demSteps equal 1
 variable bioSteps equal 1
 variable bioDt equal 60
 variable nloops equal 1000
@@ -81,10 +80,10 @@ variable nloops equal 1000
 ##############Define IBm Commands##############
 
 fix k1 all kinetics 1 160 3 40 v_diffT v_layer niter -1
-fix kgm all kinetics/growth/monod v_EPSdens v_etaHET gflag 0
-fix g1 all kinetics/diffusion v_tol nd nn nn
+fix kgm all kinetics/growth/monod epsdens 30 etahet 0.0 gflag 0
+fix g1 all kinetics/diffusion v_tol 
 
-fix cfd1 all nufebFoam v_demSteps v_bioSteps v_bioDt v_nloops
+fix cfd1 all sedifoam v_bioSteps v_bioDt v_nloops
 fix vf1 all verify 1 bm2 1 demflag 0
 
 ##############Simulation Output##############

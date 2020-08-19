@@ -83,8 +83,8 @@ fix k1 all kinetics 100 25 10 25 v_diffT v_layer niter 5000
 ##Monod based microbe growth process##
 fix kgm all kinetics/growth/monod epsdens 30
 
-##diffusion-reaction process: boundary condition p->periodic; n->Neumann; d->dirchlet##
-fix g1 all kinetics/diffusion v_tol pp pp nd dcflag 2
+##diffusion-reaction process, dcflag: diffusion coefficent in biomass 0=fixed, 1=dynamic, 2=0.8 of liquid##
+fix g1 all kinetics/diffusion v_tol dcflag 2
 
 ##microbe division process: timestep (100x10sec)##
 fix d1 all divide 100 v_EPSdens v_divDia 64564

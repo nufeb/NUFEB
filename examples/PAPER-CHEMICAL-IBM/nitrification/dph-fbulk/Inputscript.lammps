@@ -78,7 +78,7 @@ fix k1 all kinetics 1 50 10 150 v_diffT v_layer demflag 0 niter 20000 devery 10
 fix ki3 all kinetics/ph dynamic ph 7.5
 fix ki2 all kinetics/thermo
 fix ki1 all kinetics/growth/energy v_EPSdens 
-fix g1 all kinetics/diffusion v_tol pp pp nd dcflag 2 
+fix g1 all kinetics/diffusion v_tol dcflag 2 
 fix d1 all divide 1 v_EPSdens v_divDia 31231 demflag 0
 fix d2 all death 1 v_deadDia demflag 0
 

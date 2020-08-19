@@ -46,11 +46,11 @@ variable layer equal 4e-5
 
 ##############Define IBm Commands##############
 
-fix k1 all kinetics 1 100 5 100 v_diffT v_layer demflag 0 niter 10000
+fix k1 all kinetics 1 100 5 100 v_diffT v_layer demflag 0 niter 1000
 fix ki1 all kinetics/growth/energy v_EPSdens	
 fix ki2 all kinetics/thermo
 fix ki3 all kinetics/ph fix 
-fix g1 all kinetics/diffusion v_tol pp pp nd
+fix g1 all kinetics/diffusion v_tol 
 fix d1 all divide 1 v_EPSdens v_divDia 31231 demflag 0
 
 ##############Define IBm Computes##############
@@ -64,7 +64,7 @@ compute myMass all biomass
 #dump		du1 all vtk 100000 snapshot.bubblemd.vtu id type diameter x y z
 dump            du0 all bio 100000 ntypes biomass
 dump		du3 all custom 500000 snapshot.bubblemd id type diameter x y z
-thermo_style    custom step cpu atoms c_myNtypes[*] 
+thermo_style    custom step cpu atoms c_myNtypes[*] c_myMass[*]
 thermo		1000
 thermo_modify	lost ignore
 

@@ -93,8 +93,8 @@
 
  Nutrients
 
-     1 sub l 1e-20 1e-20 1e-20 1e-20 1e-20 1e-20 1e-20
-     2 o2 l 5e-5 5e-5 5e-5 5e-5 5e-5 5e-5 5e-5
+     1 sub l pp pp nd 1e-20 1e-20
+     2 o2 l pp pp nd 5e-5 5e-5
 
  Type Name
 

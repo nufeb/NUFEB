@@ -12,15 +12,15 @@
 
  Nutrients
 
-     1 nh3 l 0.001765 0.001765 0.001765 0.001765 0.001765 0.001765 0.001765
-     2 no2 l 1e-20 1e-20 1e-20 1e-20 1e-20 1e-20 1e-20
-     3 no3 l 1e-20 1e-20 1e-20 1e-20 1e-20 1e-20 1e-20
-     4 o2 l  2.81E-04 2.81E-04 2.81E-04 2.81E-04 2.81E-04 2.81E-04 2.81E-04
-     5 co2 l 2e-3 2e-3 2e-3 2e-3 2e-3 2e-3 2e-3
-     6 h2o l 1 1 1 1 1 1 1
-     7 h l 0 0 0 0 0 0 0
-     8 na l 1e-5 1e-5 1e-5 1e-5 1e-5 1e-5 1e-5
-     9 cl l 1e-5 1e-5 1e-5 1e-5 1e-5 1e-5 1e-5
+     1 nh3 l pp pp nd 0.001765 0.001765
+     2 no2 l pp pp nd 1e-20 1e-20
+     3 no3 l pp pp nd 1e-20 1e-20
+     4 o2 l  pp pp nd 2.81E-04 2.81E-04
+     5 co2 l pp pp nd 2e-3 2e-3
+     6 h2o l pp pp nd 1 1
+     7 h l pp pp nd 0 0
+     8 na l pp pp nd 1e-5 1e-5
+     9 cl l pp pp nd 1e-5 1e-5
 
  Type Name
 
