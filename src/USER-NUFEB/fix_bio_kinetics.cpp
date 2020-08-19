@@ -256,7 +256,7 @@ void FixKinetics::init() {
     error->all(FLERR, "fix_kinetics requires # of Nutrients inputs");
   else if (bio->nugibbs_coeff == NULL && energy != NULL)
     error->all(FLERR, "fix_kinetics requires Nutrient Energy inputs");
-  else if (bio->ini_nus == NULL)
+  else if (bio->init_nus == NULL)
     error->all(FLERR, "fix_kinetics requires Nutrients inputs");
   if (energy != NULL || thermo != NULL || ph != NULL){
     if (thermo == NULL)
@@ -324,7 +324,7 @@ void FixKinetics::init_param() {
     }
 
     for (int i = 0; i <= bio->nnu; i++) {
-      if (bio->ini_nus != NULL) nus[i][j] = bio->ini_nus[i][0];
+      if (bio->init_nus != NULL) nus[i][j] = bio->init_nus[i][0];
       nur[i][j] = 0;
       nuconv[i] = 0;
       activity[i][0][j] = 0;

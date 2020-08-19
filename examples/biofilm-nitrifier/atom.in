@@ -12,11 +12,11 @@
 
  Nutrients
 
-     1 sub l 3e-3 3e-3 3e-3 3e-3 3e-3 3e-3 3e-3
-     2 o2 l 1e-2 1e-2 1e-2 1e-2 1e-2 1e-2 1e-2
-     3 no2 l 1e-20 1e-20 1e-20 1e-20 1e-20 1e-20 1e-20
-     4 no3 l 1e-20 1e-20 1e-20 1e-20 1e-20 1e-20 1e-20
-     5 nh4 l 1e-2 1e-2 1e-2 1e-2 1e-2 1e-2 1e-2 
+     1 sub l pp pp nd 3e-3 3e-3
+     2 o2 l pp pp nd 1e-2 1e-2
+     3 no2 l pp pp nd 1e-20 1e-20
+     4 no3 l pp pp nd 1e-20 1e-20
+     5 nh4 l pp pp nd 1e-2 1e-2 
 
  Diffusion Coeffs
     

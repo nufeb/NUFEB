@@ -45,10 +45,11 @@ class BIO : protected Pointers {
   int nnu;                    // # of nutrients
   int *nustate;               // nutrient types 0 = liq, 1 = gas
   char **nuname;              // nutrient name
+  int **nubc;                 // boundary condition type [nutrient][3surface pairs]
 
   double *diff_coeff;         // diffusion coefficient [nutrient]
   double *mw;                 // molecular Weights [nutrient]
-  double **ini_nus;           // inlet nutrient concentrations [nutrient][1grid + 5bc]
+  double **init_nus;           // inlet nutrient concentrations [nutrient][1grid + 1bc]
   double **nugibbs_coeff;     // Gibbs free energy coefficient [nutrient][5charges]
   int *ngflag;                // Gibbs free energy flag for nutrients [nutrient]
   int **nucharge;             // charge [nutrient][5charges]

@@ -22,7 +22,10 @@
 #include "memory.h"
 #include "atom_vec_bio.h"
 
+
 using namespace LAMMPS_NS;
+
+enum{PP, DD, ND, NN, DN};
 
 BIO::BIO(LAMMPS *lmp) : Pointers(lmp)
 {
@@ -45,7 +48,7 @@ BIO::BIO(LAMMPS *lmp) : Pointers(lmp)
 
   //nutrient
   nnu = 0;
-  ini_nus = NULL;
+  init_nus = NULL;
   nuname = NULL;
   diff_coeff = NULL;
   nustate = NULL;
@@ -54,6 +57,7 @@ BIO::BIO(LAMMPS *lmp) : Pointers(lmp)
   nucharge = NULL;
   kla = NULL;
   mw = NULL;
+  nubc = NULL;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -77,8 +81,9 @@ BIO::~BIO()
 
   memory->destroy(diff_coeff);
   memory->destroy(mw);
-  memory->destroy(ini_nus);
+  memory->destroy(init_nus);
   memory->destroy(nustate);
+  memory->destroy(nubc);
   memory->destroy(nugibbs_coeff);
   memory->destroy(ngflag);
   memory->destroy(nucharge);
@@ -123,16 +128,9 @@ void BIO::create_type(char *name) {
 
 void BIO::data_nutrients(int narg, char **arg)
 {
-  if (narg != 10) error->all(FLERR,"Incorrect args for nutrient definitions");
+  if (narg != 8) error->all(FLERR,"Incorrect args for nutrient definitions");
 
-  int id = force->numeric(FLERR,arg[0]);
-  double scell = force->numeric(FLERR,arg[3]);
-  double xbcm = force->numeric(FLERR,arg[4]);
-  double xbcp = force->numeric(FLERR,arg[5]);
-  double ybcm = force->numeric(FLERR,arg[6]);
-  double ybcp = force->numeric(FLERR,arg[7]);
-  double zbcm = force->numeric(FLERR,arg[8]);
-  double zbcp = force->numeric(FLERR,arg[9]);
+  int id = force->inumeric(FLERR,arg[0]);
 
   //nutrient name
   char *name;
@@ -148,13 +146,13 @@ void BIO::data_nutrients(int narg, char **arg)
   for (int i = 0; i < nnu+1; i++)
     if ((nuname[i] != NULL) && (strcmp(nuname[i], name) == 0)
         && (i != id)){
-      error->one(FLERR,"Repeat nutrient names");
+      error->one(FLERR,"Duplicate nutrient name");
     }
 
   if (nuname[id] == NULL) {
     nuname[id] = new char[n];
   } else if (strcmp(nuname[id], name) != 0){
-    error->one(FLERR,"Incompatible nutrient names");
+    error->one(FLERR,"Nutrient name is not compatible with nutrient id");
   }
 
   strcpy(nuname[id],name);
@@ -163,22 +161,58 @@ void BIO::data_nutrients(int narg, char **arg)
 
   //nutrient type
   int m = strlen(arg[2]);
-  if (m != 1) error->all(FLERR,"Nutrient type must be a single char, "
-      "l = liq, g = gas");
+  if (m != 1) error->all(FLERR,"Undefined nutrient type, use: "
+      "'l' (liq) or 'g' (gas)");
   char type = arg[2][0];
   if (type == 'l') nustate[id] = 0;
   else if (type == 'g') nustate[id] = 1;
-  else error->all(FLERR,"Undefined nutrient type, "
-      "l = liq, g = gas");
+  else error->all(FLERR,"Undefined nutrient type, use "
+      "'l' (liq) or 'g' (gas)");
 
-  if (ini_nus == NULL) error->all(FLERR,"Cannot set nutrient concentration for this nutrient style");
-  ini_nus[id][0] = scell;
-  ini_nus[id][1] = xbcm;
-  ini_nus[id][2] = xbcp;
-  ini_nus[id][3] = ybcm;
-  ini_nus[id][4] = ybcp;
-  ini_nus[id][5] = zbcm;
-  ini_nus[id][6] = zbcp;
+  //set boundary condition:
+  //0=PERIODIC-PERIODIC,  1=DIRiCH-DIRICH, 2=NEU-DIRICH, 3=NEU-NEU, 4=DIRICH-NEU
+  if (strcmp(arg[3], "pp") == 0)
+    nubc[id][0] = PP;
+  else if (strcmp(arg[3], "dd") == 0)
+    nubc[id][0] = DD;
+  else if (strcmp(arg[3], "nd") == 0)
+    nubc[id][0] = ND;
+  else if (strcmp(arg[3], "nn") == 0)
+    nubc[id][0] = NN;
+  else if (strcmp(arg[3], "dn") == 0)
+    nubc[id][0] = DN;
+  else
+    error->all(FLERR, "Illegal x-axis boundary condition setting");
+  if (strcmp(arg[4], "pp") == 0)
+     nubc[id][1] = PP;
+   else if (strcmp(arg[4], "dd") == 0)
+     nubc[id][1] = DD;
+   else if (strcmp(arg[4], "nd") == 0)
+     nubc[id][1] = ND;
+   else if (strcmp(arg[4], "nn") == 0)
+     nubc[id][1] = NN;
+   else if (strcmp(arg[4], "dn") == 0)
+     nubc[id][1] = DN;
+   else
+     error->all(FLERR, "Illegal y-axis boundary condition setting");
+
+   if (strcmp(arg[5], "pp") == 0)
+     nubc[id][2] = PP;
+   else if (strcmp(arg[5], "dd") == 0)
+     nubc[id][2] = DD;
+   else if (strcmp(arg[5], "nd") == 0)
+     nubc[id][2] = ND;
+   else if (strcmp(arg[5], "nn") == 0)
+     nubc[id][2] = NN;
+   else if (strcmp(arg[5], "dn") == 0)
+     nubc[id][2] = DN;
+   else
+     error->all(FLERR, "Illegal z-axis boundary condition setting");
+
+  //initial concentration for grids and boundary condition
+  if (init_nus == NULL) error->all(FLERR,"Cannot set nutrient concentration for this nutrient style");
+  init_nus[id][0] = force->numeric(FLERR,arg[6]);
+  init_nus[id][1] = force->numeric(FLERR,arg[7]);
 }
 
 void BIO::set_tname(int narg, char **arg)

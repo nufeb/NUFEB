@@ -53,7 +53,7 @@ variable deadDia equal 9e-7
 
 fix k1 all kinetics 1 20 16 20 v_diffT v_layer niter 5000
 fix kgm all kinetics/growth/monod epsdens 30
-fix g1 all kinetics/diffusion v_tol nn nn nn dcflag 2 closedflag 0
+fix g1 all kinetics/diffusion v_tol dcflag 2 closedflag 0
 fix d1 all divide 1 v_EPSdens v_divDia 64564
 fix e1 HET eps_extract 100 v_EPSratio v_EPSdens 53453
 

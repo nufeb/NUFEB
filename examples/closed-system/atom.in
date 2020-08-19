@@ -33,8 +33,8 @@
 
  Nutrients
 
-     1 sub l 1e-2 1e-2 1e-2 1e-2 1e-2 1e-2 1e-2
-     2 o2 l 1e-2 1e-2 1e-2 1e-2 1e-2 1e-2 1e-2
+     1 sub l nn nn nn 1e-2 1e-2
+     2 o2 l nn nn nn 1e-2 1e-2
 
  Type Name
 
