@@ -99,7 +99,7 @@ class FixKinetics : public Fix, public DecompGrid<FixKinetics> {
   bool is_inside(int);
   int position(int);
   void reset_nur();
-  void reset_isconv();
+  void reset_nuconv();
   bool is_equal(double, double, double);
 
   Subgrid<double, 3> get_subgrid() const { return subgrid; }

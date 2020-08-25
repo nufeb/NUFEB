@@ -49,6 +49,8 @@ class FixVerify : public Fix {
   double vol;
 
   double global_no2, global_pre_no2;
+  double global_o2, global_pre_o2;
+  double global_sub, global_pre_sub;
   double global_nh3, global_pre_nh3;
   double global_smass, global_pre_smass;
 
@@ -64,6 +66,7 @@ class FixVerify : public Fix {
   std::vector<int> fslist;
 
   void nitrogen_mass_balance();
+  void het_mass_balance();
   void benchmark_one();
   double get_ave_s_sub_base();
   double get_ave_s_o2_base();

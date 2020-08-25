@@ -272,16 +272,16 @@ void FixKineticsDiffusion::init_setting() {
     if ((bio->nubc[nu][0] == PP || bio->nubc[nu][0] == NN)
 	&& (bio->nubc[nu][1] == PP || bio->nubc[nu][1] == NN)
 	&& (bio->nubc[nu][2] == PP || bio->nubc[nu][2] == NN)){
-	nuclose[nu] = 1;
-	close_system = 1;
+      nuclose[nu] = 1;
+      close_system = 1;
     } else {
-	nuclose[nu] = 0;
+      nuclose[nu] = 0;
     }
 
     if (unit == MOL) {
-	init_nusbc = bio->init_nus[nu][1] * M2L;
+      init_nusbc = bio->init_nus[nu][1] * M2L;
     } else {
-	init_nusbc = bio->init_nus[nu][1];
+      init_nusbc = bio->init_nus[nu][1];
     }
   }
 }
@@ -341,13 +341,13 @@ void FixKineticsDiffusion::init_grid() {
  so the concentration will only vary due to the reaction rate (no diffusion).
  ------------------------------------------------------------------------- */
 
-void FixKineticsDiffusion::closed_diff(double dt) {
+void FixKineticsDiffusion::closed_avg(int *nuconv, double dt) {
   double **nus = kinetics->nus;
   double **nur = kinetics->nur;
 
   for (int nu = 1; nu < bio->nnu + 1; nu++) {
     if (bio->nustate[nu] != 0) continue;
-    if (!nuclose) continue;
+    if (!nuclose[nu]) continue;
     double sum = 0;
     for (int grid = 0; grid < kinetics->ngrids; grid++) {
       sum += nur[nu][grid];
@@ -360,6 +360,7 @@ void FixKineticsDiffusion::closed_diff(double dt) {
       if (nus[nu][grid] <= 0)
 	nus[nu][grid] = MIN_NUS;
     }
+    nuconv[nu] = true;
   }
 }
 
@@ -368,23 +369,30 @@ void FixKineticsDiffusion::closed_diff(double dt) {
  The update triggered after diffusion process, and based on residual value and
  biological timestep
  ------------------------------------------------------------------------- */
-void FixKineticsDiffusion::closed_diff_residual(double dt, double diff_dt) {
+void FixKineticsDiffusion::closed_res(double dt, double diff_dt) {
   double **nus = kinetics->nus;
   for (int nu = 1; nu <= bio->nnu; nu++) {
     if (bio->nustate[nu] != 0) continue;
-    if (!nuclose) continue;
+    if (!nuclose[nu]) continue;
+
     for (int grid = 0; grid < snxx_yy_zz; grid++) {
+      double residual = nugrid[nu][grid] - nuprev[nu][grid];
+      nugrid[nu][grid] += residual/diff_dt*dt;
+      if (unit == MOL) nugrid[nu][grid] /= M2L;
+      if (nugrid[nu][grid] <= 0) {
+	nugrid[nu][grid] = MIN_NUS;
+      }
+
       if (grid_type[grid] == REGULAR) {
 	int ind = get_index(grid);
-	double residual = nugrid[nu][grid] - nuprev[nu][grid];
-	nus[nu][ind] += residual/diff_dt*dt;
-	if (unit == MOL) nus[nu][ind] /= M2L;
-	if (nus[nu][ind] <= 0)
-	  nus[nu][ind] = MIN_NUS;
+
+	if (ind != -1)
+	  nus[nu][ind] = nugrid[nu][grid];
       }
     }
   }
 }
+
 /* ----------------------------------------------------------------------
  Solve diffusion and reaction
  ------------------------------------------------------------------------- */
@@ -406,11 +414,11 @@ int *FixKineticsDiffusion::diffusion(int *nuconv, int iter, double diff_dt) {
 
   DecompGrid<FixKineticsDiffusion>::exchange();
 
-  for (int i = 1; i <= nnus; i++) {
-    if (bio->nustate[i] == 0 && !nuconv[i]) {
+  for (int nu = 1; nu <= nnus; nu++) {
+    if (bio->nustate[nu] == 0 && !nuconv[nu]) {
       // copy current concentrations
       for (int grid = 0; grid < snxx_yy_zz; grid++) {
-        nuprev[i][grid] = nugrid[i][grid];
+        nuprev[nu][grid] = nugrid[nu][grid];
       }
 
       // solve diffusion and reaction
@@ -418,52 +426,52 @@ int *FixKineticsDiffusion::diffusion(int *nuconv, int iter, double diff_dt) {
         // transform nXYZ index to nuR index
         if (grid_type[grid] == REGULAR) {
           int ind = get_index(grid);
-          double nur_ = (unit == KG) ? nur[i][ind] : nur[i][ind] * M2L;
+          double nur_ = (unit == KG) ? nur[nu][ind] : nur[nu][ind] * M2L;
           double diff_coeff;
 
-          if (dcflag) diff_coeff = grid_diff_coeff[i][grid];
-          else diff_coeff = bio->diff_coeff[i];
+          if (dcflag) diff_coeff = grid_diff_coeff[nu][grid];
+          else diff_coeff = bio->diff_coeff[nu];
 
-          compute_flux(diff_coeff, nugrid[i][grid], nuprev[i], nur_, grid, ind);
+          compute_flux(diff_coeff, nugrid[nu][grid], nuprev[nu], nur_, grid, ind);
 
-          if (nugrid[i][grid] > 0) {
-            (unit == KG) ? (nus[i][ind] = nugrid[i][grid]) : (nus[i][ind] = nugrid[i][grid] / M2L);
+          if (nugrid[nu][grid] > 0) {
+            (unit == KG) ? (nus[nu][ind] = nugrid[nu][grid]) : (nus[nu][ind] = nugrid[nu][grid] / M2L);
           } else {
-            nugrid[i][grid] = MIN_NUS;
-            nus[i][ind] = MIN_NUS;
+            nugrid[nu][grid] = MIN_NUS;
+            nus[nu][ind] = MIN_NUS;
           }
         }else if (grid_type[grid] == BOUNDARY) {
-          double nubs_ = nubs[i];
+          double nubs_ = nubs[nu];
           
           if(unit == MOL) nubs_ *= M2L;
-          compute_bc(nugrid[i][grid], nuprev[i], grid, nubs_, nubc[i]);
+          compute_bc(nugrid[nu][grid], nuprev[nu], grid, nubs_, nubc[nu]);
         }
       }
     }
   }
   // check convergence criteria
   int nrequests = 0;
-  for (int i = 1; i <= nnus; i++) {
+  for (int nu = 1; nu <= nnus; nu++) {
     // checking if is liquid
-    if (bio->nustate[i] == 0 && !nuconv[i]) {
-      nuconv[i] = false;
+    if (bio->nustate[nu] == 0 && !nuconv[nu]) {
+      nuconv[nu] = false;
       double max_residual = 0;
 
       for (int grid = 0; grid < snxx_yy_zz; grid++) {
         if (grid_type[grid] == REGULAR) {
-          double residual = fabs((nugrid[i][grid] - nuprev[i][grid]) / nuprev[i][grid]);
+          double residual = fabs((nugrid[nu][grid] - nuprev[nu][grid]) / nuprev[nu][grid]);
 
           if (residual > max_residual)
             max_residual = residual;
         }
       }
 
-      if (max_residual < tol) nuconv[i] = true;
+      if (max_residual < tol) nuconv[nu] = true;
 
 #if MPI_VERSION >= 3
-      MPI_Iallreduce(MPI_IN_PLACE, &nuconv[i], 1, MPI_INT, MPI_BAND, world, &requests[nrequests++]);
+      MPI_Iallreduce(MPI_IN_PLACE, &nuconv[nu], 1, MPI_INT, MPI_BAND, world, &requests[nrequests++]);
 #else
-      MPI_Allreduce(MPI_IN_PLACE, &nuconv[i], 1, MPI_INT, MPI_BAND, world);
+      MPI_Allreduce(MPI_IN_PLACE, &nuconv[nu], 1, MPI_INT, MPI_BAND, world);
 #endif
     }
   }
@@ -623,9 +631,6 @@ void FixKineticsDiffusion::compute_bc(double &nus_grid, double *nus_prev, int gr
   int up = grid + snxx * snyy;  // z dirction
 
   // assign values to the ghost-grids according to the boundary conditions.
-  // If ghostcells are Neu then take the values equal from the adjacent cells.
-  // if ghostcells are dirich then take the values equal to negative of the adjacent cells.
-  // if ghostcells are mixed then zlo ghost cells are nuemann, zhi ghost cells are dirichlet, other four surfaces are periodic BC.
   // low-z surface
   if (xgrid[grid][2] < zlo && grid_type[up] == REGULAR) {
     //0=PERIODIC-PERIODIC,  1=DIRiCH-DIRICH, 2=NEU-DIRICH, 3=NEU-NEU, 4=DIRICH-NEU
