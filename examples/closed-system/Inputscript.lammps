@@ -1,5 +1,6 @@
 # NUFEB simulation
 
+units si
 atom_style	bio
 atom_modify	map array sort 100 5.0e-7
 boundary	pp pp ff
@@ -8,6 +9,21 @@ processors  * * 1
 
 comm_modify	vel yes
 read_data_bio atom.in
+
+##############Define initial particle distribution##############
+
+lattice sc 1e-6 origin 0 0 0
+region reg block 0 20 0 20 0 1
+
+create_atoms 1 random 15 31324 reg
+
+set type 1 density 150
+set type 1 diameter 1.3e-6
+set type 1 mass 1.725e-16
+
+set type 2 density 150
+set type 2 diameter 1.3e-6
+set type 2 mass 1.725e-16
 
 group HET type 1
 group EPS type 2
@@ -25,7 +41,7 @@ timestep 10
 fix 1 all nve/limit 1e-8
 fix fv all viscous 1e-5
 
-fix zw all wall/gran hooke/history 2000 NULL 500.0 NULL 1.5 0 zplane  0.0  1e-04
+fix zw all wall/gran hooke/history 2000 NULL 500.0 NULL 1.5 0 zplane  0.0  2e-05
 
 variable kanc equal 50
 
@@ -42,7 +58,7 @@ variable divDia equal 1.36e-6
 
 #variables used in fix kinetics 
 variable diffT equal 1e-4
-variable tol equal 1e-6
+variable tol equal 1e-10
 variable layer equal -1
 
 #variables used in fix death
@@ -51,11 +67,12 @@ variable deadDia equal 9e-7
 
 ##############Define IBm Commands##############
 
-fix k1 all kinetics 1 20 16 20 v_diffT v_layer niter 5000
-fix kgm all kinetics/growth/monod epsdens 30
+fix k1 all kinetics 100 10 10 10 v_diffT v_layer niter 10000
+fix kgm all kinetics/growth/monod epsdens 30 gflag 1
 fix g1 all kinetics/diffusion v_tol dcflag 2 closedflag 0
-fix d1 all divide 1 v_EPSdens v_divDia 64564
+fix d1 all divide 100 v_EPSdens v_divDia 64564
 fix e1 HET eps_extract 100 v_EPSratio v_EPSdens 53453
+fix vi all verify 100 mb
 
 ##############Define IBm Computes##############
 
@@ -67,15 +84,15 @@ compute myCon all avg_con
 
 ##############Simulation Output##############
 
-dump		id all custom 100 output.lammps id type diameter x y z
-dump		du1 all vtk 100 atom_*.vtu id type diameter x y z
-dump		du2 all grid 100 grid_%_*.vti con
-dump            du3 all bio 100 avg_height roughness avg_con
+#dump		id all custom 1 output.lammps id type diameter x y z
+dump		du1 all vtk 1000 atom_*.vtu id type diameter x y z
+dump		du2 all grid 1000 grid_%_*.vti con
+dump            du3 all bio 1000 avg_height roughness avg_con
 thermo_style    custom step cpu atoms c_myNtypes[2] c_myNtypes[3] c_myMass[*]
-thermo		1
+thermo		100
 thermo_modify	lost ignore
 
 
-run 1100
+run 20000
 
 
