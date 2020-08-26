@@ -62,7 +62,6 @@ FixKineticsDiffusion::FixKineticsDiffusion(LAMMPS *lmp, int narg, char **arg) :
   dcflag = 0;
   close_flag = 0;
   close_system = 0;
-  nuclose = 0;
   dcratio = 0.8;
   xpbcflag = ypbcflag = zpbcflag = 0;
 
@@ -70,6 +69,7 @@ FixKineticsDiffusion::FixKineticsDiffusion(LAMMPS *lmp, int narg, char **arg) :
   nugrid = NULL;
   nuprev = NULL;
   grid_type = NULL;
+  nuclose = NULL;
   grid_diff_coeff = NULL;
 
   var = new char*[1];
@@ -248,7 +248,7 @@ void FixKineticsDiffusion::init() {
 
   setup_exchange(kinetics->grid, kinetics->subgrid.get_box(), { xpbcflag == 1, ypbcflag == 1, zpbcflag == 1 });
 
-  if (nuclose){
+  if (close_system){
     if (comm->me == 0 && logfile)
       fprintf(logfile, "Model is defined as a closed system. \n");
     if (comm->me == 0 && screen)
