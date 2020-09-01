@@ -18,11 +18,11 @@
 
  Nutrients
 
-     1 sub l 0.005 0.005 0.005 0.005 0.005 0.005 0.005
-     2 o2 l 1e-4 1e-4 1e-4 1e-4 1e-4 1e-4 1e-4
-     3 no2 l 8e-4 8e-4 8e-4 8e-4 8e-4 8e-4 8e-4
-     4 no3 l 8e-4 8e-4 8e-4 8e-4 8e-4 8e-4 8e-4
-     5 nh4 l 9e-4 9e-4 9e-4 9e-4 9e-4 9e-4 9e-4
+     1 sub l nd nn nn 0.005 0.005
+     2 o2 l nd nn nn 1e-4 1e-4
+     3 no2 l nd nn nn 8e-4 8e-4
+     4 no3 l nd nn nn 8e-4 8e-4
+     5 nh4 l nd nn nn 9e-4 9e-4
 
  Diffusion Coeffs
     

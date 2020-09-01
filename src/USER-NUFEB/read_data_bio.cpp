@@ -53,7 +53,7 @@ using namespace LAMMPS_NS;
 #define MAXBODY 32         // max # of lines in one body
 
                            // customize for new sections
-#define NSECTIONS 42      // change when add to header::section_keywords
+#define NSECTIONS 43      // change when add to header::section_keywords
 
 enum{NONE,APPEND,VALUE,MERGE};
 
@@ -987,9 +987,9 @@ void ReadDataBIO::header(int firstpass)
      "BondBond Coeffs","BondAngle Coeffs","MiddleBondTorsion Coeffs",
      "EndBondTorsion Coeffs","AngleTorsion Coeffs",
      "AngleAngleTorsion Coeffs","BondBond13 Coeffs","AngleAngle Coeffs",
-     "Growth","Ks","Yield","Nutrients","Diffusion Coeffs","Catabolism Coeffs",
+     "Growth Rate", "Consumption Rate", "Ks","Yield","Nutrients","Diffusion Coeffs","Catabolism Coeffs",
      "Anabolism Coeffs","Nutrient Energy","Type Energy", "Dissipation", "Nutrient Charge",
-     "Type Charge", "Maintenance", "Decay", "Decay Coeffs", "eD", "kLa"};
+     "Type Charge", "Maintenance", "Decay", "Decay Coeffs", "Electron Donor", "kLa"};
 
   // skip 1st line of file
 
@@ -2186,8 +2186,9 @@ void ReadDataBIO::nutrient_memory(){
     bio->nuname[i] = NULL;
   }
 
-  bio->ini_nus = memory->create(bio->ini_nus,nnus+1,7,"bio:nuConc");
-  bio->nustate = memory->create(bio->nustate, nnus+1, "bio::nuGCoeff");
+  bio->init_nus = memory->create(bio->init_nus,nnus+1,2,"bio:ini_nus");
+  bio->nustate = memory->create(bio->nustate, nnus+1, "bio:nuState");
+  bio->nubc = memory->create(bio->nubc, nnus+1,3, "bio:nubc");
 }
 
 /* ---------------------------------------------------------------------- */

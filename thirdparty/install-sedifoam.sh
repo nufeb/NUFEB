@@ -51,6 +51,7 @@ make yes-GRANULAR
 make yes-USER-NUFEB
 make yes-COLLOID
 make yes-USER-CFDDEM
+make yes-USER-VTK
 
 # Use different options according to different versions
 if [ $n == 4 ]

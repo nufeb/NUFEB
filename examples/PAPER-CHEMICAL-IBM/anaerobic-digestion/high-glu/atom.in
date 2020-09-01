@@ -12,20 +12,20 @@
 
  Nutrients
 
-     1 glu l 7.81e-04 7.81e-04 7.81e-04 7.81e-04 7.81e-04 7.81e-04 7.81e-04
-     2 ach l 1.00e-05 1.00e-05 1.00e-05 1.00e-05 1.00e-05 1.00e-05 1.00e-05
-     3 nh3 l 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04 
-     4 ch4 l 1.56e-10 1.56e-10 1.56e-10 1.56e-10 1.56e-10 1.56e-10 1.56e-10 
-     5 co2 l 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04 1.00e-04 
-     6 h2 l 6.25e-7 6.25e-7 6.25e-7 6.25e-7 6.25e-7 6.25e-7 6.25e-7 
-     7 gco2 g 0 0 0 0 0 0 0
-     8 gch4 g 0 0 0 0 0 0 0
-     9 gh2 g 0 0 0 0 0 0 0
-     10 gn2 g 1 1 1 1 1 1 1
-     11 h2o l 1 1 1 1 1 1 1
-     12 h l 0 0 0 0 0 0 0
-     13 na l 1e-5 1e-5 1e-5 1e-5 1e-5 1e-5 1e-5
-     14 cl l 1e-5 1e-5 1e-5 1e-5 1e-5 1e-5 1e-5
+     1 glu l pp pp nd 7.81e-04 7.81e-04
+     2 ach l pp pp nd 1.00e-05 1.00e-05
+     3 nh3 l pp pp nd 1.00e-04 1.00e-04 
+     4 ch4 l pp pp nd 1.56e-10 1.56e-10 
+     5 co2 l pp pp nd 1.00e-04 1.00e-04 
+     6 h2 l pp pp nd 6.25e-7 6.25e-7 
+     7 gco2 g pp pp nd 0 0
+     8 gch4 g pp pp nd 0 0
+     9 gh2 g pp pp nd 0 0
+     10 gn2 g pp pp nd 1 1
+     11 h2o l pp pp nd 1 1
+     12 h l pp pp nd 0 0
+     13 na l pp pp nd 1e-5 1e-5
+     14 cl l pp pp nd 1e-5 1e-5
 
  Type Name
 

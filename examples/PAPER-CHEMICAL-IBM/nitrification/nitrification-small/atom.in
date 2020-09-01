@@ -2,11 +2,11 @@
 
        0 atoms
        3 atom types
-       9 nutrients
+       7 nutrients
 
-   0.0   1e-04  xlo xhi
-   0.0   2e-05  ylo yhi
-   0.0   3.0e-04  zlo zhi
+   0.0   5e-05  xlo xhi
+   0.0   4e-05  ylo yhi
+   0.0   5e-05  zlo zhi
 
  Atoms
 
@@ -16,11 +16,9 @@
      2 no2 l pp pp nd 1e-20 1e-20
      3 no3 l pp pp nd 1e-20 1e-20
      4 o2 l  pp pp nd 2.81E-04 2.81E-04
-     5 co2 l pp pp nd 2.556e-3 2.556e-3
+     5 co2 l pp pp nd 2e-3 2e-3
      6 h2o l pp pp nd 1 1
      7 h l pp pp nd 0 0
-     8 na l pp pp nd 1e-5 1e-5
-     9 cl l pp pp nd 1e-5 1e-5
 
  Type Name
 
@@ -37,14 +35,12 @@
      co2 1.186111e-9
      h2o 0
      h 0
-     na 1.3e-9
-     cl 2.03e-9
 
  Ks
 
-     aob 2.11e-6 0 0 9.38e-7 0 0 0 0 0
-     nob 0 3.94e-09 0 1.88e-06 0 0 0 0 0
-     dead 0 0 0 0 0 0 0 0 0
+     aob 2.11e-6 0 0 9.38e-7 0 0 0
+     nob 0 3.94e-09 0 1.88e-06 0 0 0
+     dead 0 0 0 0 0 0 0
 
  Consumption Rate
 
@@ -78,21 +74,21 @@
 
  Catabolism Coeffs
 
-     aob -1 1 0 -1.5 0 1 1 0 0
-     nob 0 -1 1 -0.5 0 0 0 0 0
-     dead 0 0 0 0 0 0 0 0 0
+     aob -1 1 0 -1.5 0 1 1
+     nob 0 -1 1 -0.5 0 0 0
+     dead 0 0 0 0 0 0 0
 
  Anabolism Coeffs
 
-     aob -0.9 0.7 0 0 -1 1.1 -1 0 0
-     nob 0 -2.9 2.7 0 -1 0.2 -1 0 0
-     dead 0 0 0 0 0 0 0 0 0
+     aob -0.9 0.7 0 0 -1 1.1 -1
+     nob 0 -2.9 2.7 0 -1 0.2 -1
+     dead 0 0 0 0 0 0 0
 
  Decay Coeffs
 
-     aob 0.2 0 0 0 1 0 0 0 0  
-     nob 0.2 0 0 0 1 0 0 0 0
-     dead 0 0 0 0 0 0 0 0 0
+     aob 0.2 0 0 0 1 0 0
+     nob 0.2 0 0 0 1 0 0
+     dead 0 0 0 0 0 0 0
 
  Nutrient Energy
 
@@ -103,8 +99,6 @@
     co2 -386.00 -623.16 -586.85 -527.80 inf 3
     h2o inf -237.18 -157.3 inf inf 2
     h inf 0 inf inf inf 2
-    na inf 0 inf inf inf 2
-    cl inf 0 inf inf inf 2
 
  Type Energy
 
@@ -127,8 +121,6 @@
     co2 0 0 -1 -2 na
     h2o na 0 -1 na na
     h na 1 na na na
-    na na 1 na na na 
-    cl na -1 na na na
 
  Type Charge
   

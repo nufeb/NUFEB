@@ -137,7 +137,7 @@ void FixVerify::end_of_step() {
   nuS = kinetics->nus;
   nnus = bio->nnu;
 
-  if (mflag == 1) nitrogen_mass_balance();
+  if (mflag == 1) het_mass_balance();
   if (bm1flag == 1) benchmark_one();
   if (bm2flag == 1) benchmark_two();
   if (bm3flag == 1) benchmark_three();
@@ -207,6 +207,72 @@ void FixVerify::nitrogen_mass_balance() {
 
   global_nh3 = 0;
   global_no2 = 0;
+  global_smass = 0;
+}
+
+
+/* ----------------------------------------------------------------------
+ mass balance check for HET
+ ------------------------------------------------------------------------- */
+
+void FixVerify::het_mass_balance() {
+  double smass, pre_smass;
+  double sub, pre_sub;
+  double o2, pre_o2;
+
+  int ngrids;
+
+  sub = pre_sub = 0;
+  o2 = pre_o2 = 0;
+  smass = 0;
+
+  // get biomass concentration (mol/L)
+  for (int i = 0; i < nlocal; i++) {
+    int pos = kinetics->position(i);
+    double rmassCellVol = atom->rmass[i] / vol;
+
+    if (pos != -1 && atom->type[i]==1) smass += rmassCellVol;
+  }
+
+  // get overall biamass concentration
+  MPI_Allreduce(&smass,&global_smass,1,MPI_DOUBLE,MPI_SUM,world);
+
+  // get nitrogen concentration
+  int bgrids = kinetics->ngrids;
+
+  for (int i = 0; i < bgrids; i++) {
+    for (int nu = 1; nu <= nnus; nu++) {
+      if (strcmp(bio->nuname[nu], "sub") == 0) {
+        sub += kinetics->nus[nu][i];
+      } else if (strcmp(bio->nuname[nu], "o2") == 0) {
+	o2 += kinetics->nus[nu][i];
+      }
+    }
+  }
+
+  sub /= bgrids;
+  o2 /= bgrids;
+
+  MPI_Allreduce(&sub,&global_sub,1,MPI_DOUBLE,MPI_SUM,world);
+  MPI_Allreduce(&o2,&global_o2,1,MPI_DOUBLE,MPI_SUM,world);
+
+  double diff_mass = (global_smass - global_pre_smass) / (kinetics->nx * kinetics->ny * kinetics->nz);
+  double diff_sub = (global_sub - global_pre_sub) * 0.63 / comm->nprocs;;
+  double diff_o2 = (global_o2 - global_pre_o2)*1.702702703 / comm->nprocs;;
+
+  double left = fabs(diff_mass);
+  double right = fabs(diff_sub);
+  double right2 = fabs(diff_o2);
+
+  if (comm->me == 0) printf("(N) Diff = %e, Biomass = %e, Sub = %e, o2 = %e \n",
+      left-right, diff_mass, diff_sub, diff_o2);
+
+  global_pre_sub = global_sub;
+  global_pre_o2 = global_o2;
+  global_pre_smass = global_smass;
+
+  global_sub = 0;
+  global_o2 = 0;
   global_smass = 0;
 }
 

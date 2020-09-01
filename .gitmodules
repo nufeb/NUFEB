@@ -7,12 +7,6 @@
 [submodule "thirdparty/sedifoam"]
 	path = thirdparty/sedifoam
 	url = https://github.com/shelllbw/sediFoam/ 
-[submodule "thirdparty/openfoam/openfoam"]
-	path = thirdparty/openfoam/openfoam
-	url = https://github.com/OpenFOAM/OpenFOAM-6
-[submodule "thirdparty/openfoam/thirdparty"]
-	path = thirdparty/openfoam/thirdparty
-	url = https://github.com/OpenFOAM/ThirdParty-6
 [submodule "thirdparty/hdf5"]
 	path = thirdparty/hdf5
 	url = https://github.com/live-clones/hdf5
