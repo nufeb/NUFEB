@@ -17,11 +17,15 @@ for n in range(1,int(args.num)+1):
     max_size = 1.94e-6
     dimensions = [1e-4,1e-4,1e-5]#x,y,z in meters
     growthRate = round(0.047/3600,7) #0.047-0.087/hr from Brodderick et al 2019 PCC7942
-    Nutrients = {'sub' : 1e-1,'o2' : 9e-3, 'suc' : 1e-20, 'co2' : 4e-1,'co2g' : 0}
-    NutesNum = len(Nutrients)
+    Nutrients ={'Concentration' :  {'sub' : 1e-1,'o2' : 9e-3, 'suc' : 1e-20, 'co2' : 4e1,'co2g' : 0},
+                'State' : {'sub' : 'g','o2' : 'l', 'suc' : 'l', 'co2' : 'l','co2g' : 'g'},
+                'xbc' : {'sub' : 'nn','o2' : 'nn', 'suc' : 'nn', 'co2' : 'nn','co2g' : 'nn'},
+                'ybc' : {'sub' : 'nn','o2' : 'nn', 'suc' : 'nn', 'co2' : 'nn','co2g' : 'nn'},
+                'zbc' : {'sub' : 'nn','o2' : 'nd', 'suc' : 'nn', 'co2' : 'nn','co2g' : 'nn'}}
+    NutesNum = len(Nutrients['Concentration'])
     Diff_c = {'sub' : 0,'o2' : 2.30e-9, 'suc' : 5.2e-10,'co2' : 1.9e-09,'co2g' : 0}
     K_s = {'sub' : 3.5e-4,'o2' : 2e-4, 'suc' : 1e-2,'co2' : K_co2,'co2g' : 0}
-    Params = {'Yield' : .55,'Maintenance' : 0,'Decay' : 0}
+    Params = {'Yield' : .65,'Maintenance' : 0,'Decay' : 0} #yield = 0.55
     
     
     L = [' NUFEB Simulation\r\n\n',f'     {n_cells} atoms \n',
@@ -35,14 +39,12 @@ for n in range(1,int(args.num)+1):
         x = random.uniform(0+size,dimensions[0]-size)
         y = random.uniform(0+size,dimensions[1]-size)
         z = random.uniform(0+size,dimensions[2]-size)
-        L.append(f'     %d 1 {size :.2e}  375 {x :.2e} {y :.2e} {z :.2e} {size :.2e} \n'% (i))
+        L.append(f'     %d 1 {size :.2e}  357 {x :.2e} {y :.2e} {z :.2e} {size :.2e} \n'% (i))
     L.append('\n')
     L.append(' Nutrients \n\n')
-    for i,nute in enumerate(Nutrients.keys()):
-        if i == 0:
-            L.append(f'     %d {nute} g {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} \n'% (i+1))
-        else:
-            L.append(f'     %d {nute} l {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} \n'% (i+1))
+    for i,nute in enumerate(Nutrients['Concentration'].keys()):
+        L.append(f'     %d {nute} {Nutrients["State"][nute]} {Nutrients["xbc"][nute]} {Nutrients["ybc"][nute]} {Nutrients["zbc"][nute]} {Nutrients["Concentration"][nute] :.2e} {Nutrients["Concentration"][nute] :.2e} \n'% (i+1))
+       
     L.append('\n')
     L.append(' Type Name \n\n')
     L.append('     1 ' + atomType + ' \n\n')

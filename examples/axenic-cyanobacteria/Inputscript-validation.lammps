@@ -53,7 +53,7 @@ variable divDia equal 1.94e-6
 
 #variables used in fix kinetics
 variable diffT equal 1e-4
-variable tol equal 1e-6
+variable tol equal 1e-10
 variable etaHET equal 0.6
 variable layer equal -1
 
@@ -63,9 +63,9 @@ variable layer equal -1
 
 ##############Define IBm Commands##############
 
-fix k1 all kinetics 1 50 50 5 v_diffT v_layer niter 100000
-fix kgm all kinetics/growth/monod sucexp 0 gflag 1
-fix g1 all kinetics/diffusion v_tol pp pp nn #closedflag 1#kg dcflag 2
+fix k1 all kinetics 100 50 50 5 v_diffT v_layer niter 100000
+fix kgm all kinetics/growth/monod sucexp 1 gflag 1
+fix g1 all kinetics/diffusion v_tol #closedflag 1#kg dcflag 2
 fix d1 all divide 100 v_EPSdens v_divDia 64564
 #fix d2 all death 1 v_deadDia demflag 0
 
@@ -82,7 +82,7 @@ dump		id all custom 1000 output.lammmps id type diameter x y z
 #dump		du1 all vtk 1000 atom_*.vtu id type diameter x y z
 #dump		du2 all grid 1000 grid_%_*.vti con
 dump            du3 all bio 100 ntypes biomass avg_con
-thermo_style    custom step cpu atoms c_myNtypes[2]
+thermo_style    custom step cpu atoms c_myNtypes[2] c_myMass[2] c_myCon[4] c_myCon[5]
 thermo		100
 thermo_modify	lost ignore
 
@@ -90,7 +90,7 @@ thermo_modify	lost ignore
 #shell cd Sucrose_${sucRatio}
 shell mkdir Run_${sims}
 shell cd Run_${sims}
-run 80000
+run 40000
 shell cd ..
 clear
 next sims
