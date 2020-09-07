@@ -60,6 +60,7 @@ public:
   double **nugrid;                        // nutrient concentration in ghost grid [nutrient][grid], unit in mol or kg/m3
   double **xgrid;                         // grid coordinate [gird][3]
   double **nuprev;                        // nutrient concentration in previous diffusion step
+  double **nupenult;			  // nutrient concentration in n-2 step
   double **grid_diff_coeff;               // diffusion coeffs at each grid
   double vol;                             // grid volume
 
@@ -102,6 +103,7 @@ public:
   void compute_bulk();
   void compute_blayer();
   void compute_flux(double, double &, double *, double, int, int);
+  void check_converge(int *);
 
   int get_index(int);
   void migrate(const Grid<double, 3> &, const Box<int, 3> &, const Box<int, 3> &);
