@@ -359,8 +359,8 @@ void FixKinetics::pre_force(int vflag) {
  ------------------------------------------------------------------------- */
 void FixKinetics::integration() {
   int iter = 0;
+  double bio_dt = update->dt * nevery;
   bool converge = false;
-  int nnu = bio->nnu;
 
   grow_flag = 0;
   update_bgrids();
@@ -372,43 +372,14 @@ void FixKinetics::integration() {
       diffusion->update_diff_coeff();
 
     if (diffusion->close_system && diffusion->close_flag == 1) {
-      diffusion->closed_avg(nuconv, update->dt*nevery);
+      diffusion->closed_avg(nuconv, bio_dt);
     }
 
-    while (!converge) {
-      converge = true;
+    update_nutrient_dist(converge, iter);
 
-      // solve for reaction term, no growth happens here unless external growth flag is on
-      if (iter % devery == 0) {
-	reset_nur();
-	if (energy != NULL) {
-	  ph->solve_ph();
-	  thermo->thermo(diff_dt * devery);
-	  energy->growth(diff_dt * devery, grow_flag);
-	} else if (monod != NULL) {
-	  monod->growth(diff_dt * devery, grow_flag);
-	}
-      }
-
-      iter++;
-
-      // solve for diffusion and advection
-      nuconv = diffusion->diffusion(nuconv, iter, diff_dt);
-
-      // check for convergence
-      for (int i = 1; i <= nnu; i++) {
-	if (!nuconv[i]) {
-	  converge = false;
-	  break;
-	}
-      }
-
-      if (niter > 0 && iter >= niter)
-	converge = true;
+    if (diffusion->close_system && diffusion->close_flag == 0) {
+      diffusion->closed_res(bio_dt, diff_dt);
     }
-
-    if (diffusion->close_system && diffusion->close_flag == 0)
-      diffusion->closed_res(update->dt*nevery, diff_dt);
 
     if (comm->me == 0 && logfile)
       fprintf(logfile, "number of iterations: %i \n", iter);
@@ -424,9 +395,9 @@ void FixKinetics::integration() {
 
   // energy-based or Monod-based microbe growth
   if (energy != NULL)
-    energy->growth(update->dt * nevery, grow_flag);
+    energy->growth(bio_dt, grow_flag);
   if (monod != NULL)
-    monod->growth(update->dt * nevery, grow_flag);
+    monod->growth(bio_dt, grow_flag);
 
   if (ph != NULL && ph->buffer_flag)
     ph->buffer_ph();
@@ -438,6 +409,42 @@ void FixKinetics::integration() {
 
   if (thermo != NULL)
     thermo->thermo(update->dt * nevery);
+}
+
+/* ----------------------------------------------------------------------
+ solve diffusion-reaction
+ ------------------------------------------------------------------------- */
+void FixKinetics::update_nutrient_dist(bool &converge, int &iter) {
+  while (!converge) {
+    converge = true;
+    // solve for reaction term, no growth happens here unless external growth flag is on
+    if (iter % devery == 0) {
+      reset_nur();
+      if (energy != NULL) {
+	ph->solve_ph();
+	thermo->thermo(diff_dt * devery);
+	energy->growth(diff_dt * devery, grow_flag);
+      } else if (monod != NULL) {
+	monod->growth(diff_dt * devery, grow_flag);
+      }
+    }
+
+    iter++;
+
+    // solve for diffusion and advection
+    nuconv = diffusion->diffusion(nuconv, iter, diff_dt);
+
+    // check for convergence
+    for (int i = 1; i <= bio->nnu; i++) {
+      if (!nuconv[i]) {
+	converge = false;
+	break;
+      }
+    }
+
+    if (niter > 0 && iter >= niter)
+      converge = true;
+  }
 }
 
 /* ----------------------------------------------------------------------
