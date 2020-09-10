@@ -58,7 +58,7 @@ variable divDia equal 1.36e-6
 
 #variables used in fix kinetics 
 variable diffT equal 1e-4
-variable tol equal 1e-12
+variable tol equal 1e-10
 variable layer equal -1
 
 #variables used in fix death
@@ -72,7 +72,7 @@ fix kgm all kinetics/growth/monod epsdens 30 gflag 1
 fix g1 all kinetics/diffusion v_tol closedflag 0
 fix d1 all divide 100 v_EPSdens v_divDia 64564
 fix e1 HET eps_extract 100 v_EPSratio v_EPSdens 53453
-#fix vi all verify 100 mb
+fix vi all verify 100 mb
 
 ##############Define IBm Computes##############
 

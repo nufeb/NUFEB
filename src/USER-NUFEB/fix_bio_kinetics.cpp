@@ -323,7 +323,7 @@ void FixKinetics::init_param() {
       xdensity[i][j] = 0;
     }
 
-    for (int i = 0; i <= bio->nnu; i++) {
+    for (int i = 1; i <= bio->nnu; i++) {
       if (bio->init_nus != NULL) nus[i][j] = bio->init_nus[i][0];
       nur[i][j] = 0;
       nuconv[i] = 0;
@@ -332,6 +332,10 @@ void FixKinetics::init_param() {
       activity[i][2][j] = 0;
       activity[i][3][j] = 0;
       activity[i][4][j] = 0;
+
+      if (!strcmp(bio->nuname[i], "s") && j >= subn[0]*subn[1]) {
+	nus[i][j] = 0;
+      }
     }
   }
 }
