@@ -17,7 +17,7 @@ for n in range(1,int(args.num)+1):
     max_size = 1.94e-6
     dimensions = [1e-4,1e-4,1e-5]#x,y,z in meters
     growthRate = round(0.047/3600,7) #0.047-0.087/hr from Brodderick et al 2019 PCC7942
-    Nutrients ={'Concentration' :  {'sub' : 1e-1,'o2' : 9e-3, 'suc' : 1e-20, 'co2' : 4e1,'co2g' : 0},
+    Nutrients ={'Concentration' :  {'sub' : 1e-1,'o2' : 9e-3, 'suc' : 1e-20, 'co2' : 4e0,'co2g' : 0},
                 'State' : {'sub' : 'g','o2' : 'l', 'suc' : 'l', 'co2' : 'l','co2g' : 'g'},
                 'xbc' : {'sub' : 'nn','o2' : 'nn', 'suc' : 'nn', 'co2' : 'nn','co2g' : 'nn'},
                 'ybc' : {'sub' : 'nn','o2' : 'nn', 'suc' : 'nn', 'co2' : 'nn','co2g' : 'nn'},
