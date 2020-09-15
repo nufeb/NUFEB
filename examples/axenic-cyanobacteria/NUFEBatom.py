@@ -1,6 +1,7 @@
 import random
 import argparse
 import numpy as np
+import pickle
 
 parser = argparse.ArgumentParser(description='Create atom definition files')
 parser.add_argument('--n', dest='num', action='store',
@@ -17,15 +18,15 @@ for n in range(1,int(args.num)+1):
     max_size = 1.94e-6
     dimensions = [1e-4,1e-4,1e-5]#x,y,z in meters
     growthRate = round(0.047/3600,7) #0.047-0.087/hr from Brodderick et al 2019 PCC7942
-    Nutrients ={'Concentration' :  {'sub' : 1e-1,'o2' : 9e-3, 'suc' : 1e-20, 'co2' : 4e-1,'co2g' : 0},
-                'State' : {'sub' : 'g','o2' : 'l', 'suc' : 'l', 'co2' : 'l','co2g' : 'g'},
-                'xbc' : {'sub' : 'nn','o2' : 'nn', 'suc' : 'nn', 'co2' : 'nn','co2g' : 'nn'},
-                'ybc' : {'sub' : 'nn','o2' : 'nn', 'suc' : 'nn', 'co2' : 'nn','co2g' : 'nn'},
-                'zbc' : {'sub' : 'nn','o2' : 'nd', 'suc' : 'nn', 'co2' : 'nn','co2g' : 'nn'}}
+    Nutrients ={'Concentration' :  {'sub' : 1e-1,'o2' : 9e-3, 'suc' : 1e-20, 'co2' : 4e-1,'gco2' : 2e-2},
+                'State' : {'sub' : 'g','o2' : 'l', 'suc' : 'l', 'co2' : 'l','gco2' : 'g'},
+                'xbc' : {'sub' : 'nn','o2' : 'nn', 'suc' : 'nn', 'co2' : 'nn','gco2' : 'pp'},
+                'ybc' : {'sub' : 'nn','o2' : 'nn', 'suc' : 'nn', 'co2' : 'nn','gco2' : 'pp'},
+                'zbc' : {'sub' : 'nn','o2' : 'nd', 'suc' : 'nn', 'co2' : 'nn','gco2' : 'pp'}}
     NutesNum = len(Nutrients['Concentration'])
-    Diff_c = {'sub' : 0,'o2' : 2.30e-9, 'suc' : 5.2e-10,'co2' : 1.9e-09,'co2g' : 0}
-    K_s = {'sub' : 3.5e-4,'o2' : 2e-4, 'suc' : 1e-2,'co2' : 4e-3,'co2g' : 0}
-    Params = {'Yield' : .65,'Maintenance' : 0,'Decay' : 0} #yield = 0.55
+    Diff_c = {'sub' : 0,'o2' : 2.30e-9, 'suc' : 5.2e-10,'co2' : 1.9e-09,'gco2' : 0}
+    K_s = {'sub' : 3.5e-4,'o2' : 2e-4, 'suc' : 1e-2,'co2' : 1.38e-4,'gco2' : 0}
+    Params = {'Yield' : 1,'Maintenance' : 0,'Decay' : 0} #yield = 0.55
     
     
     L = [' NUFEB Simulation\r\n\n',f'     {n_cells} atoms \n',
@@ -65,3 +66,6 @@ for n in range(1,int(args.num)+1):
         L.append('     ' + atomType + ' ' + str(Params[key]) + ' \n\n')
     f= open(f"atom_{n}.in","w+")
     f.writelines(L)
+    dumpfile = open(f"run_{n}.pkl",'wb')
+    pickle.dump([atomType,n_cells,dimensions,growthRate,Nutrients,Diff_c,K_s,Params],dumpfile)
+    dumpfile.close()

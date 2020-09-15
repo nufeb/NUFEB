@@ -3,14 +3,20 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.integrate import odeint
 from glob import glob
-runs = glob('./Run_*')
-K_s = []
-for i,run in enumerate(runs,1):
-    temp = open(f"atom_{i}.in","r").readlines()#
-    for j in range(len(temp)):
-        if '     cyano 0.00035 0.0002 0.01' in temp[j]:
-            # print(temp[j])
-            K_s.append(float(temp[j].split(' ')[-3]))
+import pickle
+Run_folders = glob('./Run_*/')
+def read_pkl(n):
+    with open(f"run_{n}.pkl") as f:
+        atomType,n_cells,dimensions,growthRate,Nutrients,Diff_c,K_s,Params = pickle.load(f)
+        return atomType,n_cells,dimensions,growthRate,Nutrients,Diff_c,K_s,Params
+Run_params = [read_pkl(i) for i in range(len(Run_folders),1,2)]
+# K_s = []
+# for i,run in enumerate(runs,1):
+#     temp = open(f"atom_{i}.in","r").readlines()#
+#     for j in range(len(temp)):
+#         if '     cyano 0.00035 0.0002 0.01' in temp[j]:
+#             # print(temp[j])
+#             K_s.append(float(temp[j].split(' ')[-3]))
 # K_s = [float(open(f"atom_{i}.in","r").readlines()[134].split(' ')[-2]) for i in range(1,20)]
 types = ['./Run_%i/Results/ntypes.csv'%i for i in range(1,len(runs)+1)]
 biomass = ['./Run_%i/Results/biomass.csv'%i for i in range(1,len(runs)+1)]
