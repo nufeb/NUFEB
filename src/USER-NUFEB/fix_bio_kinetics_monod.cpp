@@ -505,7 +505,7 @@ void FixKineticsMonod::growth_cyano(int i, int grid) {
 
   //nutrient utilization
   nur[isub][grid] += (-1 / yield[i]) * ((r1 + (2 * r1 * suc_exp)) * xdensity[i][grid]);
-  nur[ico2][grid] += (-1 / yield[i]) * ((r1 + (2 * r1 * suc_exp)) * xdensity[i][grid]);
+  nur[ico2][grid] += (-1 / yield[i]) * r1 * xdensity[i][grid];
 
 
 
