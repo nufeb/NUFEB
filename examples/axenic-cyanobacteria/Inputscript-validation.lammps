@@ -7,7 +7,7 @@ newton		off
 processors  * * 1
 
 comm_modify	vel yes
-variable sims loop 1
+variable sims loop 6
 read_data_bio atom_${sims}.in
 
 ##############Define initial particle distribution##############
@@ -49,7 +49,7 @@ variable EPSratio equal 1.3
 variable divDia equal 1.94e-6
 
 #variable used for sucrose export
-#variable sucRatio index 0.00 0.05 0.10 0.15 0.20 0.25 0.30 0.35 0.40 0.45
+variable sucRatio index 0.0 0.2 0.4 0.6 0.8 1.0
 
 #variables used in fix kinetics
 variable diffT equal 1e-4
@@ -64,7 +64,7 @@ variable layer equal -1
 ##############Define IBm Commands##############
 
 fix k1 all kinetics 100 50 50 5 v_diffT v_layer niter 1000000
-fix kgm all kinetics/growth/monod sucexp 0 #gflag 1
+fix kgm all kinetics/growth/monod sucexp ${sucRatio}#gflag 1
 fix g1 all kinetics/diffusion v_tol #closedflag 0#kg dcflag 2
 fix d1 all divide 100 v_EPSdens v_divDia 64564
 #fix d2 all death 1 v_deadDia demflag 0
@@ -94,4 +94,5 @@ run 20000
 shell cd ..
 clear
 next sims
+next sucRatio
 jump SELF
