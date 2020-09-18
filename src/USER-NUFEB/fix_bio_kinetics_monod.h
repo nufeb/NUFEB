@@ -52,7 +52,7 @@ class FixKineticsMonod : public Fix {
 
   double **xdensity;
 
-  int isub, io2, inh4, ino2, ino3, isuc, ico2, ico2g;  // nutrient index
+  int isub, io2, inh4, ino2, ino3, isuc, ico2, igco2;  // nutrient index
   int ieps;			    // eps index
 
   int *species;                     // species index 0 = unknown, 1 = het, 2 = aob, 3 = nob, 4 = eps, 5 = dead, 6 = cyano, 7 = ecw
@@ -65,7 +65,7 @@ class FixKineticsMonod : public Fix {
   double eps_dens;                  // EPS density
   double eta_het;                   // HET reduction factor in anoxic condition
   double suc_exp;                   // Sucrose export rate (0->1)
-
+  int gco2_flag;                    // flag for gaseous co2 dissolution
   class AtomVecBio *avec;
   class FixKinetics *kinetics;
   class BIO *bio;

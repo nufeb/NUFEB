@@ -13,6 +13,7 @@ def read_pkl(n):
     pkl_file.close()
     return f
 Run_params = [read_pkl(i) for i in range(1,len(Run_folders)+1)]
+
 # K_s = []
 # for i,run in enumerate(runs,1):
 #     temp = open(f"atom_{i}.in","r").readlines()#
@@ -35,7 +36,7 @@ Volume = 1e-4*1e-4*1e-5 #m^3
 CellNum2OD = Volume*1e6/0.3e-9
 Biomass2OD = 1e12
 tStep2Days = 10/3600/24
-
+sucs = np.linspace(0,1,6)
 pctC = 0.5
 light = 1.00e-01 #kg/m^3
 co2 = 4e-1
@@ -49,7 +50,7 @@ def monod_func(y,t):
 
 # f.savefig('Growth_S9.png',dpi=600)
 f, ax = plt.subplots(figsize=(14,9))
-for path,i in zip(types,sorted(Run_folders)):
+for path,i in zip(types,range(1,len(Run_folders)+1)):
     df = pd.read_csv(path,usecols=[0,1],names=['Time','Cells'],skiprows=1)
     df.index = df.Time/60/60/24*10 #convert timesteps (10s) to days
     df.index.name='Days'
@@ -57,7 +58,7 @@ for path,i in zip(types,sorted(Run_folders)):
     y0 = df.iloc[0,1]
     t = np.linspace(df.index[0], df.index[-1],1000)
     sol = odeint(monod_func, y0, t)
-    ax.plot(df.iloc[:,1],label=f'Run {i}')
+    ax.plot(df.iloc[:,1],label=f'Sucrose Export {sucs[i-1] :.1f}')
     # ax.plot(t,sol,ls='--',label=f'monod {i:.2e}')
 ax.set_yscale('log')
     # ax.set_xlabel('Time (D)')
@@ -86,7 +87,7 @@ for i,path in enumerate(biomass):
     df.index.name='Days'
     # df.iloc[:,1] = df.iloc[:,1]/(df.iloc[0,1]+InitialCarbon)
     # ax.plot(df.iloc[:,1]*pctC/(df.iloc[0,1]*pctC +InitialCarbon),label=f'K= {i:.2e}',c=color[j])
-    ax.plot((df.iloc[:,1]*pctC - df.iloc[0,1]*pctC)/(InitialCarbon),label=f'Run {i}',c=color[j])
+    ax.plot((df.iloc[:,1]*pctC - df.iloc[0,1]*pctC)/(InitialCarbon),label=f'Sucrose Export {sucs[i-1] :.1f}')
     j=j+1
     # ax.set_yscale('log')
 ax.set_xlabel('Time (days)')
@@ -96,7 +97,7 @@ ax.legend()
 
 #%%Productivity
 data = pd.DataFrame(columns=['SucroseRatio','Productivity'])
-sucs = np.linspace(0,1,6)
+
 # Suc = pd.DataFrame([],columns=['Time','Sucrose','Induction'])
 for cell_path,path,i in zip(types,Cons,range(1,len(Run_folders)+1)):
     df = pd.read_csv(cell_path,usecols=[0,1],names=['Time','Cells'],skiprows=1,index_col=0)
@@ -112,7 +113,7 @@ for cell_path,path,i in zip(types,Cons,range(1,len(Run_folders)+1)):
     df2.Sucrose.plot(ax=axes)
     axes.set_ylabel('Sucrose (fg)')
     axes.set_xlabel('Time (hrs)')
-    axes.set_title(f'Run # {i}')
+    axes.set_title(f'Sucrose Export {sucs[i-1] :.1f}')
     data = data.append(pd.DataFrame([[sucs[i-1],reg.coef_[0]]],columns=['SucroseRatio','Productivity']),ignore_index=True)
 data.index = data.SucroseRatio
 data.drop('SucroseRatio',axis=1,inplace=True)
@@ -121,7 +122,7 @@ data.plot(ax=ax)
 ax.set_ylabel('Sucrose Productivity (fg/cell/hr)')
 ax.legend().remove()
 #%% Nutrients
-for path,i in zip(Cons,Run_folders):
+for path,i in zip(Cons,range(1,len(Run_folders)+1)):
     df = pd.read_csv(path,usecols=[0,2,3,4],names=['Time','O2','Sucrose','CO2'],skiprows=1,index_col=0)
     df.index = df.index*tStep2Days
     df.O2 = df.O2/O2MW*1e3
@@ -132,4 +133,4 @@ for path,i in zip(Cons,Run_folders):
     df.plot(ax=axes)
     axes.set_ylabel('Concentration (mM)')
     axes.set_xlabel('Time (days)')
-    axes.set_title(f'K_CO2 = {i}')
+    axes.set_title(f'Sucrose Export {sucs[i-1] :.1f}')

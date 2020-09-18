@@ -26,7 +26,7 @@ for n in range(1,int(args.num)+1):
                 'State' : {'sub' : 'g','o2' : 'l', 'suc' : 'l', 'co2' : 'l','gco2' : 'g'},
                 'xbc' : {'sub' : 'nn','o2' : 'nn', 'suc' : 'nn', 'co2' : 'nn','gco2' : 'pp'},
                 'ybc' : {'sub' : 'nn','o2' : 'nn', 'suc' : 'nn', 'co2' : 'nn','gco2' : 'pp'},
-                'zbc' : {'sub' : 'nn','o2' : 'nd', 'suc' : 'nn', 'co2' : 'nn','gco2' : 'pp'}},
+                'zbc' : {'sub' : 'nn','o2' : 'nn', 'suc' : 'nn', 'co2' : 'nn','gco2' : 'pp'}},
                 'Diff_c' : {'sub' : 0,'o2' : 2.30e-9, 'suc' : 5.2e-10,'co2' : 1.9e-09,'gco2' : 0},
                 'K_s' : {'sub' : 3.5e-4,'o2' : 2e-4, 'suc' : 1e-2,'co2' : 1.38e-4,'gco2' : 0},
                 'GrowthParams' : {'Yield' : 0.55,'Maintenance' : 0,'Decay' : 0}
