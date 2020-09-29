@@ -5,14 +5,14 @@ from scipy.integrate import odeint
 from glob import glob
 import pickle
 from sklearn.linear_model import LinearRegression
-Run_folders = glob('./Run_*/')
-def read_pkl(n):
-# read python dict back from the file
-    pkl_file = open(f"run_{n}.pkl", 'rb')
-    f = pickle.load(pkl_file)
-    pkl_file.close()
-    return f
-Run_params = [read_pkl(i) for i in range(1,len(Run_folders)+1)]
+Run_folders = glob('./Sucrose_*/')
+# def read_pkl(n):
+# # read python dict back from the file
+#     pkl_file = open(f"run_{n}.pkl", 'rb')
+#     f = pickle.load(pkl_file)
+#     pkl_file.close()
+#     return f
+# Run_params = [read_pkl(i) for i in range(1,len(Run_folders)+1)]
 ExportRatio = np.linspace(0,1,len(Run_folders))
 # K_s = []
 # for i,run in enumerate(runs,1):
@@ -22,9 +22,9 @@ ExportRatio = np.linspace(0,1,len(Run_folders))
 #             # print(temp[j])
 #             K_s.append(float(temp[j].split(' ')[-3]))
 # K_s = [float(open(f"atom_{i}.in","r").readlines()[134].split(' ')[-2]) for i in range(1,20)]
-types = ['./Run_%i/Results/ntypes.csv'%i for i in range(1,len(Run_folders)+1)]
-biomass = ['./Run_%i/Results/biomass.csv'%i for i in range(1,len(Run_folders)+1)]
-Cons = ['./Run_%i/Results/avg_concentration.csv'%i for i in range(1,len(Run_folders)+1)]
+types = ['./Sucrose_%.1f/Results/ntypes.csv'%i for i in ExportRatio]
+biomass = ['./Sucrose_%.1f/Results/biomass.csv'%i for i in ExportRatio]
+Cons = ['./Sucrose_%.1f/Results/avg_concentration.csv'%i for i in ExportRatio]
 ExpPath = 'C:/Users/Jonathan/Documents/sucrose and growth CSCB-SPS.xlsx'
 Control = pd.read_excel(ExpPath,sheet_name='Control')
 Control.Time = Control.Time/24
@@ -108,25 +108,25 @@ ax.set_xlabel('Time (days)')
 ax.set_ylabel('Concentration (mM)')
 ax.legend()
 #%%Carbon mass balance
-viridis = plt.cm.get_cmap('viridis', 256)
-color = viridis(np.linspace(0, 1, 20))
-f, ax = plt.subplots(figsize=(14,9))
-# plt.set_cmap(cmap=plt.get_cmap('viridis'))
-j=0
-for i,path in enumerate(biomass):
-    InitialCarbon = Volume*12/CO2MW*Run_params[i]['Nutrients']['Concentration']['co2'] #kg
-    df = pd.read_csv(path,usecols=[0,2],names=['Time','Biomass'],skiprows=1)
-    df.index = df.Time/60/60/24*10 #convert timesteps (10s) to days
-    df.index.name='Days'
-    # df.iloc[:,1] = df.iloc[:,1]/(df.iloc[0,1]+InitialCarbon)
-    # ax.plot(df.iloc[:,1]*pctC/(df.iloc[0,1]*pctC +InitialCarbon),label=f'K= {i:.2e}',c=color[j])
-    ax.plot((df.iloc[:,1]*pctC - df.iloc[0,1]*pctC)/(InitialCarbon),label=f'Sucrose Export {ExportRatio[i-1] :.1f}')
-    j=j+1
-    # ax.set_yscale('log')
-ax.set_xlabel('Time (days)')
-ax.set_ylabel('BiomassC/C')
+# viridis = plt.cm.get_cmap('viridis', 256)
+# color = viridis(np.linspace(0, 1, 20))
+# f, ax = plt.subplots(figsize=(14,9))
+# # plt.set_cmap(cmap=plt.get_cmap('viridis'))
+# j=0
+# for i,path in enumerate(biomass):
+#     # InitialCarbon = Volume*12/CO2MW*Run_params[i]['Nutrients']['Concentration']['co2'] #kg
+#     df = pd.read_csv(path,usecols=[0,2],names=['Time','Biomass'],skiprows=1)
+#     df.index = df.Time/60/60/24*10 #convert timesteps (10s) to days
+#     df.index.name='Days'
+#     # df.iloc[:,1] = df.iloc[:,1]/(df.iloc[0,1]+InitialCarbon)
+#     # ax.plot(df.iloc[:,1]*pctC/(df.iloc[0,1]*pctC +InitialCarbon),label=f'K= {i:.2e}',c=color[j])
+#     ax.plot((df.iloc[:,1]*pctC - df.iloc[0,1]*pctC)/(InitialCarbon),label=f'Sucrose Export {ExportRatio[i-1] :.1f}')
+#     j=j+1
+#     # ax.set_yscale('log')
+# ax.set_xlabel('Time (days)')
+# ax.set_ylabel('BiomassC/C')
 
-ax.legend()
+# ax.legend()
 
 #%%Productivity
 data = pd.DataFrame(columns=['SucroseRatio','Productivity'])
@@ -189,11 +189,11 @@ ax.legend(frameon=False)
 RelativeBiomass = pd.DataFrame(columns=['Export Ratio','Cell','Sucrose','Total'])
 for cell_path,path,i in zip(biomass,Cons,range(len(Run_folders))):
     df = pd.read_csv(cell_path,usecols=[0,2],names=['Time','Biomass'],skiprows=1)
-    df.index = df.index*tStep2Days*24
+    df.index = df.Time*tStep2Days*24
     df.Biomass = df.Biomass/Volume
     CellMass = df[df.index <= 24].Biomass.iloc[-1]# - df.Biomass.iloc[0]
-    df2 = pd.read_csv(path,usecols=[0,2,3,4],names=['Time','O2','Sucrose','CO2'],skiprows=1,index_col=0)
-    df2.index = df2.index*tStep2Days*24
+    df2 = pd.read_csv(path,usecols=[0,2,3,4],names=['Time','O2','Sucrose','CO2'],skiprows=1)
+    df2.index = df2.Time*tStep2Days*24
     # df2.Sucrose = df2.Sucrose*Volume
     SucMass = df2[df2.index <= 24].iloc[-1].Sucrose# - df2.Sucrose.iloc[0]
     TotalMass = CellMass + SucMass
@@ -204,24 +204,24 @@ RelativeBiomass.drop('Export Ratio',axis=1,inplace=True)
 TotalBiomass = RelativeBiomass.copy()
 RelativeBiomass = RelativeBiomass.div(RelativeBiomass.Total,axis=0)
 LineThickness = 2
-FontSize = 10
-f, axes = plt.subplots(ncols=3,sharex=True,figsize=(7,4),constrained_layout=True)
+FontSize = 14
+f, axes = plt.subplots(ncols=3,sharex=True,figsize=(10,4),constrained_layout=True)
 width = 1/len(Run_folders)
 axs = axes.ravel()
 labels = RelativeBiomass.index
 axs[0].bar(labels,RelativeBiomass.Cell,width,label='Cell Biomass',edgecolor='k',lw=LineThickness,color='#f4a582')
 axs[0].bar(labels,RelativeBiomass.Sucrose,width,bottom=RelativeBiomass.Cell,label='Sucrose Biomass',edgecolor='k',lw=LineThickness,color='#92c5de')
-axs[0].set_ylabel('Relative Biomass')
+axs[0].set_ylabel('Relative Biomass',fontsize=FontSize)
 # ax[0].set_xlabel('Relative Sucrose Export')
-axs[0].legend(frameon=False,bbox_to_anchor=(0.1,1))
+axs[0].legend(frameon=False,bbox_to_anchor=(0.1,1),fontsize=FontSize-2)
 
 axs[1].bar(labels,TotalBiomass.Cell,width,label='Cell Biomass',edgecolor='k',lw=LineThickness,color='#f4a582')
 axs[1].bar(labels,TotalBiomass.Sucrose,width,bottom=TotalBiomass.Cell,label='Sucrose Biomass',edgecolor='k',lw=LineThickness,color='#92c5de')
-axs[1].set_ylabel('Biomass (mg/ml)')
-axs[1].set_xlabel('Relative Sucrose Export')
+axs[1].set_ylabel('Biomass (mg/ml)',fontsize=FontSize)
+axs[1].set_xlabel('Relative Sucrose Export',fontsize=FontSize)
 
-axs[2].bar(labels,TotalBiomass.Total/TotalBiomass.Cell,width,label='Ratio',edgecolor='k',lw=LineThickness,color='#bababa')
-axs[2].set_ylabel(r'Total to cell biomass')
+axs[2].scatter(labels,TotalBiomass.Total/TotalBiomass.Cell,marker='o',edgecolor='k',label='Ratio',lw=LineThickness,color='#bababa')
+axs[2].set_ylabel(r'Total to cell biomass',fontsize=FontSize)
 for ax in axs:
     ax.spines['left'].set_linewidth(LineThickness)
     ax.spines['left'].set_color('black')
@@ -233,5 +233,5 @@ for ax in axs:
     ax.xaxis.set_tick_params(labelsize=FontSize-2,bottom=False)
     ax.tick_params(axis='both',which='both',length=0)
     ax.grid(False)
-    ax.set_xticks(labels)
+    # ax.set_xticks(labels)
 f.savefig('RelativeSucrose.png',dpi=600)

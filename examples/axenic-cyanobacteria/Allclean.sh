@@ -6,5 +6,6 @@ rm slurm-*
 rm -rf Results
 rm -rf Sucrose*
 rm -rf Run*
+rm run*
 rm output.lammps
 rm log.lammps

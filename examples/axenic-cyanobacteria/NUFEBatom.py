@@ -8,19 +8,20 @@ parser.add_argument('--n', dest='num', action='store',
                    default=1,
                    help='Create atom definition files for NUFEB with --n #files desired (default is 1)')
 parser.add_argument('--co2', dest='co2', action='store',
-                   default=100,
+                   default=1e3,
                    help='Set CO2 concentration (mM)')
+
 args = parser.parse_args()
 Ks = np.logspace(-2,0,args.num)
 CO2MW = 44.01
 for n in range(1,int(args.num)+1):
     # atomType = 'cyano'
-    n_cells = int(random.uniform(10,100))
+    n_cells = int(random.uniform(1,100))
     K_co2 = Ks[n-1]#random.uniform(5e0,1e-5)
     min_size = 1.37e-6
     max_size = 1.94e-6
     dimensions = [1e-4,1e-4,1e-5]#x,y,z in meters
-    mu = round(0.047/3600,7) #0.047-0.087/hr from Brodderick et al 2019 PCC7942
+    mu = round(0.06/3600,7) #0.047-0.087/hr from Brodderick et al 2019 PCC7942
     InitialConditions = {'CellType': 'cyano', 'StartingCells' : n_cells,'GrowthRate' : mu, 
                          'Nutrients' : {'Concentration' :  {'sub' : 1e-1,'o2' : 9e-3, 'suc' : 1e-20, 'co2' : args.co2*CO2MW*1e-3,'gco2' : 2e-2},
                 'State' : {'sub' : 'g','o2' : 'l', 'suc' : 'l', 'co2' : 'l','gco2' : 'g'},

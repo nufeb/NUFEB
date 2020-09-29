@@ -491,9 +491,9 @@ void FixKineticsMonod::growth_dead(int i, int grid) {
  Monod growth model for photoautotrophic cyanobacteria
  ------------------------------------------------------------------------- */
 void FixKineticsMonod::growth_cyano(int i, int grid) {
-  double r1, r2, r3, r4;
+  double r1, r2, r3, r4, r5;
 
-  r1 = 0; r2 = 0; r3 = 0; r4 = 0;
+  r1 = 0; r2 = 0; r3 = 0; r4 = 0; r5 = 0;
 
   //co2 dissolution
   if (gco2_flag == 1) {
@@ -505,22 +505,22 @@ void FixKineticsMonod::growth_cyano(int i, int grid) {
   //decay rate
   r2 = decay[i];
   //maintenance rate
-  r3 = maintain[i]; //* (nus[ico2][grid] / (ks[i][ico2] + nus[ico2][grid]));
+  r3 = maintain[i];
 
   //sucrose export-induced growth reduction
   r4 = r1 * 0.2 * suc_exp; //suc_exp between 0 and 1
-
+  r5 = 4 * r1 * suc_exp;
   //nutrient utilization
-  nur[isub][grid] += (-1 / yield[i]) * ((r1 + (2 * r4)) * xdensity[i][grid]);
-  nur[ico2][grid] += (-1 / yield[i]) * ((r1 + (2 * r4)) * xdensity[i][grid]);
+  nur[isub][grid] += (-1 / yield[i]) * (r1 + r5) * xdensity[i][grid];
+  nur[ico2][grid] += (-1 / yield[i]) * (r1 + r5) * xdensity[i][grid];
 
   nur[io2][grid] += -(0.1 * r3 * xdensity[i][grid]);
 
   //oxygen evolution
-  nur[io2][grid] +=  (1.06 / yield[i]) * r1 * xdensity[i][grid];
+  nur[io2][grid] +=  0.1 * (r1 + r5) * xdensity[i][grid];
   //sucrose export
 
-  nur[isuc][grid] += (1 / (0.65 * yield[i])) * 2.2 * r4 * xdensity[i][grid];
+  nur[isuc][grid] += 0.65 / yield[i] * r5 * xdensity[i][grid];
 
   //cyano overall growth rate
   growrate[i][0][grid] = r1 - r2 - r3 - r4;
