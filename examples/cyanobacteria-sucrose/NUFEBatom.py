@@ -1,117 +1,128 @@
 import random
 import argparse
+import numpy as np
+import pickle
 
 parser = argparse.ArgumentParser(description='Create atom definition files')
 parser.add_argument('--n', dest='num', action='store',
                    default=1,
                    help='Create atom definition files for NUFEB with --n #files desired (default is 1)')
-parser.add_argument('--c',dest='culture_type',action='store',default='co',help='Set culture conditions with --c (default is co-culture)')
+parser.add_argument('--r', dest='rep', action='store',
+                   default=1,
+                   help='Number of replicates')
+parser.add_argument('--c',dest='culture_type',action='store',default='co',
+                    help='Set culture conditions with --c (co-culture), --ax-c (cyano), --ax-e (e.coli)')
+parser.add_argument('--co2', dest='co2', action='store',
+                   default=1e3,
+                   help='Set CO2 concentration (mM)')
+parser.add_argument('--d', dest='dims', action='store',
+                   default=[1e-4,1e-4,1e-5],
+                   help='Set simulation box dimensions (m)')
+
 args = parser.parse_args()
-if args.culture_type == 'co':
-    cell_types = ['cyano','ecw']
-    n_cyanos = int(random.uniform(1,100))
-    n_ecw = int(random.uniform(1,100))
-    n_cells = n_cyanos + n_ecw
-elif args.culture_type == 'ax-c':
-    cell_types = ['cyano']
-    n_cyanos = int(random.uniform(1,100))
-    n_cells = n_cyanos
-elif args.culture_type == 'ax-e':
-    cell_types = ['ecw']
-    n_ecw = int(random.uniform(1,100))
-    n_cells = n_ecw
-growthRate = {'cyano' : 1.31e-5, 'ecw' : 2.7e-04} 
-K_s = {'cyano' : {'sub' : 3.5e-4,'o2' : 2e-4, 'suc' : 1e-4,'co2' : 5e-1,'co2g' : 0},
-       'ecw' : {'sub' : 0,'o2' : 1e-3, 'suc' : 3.4,'co2' : 5e-2,'co2g' : 0}}
-Params = {'cyano' : {'Yield' : .55,'Maintenance' : 0,'Decay' : 0}, 
-          'ecw' : {'Yield' : .43,'Maintenance' : 0,'Decay' : 0}}
+
+# growthRate = {'cyano' : 1.31e-5, 'ecw' : 2.7e-04} 
+# K_s = {'cyano' : {'sub' : 3.5e-4,'o2' : 2e-4, 'suc' : 1e-4,'co2' : 5e-1,'co2g' : 0},
+#        'ecw' : {'sub' : 0,'o2' : 1e-3, 'suc' : 3.4,'co2' : 5e-2,'co2g' : 0}}
+# Params = {'cyano' : {'Yield' : .55,'Maintenance' : 0,'Decay' : 0}, 
+#           'ecw' : {'Yield' : .43,'Maintenance' : 0,'Decay' : 0}}
+mu_cyanos = round(0.06/3600,7)
+mu_ecw = 2.7e-04
+CO2MW = 44.01
 for n in range(1,int(args.num)+1):
-    dimensions = [1e-4,1e-4,1e-5]#x,y,z in meters
-    Nutrients = {'sub' : 1e-1,'o2' : 9e-3, 'suc' : 1e-5, 'co2' : 4e-1, 'co2g' : 4e-1}
-    NutesNum = len(Nutrients)
-    Diff_c = {'sub' : 0,'o2' : 2.30e-9, 'suc' : 5.2e-10,'co2' : 1.9e-09, 'co2g' : 0}   
+    dimensions = args.dims#x,y,z in meters
+    if args.culture_type == 'co':
+        cell_types = ['cyano','ecw']
+        n_cyanos = int(random.uniform(1,100))
+        n_ecw = int(random.uniform(1,100))
+        n_cells = n_cyanos + n_ecw
+    elif args.culture_type == 'ax-c':
+        cell_types = ['cyano']
+        n_cyanos = int(random.uniform(1,100))
+        n_ecw = 0
+        n_cells = n_cyanos
+    elif args.culture_type == 'ax-e':
+        cell_types = ['ecw']
+        n_ecw = int(random.uniform(1,100))
+        n_cyanos=0
+        n_cells = n_ecw
+    InitialConditions = {'cyano': {'StartingCells' : n_cyanos,'GrowthRate' : mu_cyanos,
+           'min_size' : 1.37e-6, 'max_size' : 1.94e-6, 'Density' : 370,
+             'K_s' : {'sub' : 3.5e-4,'o2' : 2e-4, 'suc' : 1e-2,'co2' : 1.38e-4,'gco2' : 0},
+            'GrowthParams' : {'Yield' : 0.55,'Maintenance' : 0,'Decay' : 0}},
+             'ecw': {'StartingCells' : n_ecw,'GrowthRate' : mu_ecw,
+           'min_size' : 8.8e-7, 'max_size' : 1.04e-6, 'Density' : 236,
+             'K_s' : {'sub' : 0,'o2' : 1e-3, 'suc' : 3.4,'co2' : 5e-2,'gco2' : 0},
+            'GrowthParams' : {'Yield' : 0.43,'Maintenance' : 0,'Decay' : 0}},
+            'Nutrients' : {'Concentration' :  {'sub' : 1e-1,'o2' : 9e-3, 'suc' : 1e-20, 'co2' : args.co2*CO2MW*1e-3,'gco2' : 2e-2},
+            'State' : {'sub' : 'g','o2' : 'l', 'suc' : 'l', 'co2' : 'l','gco2' : 'g'},
+            'xbc' : {'sub' : 'nn','o2' : 'nn', 'suc' : 'nn', 'co2' : 'nn','gco2' : 'pp'},
+            'ybc' : {'sub' : 'nn','o2' : 'nn', 'suc' : 'nn', 'co2' : 'nn','gco2' : 'pp'},
+            'zbc' : {'sub' : 'nn','o2' : 'nn', 'suc' : 'nn', 'co2' : 'nn','gco2' : 'pp'}},
+            'Diff_c' : {'sub' : 0,'o2' : 2.30e-9, 'suc' : 5.2e-10,'co2' : 1.9e-09,'gco2' : 0},
+            'Dimensions' : dimensions
+
+            }
+    
+    # Nutrients = {'sub' : 1e-1,'o2' : 9e-3, 'suc' : 1e-5, 'co2' : 4e-1, 'co2g' : 4e-1}
+    NutesNum = len(InitialConditions['Nutrients']['Concentration'])
+    # Diff_c = {'sub' : 0,'o2' : 2.30e-9, 'suc' : 5.2e-10,'co2' : 1.9e-09, 'co2g' : 0}   
     
     L = [' NUFEB Simulation\r\n\n',f'     {n_cells} atoms \n',
          f'     {len(cell_types)} atom types \n',f'     {NutesNum} nutrients \n\n',
          f'  0.0e-4   {dimensions[0] :.2e}  xlo xhi \n',f'  0.0e-4   {dimensions[1] :.2e}  ylo yhi \n',
          f'  0.0e-4   {dimensions[2] :.2e}  zlo zhi \n\n', ' Atoms \n\n'
          ]
-    if args.culture_type == 'co':
-        atomType = 'cyano'
-        min_size = 1.37e-6
-        max_size = 1.94e-6
-        for i in range(1,n_cyanos+1):
-            size = random.uniform(min_size, max_size)
-            x = random.uniform(0+size,dimensions[0]-size)
-            y = random.uniform(0+size,dimensions[1]-size)
-            z = random.uniform(0+size,dimensions[2]-size)
-            L.append(f'     %d 1 {size :.2e}  375 {x :.2e} {y :.2e} {z :.2e} {size :.2e} \n'% (i))
-        atomType = 'ecw'
-        min_size = 8.8e-7
-        max_size = 1.04e-6
-        for i in range(n_cyanos+1,n_ecw+1+n_cyanos):
-            size = random.uniform(min_size, max_size)
-            x = random.uniform(0+size,dimensions[0]-size)
-            y = random.uniform(0+size,dimensions[1]-size)
-            z = random.uniform(0+size,dimensions[2]-size)
-            L.append(f'     %d 2 {size :.2e}  375 {x :.2e} {y :.2e} {z :.2e} {size :.2e} \n'% (i))
-    elif args.culture_type == 'ax-c':
-        atomType = 'cyano'
-        min_size = 1.37e-6
-        max_size = 1.94e-6
-        for i in range(1,n_cyanos+1):
-            size = random.uniform(min_size, max_size)
-            x = random.uniform(0+size,dimensions[0]-size)
-            y = random.uniform(0+size,dimensions[1]-size)
-            z = random.uniform(0+size,dimensions[2]-size)
-            L.append(f'     %d 1 {size :.2e}  375 {x :.2e} {y :.2e} {z :.2e} {size :.2e} \n'% (i))
-    elif args.culture_type == 'ax-e':
-        atomType = 'ecw'
-        min_size = 8.8e-7
-        max_size = 1.04e-6
-    
-        for i in range(n_cyanos+1,n_ecw+1+n_cyanos):
-            size = random.uniform(min_size, max_size)
-            x = random.uniform(0+size,dimensions[0]-size)
-            y = random.uniform(0+size,dimensions[1]-size)
-            z = random.uniform(0+size,dimensions[2]-size)
-            L.append(f'     %d 1 {size :.2e}  375 {x :.2e} {y :.2e} {z :.2e} {size :.2e} \n'% (i))
+    j = 1
+    for c, CellType in enumerate(cell_types,start=1):
+        for i in range(j,InitialConditions[CellType]['StartingCells']+1):
+            size = random.uniform(InitialConditions[CellType]['min_size'], 
+                                  InitialConditions[CellType]['max_size'])
+            x = random.uniform(0+size,InitialConditions['Dimensions'][0]-size)
+            y = random.uniform(0+size,InitialConditions['Dimensions'][1]-size)
+            z = random.uniform(0+size,InitialConditions['Dimensions'][2]-size)
+            L.append(f'     %d {c} {size :.2e}  375 {x :.2e} {y :.2e} {z :.2e} {size :.2e} \n'% (i))
+            j += 1
+
     L.append('\n')
     L.append(' Nutrients \n\n')
-    for i,nute in enumerate(Nutrients.keys()):
-        if 'sub' in nute:
-            L.append(f'     %d {nute} g {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} \n'% (i+1))
-        elif 'co2g' in nute:
-            L.append(f'     %d {nute} g {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} \n'% (i+1))
-        else:
-            L.append(f'     %d {nute} l {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} {Nutrients[nute] :.2e} \n'% (i+1))
+    for i,nute in enumerate(InitialConditions['Nutrients']['Concentration'].keys()):
+        L.append(f'     %d {nute} {InitialConditions["Nutrients"]["State"][nute]} {InitialConditions["Nutrients"]["xbc"][nute]} {InitialConditions["Nutrients"]["ybc"][nute]} {InitialConditions["Nutrients"]["zbc"][nute]} {InitialConditions["Nutrients"]["Concentration"][nute] :.2e} {InitialConditions["Nutrients"]["Concentration"][nute] :.2e} \n'% (i+1))
+    
     L.append('\n')
     L.append(' Type Name \n\n')
-    for i,cell in enumerate(cell_types,1):
-        L.append(f'     {i} {cell} \n')
+    for c, CellType in enumerate(cell_types,start=1):
+        L.append(f'     {c} {InitialConditions[CellType]}  \n')
     L.append('\n')
     L.append(' Diffusion Coeffs \n\n')
-    for key in Diff_c.keys():
-        L.append(f'     {key} {Diff_c[key]} \n')
+    for key in InitialConditions['Diff_c'].keys():
+        L.append(f'     {key} {InitialConditions["Diff_c"][key]} \n')
     L.append('\n')
     L.append(' Growth Rate \n\n')
-    for cell in cell_types:
-        L.append(f'     {cell} {growthRate[cell]} \n')
+    for CellType in cell_types:
+        L.append(f'     {CellType} {InitialConditions[CellType]["GrowthRate"]} \n')
     L.append('\n')
     L.append(' Ks \n\n')   
-    for cell in cell_types:
-        k = f'     {cell}'
-        for key in K_s[cell].keys():
-            k = k + ' ' + str(K_s[cell][key])
+    for CellType in cell_types:
+        k = f'     {CellType}'
+        for key in InitialConditions[CellType]['K_s'].keys():
+            k = k + ' ' + str(InitialConditions[CellType]['K_s'][key])
         k = k + f' \n'
         L.append(k) 
     L.append('\n')
-
-    for key in Params['cyano'].keys():
+    for key in InitialConditions["cyano"]['GrowthParams'].keys():
         L.append(' ' + key + f' \n\n')
-        for cell in cell_types:
-            L.append('     ' + cell + ' ' + str(Params[cell][key]) + ' \n')
+        for CellType in cell_types:
+            L.append(f'     {InitialConditions[CellType]} {InitialConditions[CellType]["GrowthParams"][key]} \n')
+        
+    # for key in Params['cyano'].keys():
+    #     L.append(' ' + key + f' \n\n')
+    #     for CellType in cell_types:
+    #         L.append('     ' + cell + ' ' + str(Params[cell][key]) + ' \n')
             
     L.append('\n\n')
     f= open(f"atom_{n}.in","w+")
     f.writelines(L)
+    dumpfile = open(f"run_{n}.pkl",'wb')
+    pickle.dump(InitialConditions,dumpfile)
+    dumpfile.close()
