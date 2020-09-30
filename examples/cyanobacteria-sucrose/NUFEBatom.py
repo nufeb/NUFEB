@@ -81,7 +81,7 @@ for n in range(1,int(args.num)+1):
             x = random.uniform(0+size,InitialConditions['Dimensions'][0]-size)
             y = random.uniform(0+size,InitialConditions['Dimensions'][1]-size)
             z = random.uniform(0+size,InitialConditions['Dimensions'][2]-size)
-            L.append(f'     %d {c} {size :.2e}  375 {x :.2e} {y :.2e} {z :.2e} {size :.2e} \n'% (i))
+            L.append(f'     %d {c} {size :.2e}  {InitialConditions[CellType]["Density"]} {x :.2e} {y :.2e} {z :.2e} {size :.2e} \n'% (i))
             j += 1
 
     L.append('\n')
