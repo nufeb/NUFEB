@@ -2,12 +2,13 @@ import random
 import argparse
 import numpy as np
 import pickle
+from string import Template
 
 parser = argparse.ArgumentParser(description='Create atom definition files')
 parser.add_argument('--n', dest='num', action='store',
                    default=1,
                    help='Create atom definition files for NUFEB with --n #files desired (default is 1)')
-parser.add_argument('--r', dest='rep', action='store',
+parser.add_argument('--r', dest='reps', action='store',
                    default=1,
                    help='Number of replicates')
 parser.add_argument('--c',dest='culture_type',action='store',default='co',
@@ -18,19 +19,19 @@ parser.add_argument('--co2', dest='co2', action='store',
 parser.add_argument('--d', dest='dims', action='store',
                    default=[1e-4,1e-4,1e-5],
                    help='Set simulation box dimensions (m)')
+parser.add_argument('--t', dest='timesteps', action='store',
+                   default=30000,
+                   help='Number of timesteps to run')
 
 args = parser.parse_args()
 
-# growthRate = {'cyano' : 1.31e-5, 'ecw' : 2.7e-04} 
-# K_s = {'cyano' : {'sub' : 3.5e-4,'o2' : 2e-4, 'suc' : 1e-4,'co2' : 5e-1,'co2g' : 0},
-#        'ecw' : {'sub' : 0,'o2' : 1e-3, 'suc' : 3.4,'co2' : 5e-2,'co2g' : 0}}
-# Params = {'cyano' : {'Yield' : .55,'Maintenance' : 0,'Decay' : 0}, 
-#           'ecw' : {'Yield' : .43,'Maintenance' : 0,'Decay' : 0}}
 mu_cyanos = round(0.06/3600,7)
 mu_ecw = 2.7e-04
 CO2MW = 44.01
 for n in range(1,int(args.num)+1):
     dimensions = args.dims#x,y,z in meters
+    Replicates = args.reps
+    SucRatio = round(random.random(),3)
     if args.culture_type == 'co':
         cell_types = ['cyano','ecw']
         n_cyanos = int(random.uniform(1,100))
@@ -60,13 +61,11 @@ for n in range(1,int(args.num)+1):
             'ybc' : {'sub' : 'nn','o2' : 'nn', 'suc' : 'nn', 'co2' : 'nn','gco2' : 'pp'},
             'zbc' : {'sub' : 'nn','o2' : 'nn', 'suc' : 'nn', 'co2' : 'nn','gco2' : 'pp'}},
             'Diff_c' : {'sub' : 0,'o2' : 2.30e-9, 'suc' : 5.2e-10,'co2' : 1.9e-09,'gco2' : 0},
-            'Dimensions' : dimensions
+            'Dimensions' : dimensions,'SucRatio' : SucRatio,'Replicates' : Replicates
 
             }
     
-    # Nutrients = {'sub' : 1e-1,'o2' : 9e-3, 'suc' : 1e-5, 'co2' : 4e-1, 'co2g' : 4e-1}
     NutesNum = len(InitialConditions['Nutrients']['Concentration'])
-    # Diff_c = {'sub' : 0,'o2' : 2.30e-9, 'suc' : 5.2e-10,'co2' : 1.9e-09, 'co2g' : 0}   
     
     L = [' NUFEB Simulation\r\n\n',f'     {n_cells} atoms \n',
          f'     {len(cell_types)} atom types \n',f'     {NutesNum} nutrients \n\n',
@@ -116,14 +115,31 @@ for n in range(1,int(args.num)+1):
             L.append(f'     {CellType} {InitialConditions[CellType]["GrowthParams"][key]} \n')
         L.append('\n')
         
-    # for key in Params['cyano'].keys():
-    #     L.append(' ' + key + f' \n\n')
-    #     for CellType in cell_types:
-    #         L.append('     ' + cell + ' ' + str(Params[cell][key]) + ' \n')
             
     L.append('\n\n')
+    #write atom definition file
     f= open(f"atom_{n}.in","w+")
     f.writelines(L)
+    #write initial conditions pickle file
     dumpfile = open(f"run_{n}.pkl",'wb')
     pickle.dump(InitialConditions,dumpfile)
     dumpfile.close()
+    #write Inputscript
+    #open the file
+    filein = open( 'Inputscript-template.txt' )
+    #read it
+    src = Template( filein.read() )
+    #do the substitution
+    result = src.safe_substitute({'n' : n, 'SucRatio' : SucRatio,
+                                  'Replicates' : Replicates,'Timesteps' : args.timesteps})
+    f= open(f"Inputscript_{n}.lammps","w+")
+    f.writelines(result)
+    #write slurm script
+    #open the file
+    filein = open( 'slurm-template.txt' )
+    #read it
+    src = Template( filein.read() )
+    #do the substitution
+    result = src.safe_substitute({'n' : n, 'job' : 'NUFEB_cyano{n}','USER' : 'sakkosjo'})
+    f= open(f"Inputscript_{n}.slurm","w+")
+    f.writelines(result)
