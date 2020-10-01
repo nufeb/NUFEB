@@ -23,3 +23,9 @@ spack load vtk%gcc@8.2.0
 salloc -A cnms -p high_mem --nodes=1 --mem=80G --exclusive -t 00:30:00
 srun --ntasks-per-node 32 -n 32 ../../lammps/src/lmp_mpi -in Inputscript.lammps
 ```
+# To login remotely
+https://support.cades.ornl.gov/user-documentation/_book/external-access-ucams.html
+```shell
+ssh ucams@login1.ornl.gov
+ssh username@mod-condo-login.ornl.gov
+```
