@@ -75,7 +75,7 @@ for n in range(1,int(args.num)+1):
          ]
     j = 1
     for c, CellType in enumerate(cell_types,start=1):
-        for i in range(j,InitialConditions[CellType]['StartingCells']+1):
+        for i in range(j,InitialConditions[CellType]['StartingCells']+j):
             size = random.uniform(InitialConditions[CellType]['min_size'], 
                                   InitialConditions[CellType]['max_size'])
             x = random.uniform(0+size,InitialConditions['Dimensions'][0]-size)
@@ -92,7 +92,7 @@ for n in range(1,int(args.num)+1):
     L.append('\n')
     L.append(' Type Name \n\n')
     for c, CellType in enumerate(cell_types,start=1):
-        L.append(f'     {c} {InitialConditions[CellType]}  \n')
+        L.append(f'     {c} {CellType}  \n')
     L.append('\n')
     L.append(' Diffusion Coeffs \n\n')
     for key in InitialConditions['Diff_c'].keys():
@@ -113,7 +113,8 @@ for n in range(1,int(args.num)+1):
     for key in InitialConditions["cyano"]['GrowthParams'].keys():
         L.append(' ' + key + f' \n\n')
         for CellType in cell_types:
-            L.append(f'     {InitialConditions[CellType]} {InitialConditions[CellType]["GrowthParams"][key]} \n')
+            L.append(f'     {CellType} {InitialConditions[CellType]["GrowthParams"][key]} \n')
+        L.append('\n')
         
     # for key in Params['cyano'].keys():
     #     L.append(' ' + key + f' \n\n')
