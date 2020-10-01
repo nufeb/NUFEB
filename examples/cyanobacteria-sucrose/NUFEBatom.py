@@ -140,6 +140,6 @@ for n in range(1,int(args.num)+1):
     #read it
     src = Template( filein.read() )
     #do the substitution
-    result = src.safe_substitute({'n' : n, 'job' : 'NUFEB_cyano{n}','USER' : 'sakkosjo'})
+    result = src.safe_substitute({'n' : n, 'job' : f"NUFEB_cyano{n}",'USER' : 'sakkosjo'})
     f= open(f"Inputscript_{n}.slurm","w+")
     f.writelines(result)
