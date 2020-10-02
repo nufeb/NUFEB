@@ -5,10 +5,10 @@
 #SBATCH --ntasks-per-node 32
 #SBATCH --cpus-per-task 1
 #SBATCH --exclusive
-#SBATCH --mem=50g
+#SBATCH --mem=100g
 #SBATCH -A cnms
 #SBATCH -t 04:00:00
-#SBATCH --mail-type=BEGIN,END,FAIL
+#SBATCH --mail-type=FAIL
 #SBATCH --mail-user=${USER}@msu.edu
 
 module purge
