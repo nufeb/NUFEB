@@ -89,6 +89,7 @@ shell mkdir Run_${n}_${reps}
 shell cd Run_${n}_${reps}
 run $Timesteps
 shell cd ..
+shell tar -cf Run_${sims}.tar ./Run_${sims}
 clear
 next reps
 jump SELF
