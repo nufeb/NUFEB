@@ -2,7 +2,7 @@
 
 atom_style	bio
 atom_modify	map array sort 1000 5.0e-7
-boundary	pp pp ff
+boundary	ff ff ff
 newton		off
 processors  * * *
 
@@ -24,6 +24,9 @@ neigh_modify	delay 0 one 5000
 
 pair_style  gran/hooke/history 1.e-4 NULL 1.e-5 NULL 0.0 1
 pair_coeff  * *
+
+#pair_style brownian 1.5 0 0 1e-6 1e-5 300 5878567
+#pair_coeff * *
 
 timestep 10
 
@@ -89,7 +92,6 @@ shell mkdir Run_${n}_${reps}
 shell cd Run_${n}_${reps}
 run $Timesteps
 shell cd ..
-shell tar -cf Run_${sims}.tar ./Run_${sims}
 clear
 next reps
 jump SELF

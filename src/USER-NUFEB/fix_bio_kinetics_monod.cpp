@@ -517,7 +517,7 @@ void FixKineticsMonod::growth_cyano(int i, int grid) {
   nur[io2][grid] += -(0.1 * r3 * xdensity[i][grid]);
 
   //oxygen evolution
-  nur[io2][grid] +=  0.1 * (r1 + r5) * xdensity[i][grid];
+  nur[io2][grid] +=  (-0.727 / yield[i]) * (r1 + r5) * xdensity[i][grid];
   //sucrose export
 
   nur[isuc][grid] += 0.65 / yield[i] * r5 * xdensity[i][grid];

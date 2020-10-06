@@ -7,7 +7,7 @@
 #SBATCH --exclusive
 #SBATCH --mem=100g
 #SBATCH -A cnms
-#SBATCH -t 04:00:00
+#SBATCH -t 10:00:00
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=${USER}@msu.edu
 
@@ -24,3 +24,4 @@ export LAMMPS=/lustre/or-hydra/cades-cnms/12x/NUFEB/lammps/src/lmp_mpi
 ldd $LAMMPS
 
 mpirun -np 32 $LAMMPS -in Inputscript_${n}.lammps
+tar -zcf Run_${n}.tar.gz Run_${n}_*

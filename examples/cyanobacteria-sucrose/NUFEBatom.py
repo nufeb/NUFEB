@@ -53,7 +53,7 @@ for n in range(1,int(args.num)+1):
             'GrowthParams' : {'Yield' : 0.55,'Maintenance' : 0,'Decay' : 0}},
              'ecw': {'StartingCells' : n_ecw,'GrowthRate' : mu_ecw,
            'min_size' : 8.8e-7, 'max_size' : 1.04e-6, 'Density' : 236,
-             'K_s' : {'sub' : 0,'o2' : 1e-3, 'suc' : 3.4,'co2' : 5e-2,'gco2' : 0},
+             'K_s' : {'sub' : 0,'o2' : 1e-3, 'suc' : 2.29,'co2' : 5e-2,'gco2' : 0},
             'GrowthParams' : {'Yield' : 0.43,'Maintenance' : 0,'Decay' : 0}},
             'Nutrients' : {'Concentration' :  {'sub' : 1e-1,'o2' : 9e-3, 'suc' : 1e-20, 'co2' : args.co2*CO2MW*1e-3,'gco2' : 2e-2},
             'State' : {'sub' : 'g','o2' : 'l', 'suc' : 'l', 'co2' : 'l','gco2' : 'g'},
@@ -140,6 +140,6 @@ for n in range(1,int(args.num)+1):
     #read it
     src = Template( filein.read() )
     #do the substitution
-    result = src.safe_substitute({'n' : n, 'job' : f"NUFEB_cyano{n}",'USER' : 'sakkosjo'})
+    result = src.safe_substitute({'n' : n, 'job' : f"NUFEB_cyano{n}",'USER' : 'sakkosjo','reps'  : Replicates})
     f= open(f"Inputscript_{n}.slurm","w+")
     f.writelines(result)
