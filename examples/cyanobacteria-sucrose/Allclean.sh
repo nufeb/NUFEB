@@ -6,5 +6,6 @@ rm Inputscript_*
 rm -rf Results
 rm -rf Run*
 rm run*
+rm *.out
 rm output.lammps
 rm log.lammps
