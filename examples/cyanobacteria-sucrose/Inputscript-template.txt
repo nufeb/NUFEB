@@ -14,8 +14,8 @@ read_data_bio atom_${n}.in
 lattice sc 1e-6 origin 0 0 0
 region reg block 0 1000 0 1000 0 100
 
-group CYANO type 1
-group ECW type 2
+${CYANOGroup}
+${ECWGroup}
 
 neighbor	5e-7 bin
 neigh_modify	delay 0 one 5000
@@ -33,7 +33,7 @@ timestep 10
 fix 1 all nve/limit 1e-8
 fix fv all viscous 1e-5
 
-fix zw all wall/gran hooke/history 2000 NULL 500.0 NULL 1.5 0 zplane  0.0  1e-05
+fix zw all wall/gran hooke/history 2000 NULL 500.0 NULL 1.5 0 zplane  0.0  ${Zheight}
 
 variable kanc equal 50
 
@@ -64,11 +64,11 @@ variable layer equal -1
 
 ##############Define IBm Commands##############
 
-fix k1 all kinetics 100 50 50 5 v_diffT v_layer niter 1000000
+fix k1 all kinetics 100 ${GridMesh} v_diffT v_layer niter 1000000
 fix kgm all kinetics/growth/monod sucexp $SucRatio
-fix g1 all kinetics/diffusion v_tol
-fix d1 CYANO divide 100 v_EPSdens v_divDia1 64564
-fix d2 ECW divide 100 v_EPSdens v_divDia2 15384
+fix g1 all kinetics/diffusion v_tol closedflag $Closed
+${CYANODiv}
+${ECWDiv}
 #fix d2 all death 1 v_deadDia demflag 0
 
 
@@ -84,7 +84,7 @@ dump		id all custom 100 output.lammmps id type diameter x y z
 dump		du1 all vtk 100 atom_*.vtu id type diameter x y z
 dump		du2 all grid 100 grid_%_*.vti con
 dump            du3 all bio 100 ntypes biomass avg_con
-thermo_style    custom step cpu atoms c_myNtypes[*] c_myMass[*] c_myCon[4] c_myCon[5]
+thermo_style    custom step cpu atoms c_myNtypes[*] c_myMass[*] c_myCon[*]
 thermo		100
 thermo_modify	lost ignore
 variable reps loop ${Replicates}

@@ -517,7 +517,7 @@ void FixKineticsMonod::growth_cyano(int i, int grid) {
   nur[io2][grid] += -(0.1 * r3 * xdensity[i][grid]);
 
   //oxygen evolution
-  nur[io2][grid] +=  (-0.727 / yield[i]) * (r1 + r5) * xdensity[i][grid];
+  nur[io2][grid] +=  (0.727 / yield[i]) * (r1 + r5) * xdensity[i][grid];
   //sucrose export
 
   nur[isuc][grid] += 0.65 / yield[i] * r5 * xdensity[i][grid];
@@ -543,9 +543,9 @@ void FixKineticsMonod::growth_ecw(int i, int grid) {
   r3 = maintain[i] * (nus[io2][grid] / (ks[i][io2] + nus[io2][grid]));
 
   //nutrient utilization
-  nur[isuc][grid] += ((-1.147) * r1 * xdensity[i][grid]);
-  nur[io2][grid] += (-(0.14) * (r1 + r3) * xdensity[i][grid]);
-  nur[ico2][grid] += (0.199 * (r1 + r3) * xdensity[i][grid]);
+  nur[isuc][grid] += (-1 / yield[i]) * r1 * xdensity[i][grid];
+  nur[io2][grid] += (-0.399) * (r1 + r3) * xdensity[i][grid];
+  nur[ico2][grid] += (0.2) * (r1 + r3) * xdensity[i][grid];
 
 
   //ecw overall growth rate
