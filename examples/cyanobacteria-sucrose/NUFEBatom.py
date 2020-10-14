@@ -29,7 +29,7 @@ parser.add_argument('--diff', dest='diffusion', action='store',
                    default=0,
                    help='Turn diffusion calculation off')
 parser.add_argument('--grid', dest='grid', action='store',
-                   default=1,
+                   default=2,
                    help='Diffusion grid density (grids/um)')
 args = parser.parse_args()
 
@@ -85,6 +85,13 @@ for n in range(1,int(args.num)+1):
             'Dimensions' : [float(x) for x in args.dims.split(',')],'SucRatio' : SucRatio,'Replicates' : int(args.reps)
 
             }
+    grids = int(args.grid)
+    while True:
+        if InitialConditions["Dimensions"][0]*1e6 % grids == 0 and InitialConditions["Dimensions"][1]*1e6 % grids == 0 and InitialConditions["Dimensions"][2]*1e6 % grids == 0:
+            Mesh = f'{int(InitialConditions["Dimensions"][0]*1e6/grids)} {int(InitialConditions["Dimensions"][1]*1e6/grids)} {int(InitialConditions["Dimensions"][2]*1e6/grids)}'
+            break
+        else:
+            grids +=1
     
     NutesNum = len(InitialConditions['Nutrients']['Concentration'])
     
@@ -158,7 +165,7 @@ for n in range(1,int(args.num)+1):
                                   'ECWGroup' : ecwGroup,
                                   'Zheight' : InitialConditions["Dimensions"][2],
                                  'CYANODiv'  : cyDiv, 'ECWDiv' : ecwDiv,
-                                 'GridMesh' : f'{int(InitialConditions["Dimensions"][0]*1e6*args.grid)} {int(InitialConditions["Dimensions"][1]*1e6*args.grid)} {int(InitialConditions["Dimensions"][2]*1e6*args.grid)}'})
+                                 'GridMesh' : Mesh})
     f= open(f"Inputscript_{n}.lammps","w+")
     f.writelines(result)
     #write slurm script
