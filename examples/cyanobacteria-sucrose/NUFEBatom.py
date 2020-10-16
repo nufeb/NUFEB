@@ -31,6 +31,9 @@ parser.add_argument('--diff', dest='diffusion', action='store',
 parser.add_argument('--grid', dest='grid', action='store',
                    default=1,
                    help='Diffusion grid density (grids/um)')
+parser.add_argument('--dump', dest='dump', action='store',
+                   default='hdf5',
+                   help='Dump to HDf5 or VTK')
 args = parser.parse_args()
 
 mu_cyanos = round(0.06/3600,7)
@@ -87,61 +90,69 @@ for n in range(1,int(args.num)+1):
             }
     
     NutesNum = len(InitialConditions['Nutrients']['Concentration'])
+    for r in range(1,int(args.reps)+1):    
+        L = [' NUFEB Simulation\r\n\n',f'     {n_cells} atoms \n',
+             f'     {len(cell_types)} atom types \n',f'     {NutesNum} nutrients \n\n',
+             f'  0.0e-4   {InitialConditions["Dimensions"][0] :.2e}  xlo xhi \n',f'  0.0e-4   {InitialConditions["Dimensions"][1] :.2e}  ylo yhi \n',
+             f'  0.0e-4   {InitialConditions["Dimensions"][2] :.2e}  zlo zhi \n\n', ' Atoms \n\n'
+             ]
     
-    L = [' NUFEB Simulation\r\n\n',f'     {n_cells} atoms \n',
-         f'     {len(cell_types)} atom types \n',f'     {NutesNum} nutrients \n\n',
-         f'  0.0e-4   {InitialConditions["Dimensions"][0] :.2e}  xlo xhi \n',f'  0.0e-4   {InitialConditions["Dimensions"][1] :.2e}  ylo yhi \n',
-         f'  0.0e-4   {InitialConditions["Dimensions"][2] :.2e}  zlo zhi \n\n', ' Atoms \n\n'
-         ]
-    j = 1
-    for c, CellType in enumerate(cell_types,start=1):
-        for i in range(j,InitialConditions[CellType]['StartingCells']+j):
-            size = random.uniform(InitialConditions[CellType]['min_size'], 
-                                  InitialConditions[CellType]['max_size'])
-            x = random.uniform(0+size,InitialConditions['Dimensions'][0]-size)
-            y = random.uniform(0+size,InitialConditions['Dimensions'][1]-size)
-            z = random.uniform(0+size,InitialConditions['Dimensions'][2]-size)
-            L.append(f'     %d {c} {size :.2e}  {InitialConditions[CellType]["Density"]} {x :.2e} {y :.2e} {z :.2e} {size :.2e} \n'% (i))
-            j += 1
-
-    L.append('\n')
-    L.append(' Nutrients \n\n')
-    for i,nute in enumerate(InitialConditions['Nutrients']['Concentration'].keys()):
-        L.append(f'     %d {nute} {InitialConditions["Nutrients"]["State"][nute]} {InitialConditions["Nutrients"]["xbc"][nute]} {InitialConditions["Nutrients"]["ybc"][nute]} {InitialConditions["Nutrients"]["zbc"][nute]} {InitialConditions["Nutrients"]["Concentration"][nute] :.2e} {InitialConditions["Nutrients"]["Concentration"][nute] :.2e} \n'% (i+1))
+        j = 1
+        for c, CellType in enumerate(cell_types,start=1):
+            for i in range(j,InitialConditions[CellType]['StartingCells']+j):
+                size = random.uniform(InitialConditions[CellType]['min_size'], 
+                                      InitialConditions[CellType]['max_size'])
+                x = random.uniform(0+size,InitialConditions['Dimensions'][0]-size)
+                y = random.uniform(0+size,InitialConditions['Dimensions'][1]-size)
+                z = random.uniform(0+size,InitialConditions['Dimensions'][2]-size)
+                L.append(f'     %d {c} {size :.2e}  {InitialConditions[CellType]["Density"]} {x :.2e} {y :.2e} {z :.2e} {size :.2e} \n'% (i))
+                j += 1
     
-    L.append('\n')
-    L.append(' Type Name \n\n')
-    for c, CellType in enumerate(cell_types,start=1):
-        L.append(f'     {c} {CellType}  \n')
-    L.append('\n')
-    L.append(' Diffusion Coeffs \n\n')
-    for key in InitialConditions['Diff_c'].keys():
-        L.append(f'     {key} {InitialConditions["Diff_c"][key]} \n')
-    L.append('\n')
-    L.append(' Growth Rate \n\n')
-    for CellType in cell_types:
-        L.append(f'     {CellType} {InitialConditions[CellType]["GrowthRate"]} \n')
-    L.append('\n')
-    L.append(' Ks \n\n')   
-    for CellType in cell_types:
-        k = f'     {CellType}'
-        for key in InitialConditions[CellType]['K_s'].keys():
-            k = k + ' ' + str(InitialConditions[CellType]['K_s'][key])
-        k = k + f' \n'
-        L.append(k) 
-    L.append('\n')
-    for key in InitialConditions["cyano"]['GrowthParams'].keys():
-        L.append(' ' + key + f' \n\n')
-        for CellType in cell_types:
-            L.append(f'     {CellType} {InitialConditions[CellType]["GrowthParams"][key]} \n')
         L.append('\n')
+        L.append(' Nutrients \n\n')
+        for i,nute in enumerate(InitialConditions['Nutrients']['Concentration'].keys()):
+            L.append(f'     %d {nute} {InitialConditions["Nutrients"]["State"][nute]} {InitialConditions["Nutrients"]["xbc"][nute]} {InitialConditions["Nutrients"]["ybc"][nute]} {InitialConditions["Nutrients"]["zbc"][nute]} {InitialConditions["Nutrients"]["Concentration"][nute] :.2e} {InitialConditions["Nutrients"]["Concentration"][nute] :.2e} \n'% (i+1))
         
+        L.append('\n')
+        L.append(' Type Name \n\n')
+        for c, CellType in enumerate(cell_types,start=1):
+            L.append(f'     {c} {CellType}  \n')
+        L.append('\n')
+        L.append(' Diffusion Coeffs \n\n')
+        for key in InitialConditions['Diff_c'].keys():
+            L.append(f'     {key} {InitialConditions["Diff_c"][key]} \n')
+        L.append('\n')
+        L.append(' Growth Rate \n\n')
+        for CellType in cell_types:
+            L.append(f'     {CellType} {InitialConditions[CellType]["GrowthRate"]} \n')
+        L.append('\n')
+        L.append(' Ks \n\n')   
+        for CellType in cell_types:
+            k = f'     {CellType}'
+            for key in InitialConditions[CellType]['K_s'].keys():
+                k = k + ' ' + str(InitialConditions[CellType]['K_s'][key])
+            k = k + f' \n'
+            L.append(k) 
+        L.append('\n')
+        for key in InitialConditions["cyano"]['GrowthParams'].keys():
+            L.append(' ' + key + f' \n\n')
+            for CellType in cell_types:
+                L.append(f'     {CellType} {InitialConditions[CellType]["GrowthParams"][key]} \n')
+            L.append('\n')
             
-    L.append('\n\n')
-
-    #write atom definition file
-    f= open(f"atom_{n}.in","w+")
-    f.writelines(L)
+                
+        L.append('\n\n')
+    
+        #write atom definition file
+        f= open(f"atom_{n}_{r}.in","w+")
+        f.writelines(L)
+    if args.dump =='hdf5':
+        DumpText = 'dump        du1 all bio/hdf5 100 dump_*.h5 id type radius x y z con upt act yie'
+    elif args.dump == 'vtk':
+        DumpText = 'dump		du1 all vtk 100 atom_*.vtu id type diameter x y z'
+    else:
+        DumpText = ''
+        
     #write initial conditions pickle file
     dumpfile = open(f"run_{n}.pkl",'wb')
     pickle.dump(InitialConditions,dumpfile)
@@ -158,7 +169,8 @@ for n in range(1,int(args.num)+1):
                                   'ECWGroup' : ecwGroup,
                                   'Zheight' : InitialConditions["Dimensions"][2],
                                  'CYANODiv'  : cyDiv, 'ECWDiv' : ecwDiv,
-                                 'GridMesh' : f'{int(InitialConditions["Dimensions"][0]*1e6*args.grid)} {int(InitialConditions["Dimensions"][1]*1e6*args.grid)} {int(InitialConditions["Dimensions"][2]*1e6*args.grid)}'})
+                                 'GridMesh' : f'{int(InitialConditions["Dimensions"][0]*1e6*args.grid)} {int(InitialConditions["Dimensions"][1]*1e6*args.grid)} {int(InitialConditions["Dimensions"][2]*1e6*args.grid)}',
+                                 'DumpOutput' : DumpText})
     f= open(f"Inputscript_{n}.lammps","w+")
     f.writelines(result)
     #write slurm script
@@ -167,6 +179,6 @@ for n in range(1,int(args.num)+1):
     #read it
     src = Template( filein.read() )
     #do the substitution
-    result = src.safe_substitute({'n' : n, 'job' : f"NUFEB_cyano{n}",'USER' : 'sakkosjo','reps'  : args.reps})
+    result = src.safe_substitute({'n' : n, 'job' : f"NUFEB_cyano{n}",'USER' : 'sakkosjo','Reps'  : args.reps})
     f= open(f"Inputscript_{n}.slurm","w+")
     f.writelines(result)

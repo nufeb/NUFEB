@@ -7,7 +7,8 @@ newton		off
 processors  * * *
 
 comm_modify	vel yes
-read_data_bio atom_${n}.in
+variable reps loop ${Replicates}
+read_data_bio atom_${n}_${reps}.in
 
 ##############Define initial particle distribution##############
 
@@ -81,13 +82,14 @@ compute myCon all avg_con
 ##############Simulation Output##############
 
 dump		id all custom 100 output.lammmps id type diameter x y z
-dump		du1 all vtk 100 atom_*.vtu id type diameter x y z
+${DumpOutput}
+#dump		du1 all vtk 100 atom_*.vtu id type diameter x y z
 dump		du2 all grid 100 grid_%_*.vti con
 dump            du3 all bio 100 ntypes biomass avg_con
 thermo_style    custom step cpu atoms c_myNtypes[*] c_myMass[*] c_myCon[*]
 thermo		100
 thermo_modify	lost ignore
-variable reps loop ${Replicates}
+
 shell mkdir Run_${n}_${reps}
 shell cd Run_${n}_${reps}
 run $Timesteps
