@@ -29,7 +29,7 @@ parser.add_argument('--diff', dest='diffusion', action='store',
                    default=0,
                    help='Turn diffusion calculation off')
 parser.add_argument('--grid', dest='grid', action='store',
-                   default=1,
+                   default=2,
                    help='Diffusion grid density (grids/um)')
 parser.add_argument('--dump', dest='dump', action='store',
                    default='hdf5',
@@ -88,31 +88,38 @@ for n in range(1,int(args.num)+1):
             'Dimensions' : [float(x) for x in args.dims.split(',')],'SucRatio' : SucRatio,'Replicates' : int(args.reps)
 
             }
-    
+    grids = int(args.grid)
+    while True:
+        if InitialConditions["Dimensions"][0]*1e6 % grids == 0 and InitialConditions["Dimensions"][1]*1e6 % grids == 0 and InitialConditions["Dimensions"][2]*1e6 % grids == 0:
+            Mesh = f'{int(InitialConditions["Dimensions"][0]*1e6/grids)} {int(InitialConditions["Dimensions"][1]*1e6/grids)} {int(InitialConditions["Dimensions"][2]*1e6/grids)}'
+            break
+        else:
+            grids +=1
+
     NutesNum = len(InitialConditions['Nutrients']['Concentration'])
-    for r in range(1,int(args.reps)+1):    
+    for r in range(1,int(args.reps)+1):
         L = [' NUFEB Simulation\r\n\n',f'     {n_cells} atoms \n',
              f'     {len(cell_types)} atom types \n',f'     {NutesNum} nutrients \n\n',
              f'  0.0e-4   {InitialConditions["Dimensions"][0] :.2e}  xlo xhi \n',f'  0.0e-4   {InitialConditions["Dimensions"][1] :.2e}  ylo yhi \n',
              f'  0.0e-4   {InitialConditions["Dimensions"][2] :.2e}  zlo zhi \n\n', ' Atoms \n\n'
              ]
-    
+
         j = 1
         for c, CellType in enumerate(cell_types,start=1):
             for i in range(j,InitialConditions[CellType]['StartingCells']+j):
-                size = random.uniform(InitialConditions[CellType]['min_size'], 
+                size = random.uniform(InitialConditions[CellType]['min_size'],
                                       InitialConditions[CellType]['max_size'])
                 x = random.uniform(0+size,InitialConditions['Dimensions'][0]-size)
                 y = random.uniform(0+size,InitialConditions['Dimensions'][1]-size)
                 z = random.uniform(0+size,InitialConditions['Dimensions'][2]-size)
                 L.append(f'     %d {c} {size :.2e}  {InitialConditions[CellType]["Density"]} {x :.2e} {y :.2e} {z :.2e} {size :.2e} \n'% (i))
                 j += 1
-    
+
         L.append('\n')
         L.append(' Nutrients \n\n')
         for i,nute in enumerate(InitialConditions['Nutrients']['Concentration'].keys()):
             L.append(f'     %d {nute} {InitialConditions["Nutrients"]["State"][nute]} {InitialConditions["Nutrients"]["xbc"][nute]} {InitialConditions["Nutrients"]["ybc"][nute]} {InitialConditions["Nutrients"]["zbc"][nute]} {InitialConditions["Nutrients"]["Concentration"][nute] :.2e} {InitialConditions["Nutrients"]["Concentration"][nute] :.2e} \n'% (i+1))
-        
+
         L.append('\n')
         L.append(' Type Name \n\n')
         for c, CellType in enumerate(cell_types,start=1):
@@ -126,23 +133,23 @@ for n in range(1,int(args.num)+1):
         for CellType in cell_types:
             L.append(f'     {CellType} {InitialConditions[CellType]["GrowthRate"]} \n')
         L.append('\n')
-        L.append(' Ks \n\n')   
+        L.append(' Ks \n\n')
         for CellType in cell_types:
             k = f'     {CellType}'
             for key in InitialConditions[CellType]['K_s'].keys():
                 k = k + ' ' + str(InitialConditions[CellType]['K_s'][key])
             k = k + f' \n'
-            L.append(k) 
+            L.append(k)
         L.append('\n')
         for key in InitialConditions["cyano"]['GrowthParams'].keys():
             L.append(' ' + key + f' \n\n')
             for CellType in cell_types:
                 L.append(f'     {CellType} {InitialConditions[CellType]["GrowthParams"][key]} \n')
             L.append('\n')
-            
-                
+
+
         L.append('\n\n')
-    
+
         #write atom definition file
         f= open(f"atom_{n}_{r}.in","w+")
         f.writelines(L)
@@ -152,7 +159,7 @@ for n in range(1,int(args.num)+1):
         DumpText = 'dump		du1 all vtk 100 atom_*.vtu id type diameter x y z'
     else:
         DumpText = ''
-        
+
     #write initial conditions pickle file
     dumpfile = open(f"run_{n}.pkl",'wb')
     pickle.dump(InitialConditions,dumpfile)
