@@ -23,6 +23,15 @@ spack load vtk%gcc@8.2.0
 salloc -A cnms -p high_mem --nodes=1 --mem=80G --exclusive -t 00:30:00
 srun --ntasks-per-node 32 -n 32 ../../lammps/src/lmp_mpi -in Inputscript.lammps
 ```
+## batches
+```shell
+module load env/cades-cnms
+module load anaconda3
+cd $SCRATCH
+cd NUFEB/examples/cyanobacteria-sucrose
+python NUFEBatom --n 3 --r 3
+./slurmRun.sh
+```
 # To login remotely
 https://support.cades.ornl.gov/user-documentation/_book/external-access-ucams.html
 ```shell
