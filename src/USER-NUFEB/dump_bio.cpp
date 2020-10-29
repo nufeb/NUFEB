@@ -320,8 +320,6 @@ void DumpBio::init_style()
 
 void DumpBio::write()
 {
-  if (update-> ntimestep == 0) return;
-
   if (ntypes_flag == 1) ctype->compute_vector();
   if (mass_flag == 1) cmass->compute_vector();
   if (dia_flag == 1)  cdia->compute_scalar();
