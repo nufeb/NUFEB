@@ -325,7 +325,7 @@ void FixKineticsThermo::gas_liq_transfer(double dt) {
 }
 
 /* ----------------------------------------------------------------------
- calculate dynamic yield based on gibb energy
+ calculate dynamic yield based on gibbs energy
  ------------------------------------------------------------------------- */
 void FixKineticsThermo::dynamic_yield() {
   double **gibbs_cata = kinetics->gibbs_cata;

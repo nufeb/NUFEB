@@ -188,50 +188,44 @@ void FixKineticsEnergy::growth(double dt, int gflag) {
 
   double **grid_yield = kinetics->grid_yield;
   double **xdensity = kinetics->xdensity;
-  int *nuconv = kinetics->nuconv;
 
   for (int grid = 0; grid < kinetics->bgrids; grid++) {
     //empty grid is not considered
     if(!xdensity[0][grid]) continue;
 
     for (int t = 1; t <= ntypes; t++) {
-      double qmet, maint, inv_yield;
-
-      qmet = bio->q[t] * grid_monod(t, grid);
-
-      if (!kinetics->gibbs_cata[t][grid]) maint = 0;
-      else maint = maintain[t] / -kinetics->gibbs_cata[t][grid];
-
+      double max_growth, spec_growth, inv_yield;
+      double xden_mol = xdensity[t][grid] / MW_BIOMASS;
+      // specified growth rate
+      max_growth = grid_yield[t][grid] * bio->q[t];
+      spec_growth = max_growth * grid_monod(t, grid);
+      // inverse yield
       if (grid_yield[t][grid]) inv_yield = 1 / grid_yield[t][grid];
       else inv_yield = 0;
-
+      // update reaction term, unit in mol/m3
       for (int nu = 1; nu <= nnu; nu++) {
-        if (bio->nustate[nu] != 0) continue;
-        //microbe growth
-        if (1.2 * maint < qmet) {
-          double metCoeff = cata_coeff[t][nu] * inv_yield + anab_coeff[t][nu];
-          growrate[t][grid] = grid_yield[t][grid] * (qmet - maint);
-          // reaction in mol/m3
-          if(!nuconv[nu]) nur[nu][grid] += growrate[t][grid] * xdensity[t][grid] * metCoeff / 24.6;
-        //microbe maintenance
-        } else if (qmet <= 1.2 * maint && maint <= qmet) {
-          growrate[t][grid] = 0;
-          if(!nuconv[nu]) nur[nu][grid] += cata_coeff[t][nu] * grid_yield[t][grid] * qmet * xdensity[t][grid] / 24.6;
-        //microbe decay
-        } else {
-          double f;
-          if (maint == 0) f = 0;
-          else f = (maint - qmet) / maint;
+	//microbe growth
+	if (1.2 * maintain[t] < spec_growth) {
+	  double metCoeff = cata_coeff[t][nu] * inv_yield + anab_coeff[t][nu];
+	  growrate[t][grid] = spec_growth - maintain[t];
+	  nur[nu][grid] += growrate[t][grid] * metCoeff * xden_mol;
+	//microbe maintenance
+	} else if (1.2 * maintain[t] <= spec_growth && maintain[t] <= spec_growth) {
+	  growrate[t][grid] = 0;
+	  nur[nu][grid] += spec_growth * cata_coeff[t][nu] * xden_mol;
+	//microbe decay
+	} else {
+	  double f;
+	  if (maintain[t] == 0) f = 0;
+	  else f = (maintain[t] - spec_growth) / maintain[t];
 
-          growrate[t][grid] = -decay[t] * f;
-
-          if(!nuconv[nu]) nur[nu][grid] += (-growrate[t][grid] * bio->decay_coeff[t][nu] +
-              cata_coeff[t][nu] * grid_yield[t][grid] * qmet) * xdensity[t][grid] / 24.6;
-        }
+	  growrate[t][grid] = -decay[t] * f;
+	  nur[nu][grid] += (-growrate[t][grid] * bio->decay_coeff[t][nu] +
+	      cata_coeff[t][nu] * spec_growth) * xden_mol;
+	}
       }
     }
   }
-
   if (gflag) update_biomass(growrate, dt);
 }
 
@@ -255,24 +249,12 @@ void FixKineticsEnergy::update_biomass(double **growrate, double dt) {
   for (int i = 0; i < nlocal; i++) {
     int t = type[i];
     int pos = kinetics->position(i);
-
     double density = rmass[i] / (four_thirds_pi * radius[i] * radius[i] * radius[i]);
     rmass[i] = rmass[i] * (1 + growrate[t][pos] * dt);
-
-
     //update mass and radius
     if (mask[i] == avec->mask_het) {
       //update HET radius
       radius[i] = pow(three_quarters_pi * (rmass[i] / density), third);
-      //update mass and radius for EPS shell if PES production is on
-      //TODO
-      if (epsflag == 1) {
-        outer_mass[i] = four_thirds_pi * (outer_radius[i] * outer_radius[i] * outer_radius[i] - radius[i] * radius[i] * radius[i])
-            * eps_dens + growrate[t][pos] * rmass[i];
-
-        outer_radius[i] = pow(three_quarters_pi * (rmass[i] / density + outer_mass[i] / eps_dens), third);
-        radius[i] = pow(three_quarters_pi * (rmass[i] / density), third);
-      }
     } else if (mask[i] != avec->eps_mask && mask[i] != avec->mask_dead) {
       radius[i] = pow(three_quarters_pi * (rmass[i] / density), third);
       outer_mass[i] = rmass[i];
