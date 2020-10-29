@@ -29,8 +29,8 @@ ComputeNufebBiomass::ComputeNufebBiomass(LAMMPS *lmp, int narg, char **arg) :
   vector_flag = 1;
   extvector = 0;
   int ntypes = atom->ntypes;
-  size_vector = ntypes+1;
-  memory->create(vector,ntypes+1,"compute:vector");
+  size_vector = ntypes;
+  memory->create(vector,ntypes,"compute:vector");
 }
 
 /* ---------------------------------------------------------------------- */
@@ -51,18 +51,17 @@ void ComputeNufebBiomass::compute_vector()
   int *mask = atom->mask;
   int nlocal = atom->nlocal;
   int ntypes = atom->ntypes;
-  size_vector = ntypes+1;
-  memory->grow(vector,ntypes+1,"compute:vector");
+  size_vector = ntypes;
+  memory->grow(vector,ntypes,"compute:vector");
 
-  for (int i = 0; i < ntypes + 1; i++) {
+  for (int i = 0; i < ntypes; i++) {
     vector[i] = 0;
   }
 
   for (int i = 0; i < nlocal; i++)
     if (mask[i] & groupbit) {
-      vector[type[i]] += rmass[i];
-      vector[0] += rmass[i];
+      vector[type[i]-1] += rmass[i];
     }
 
-  MPI_Allreduce(MPI_IN_PLACE, vector, ntypes + 1, MPI_DOUBLE, MPI_SUM, world);
+  MPI_Allreduce(MPI_IN_PLACE, vector, ntypes, MPI_DOUBLE, MPI_SUM, world);
 }

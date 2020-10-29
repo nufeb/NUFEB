@@ -20,6 +20,8 @@ FixStyle(kinetics/growth/energy,FixKineticsEnergy)
 
 #include "fix.h"
 
+const int MW_BIOMASS = 24.6;
+
 namespace LAMMPS_NS {
 
 class FixKineticsEnergy : public Fix {

@@ -94,7 +94,7 @@ fix e1 HET eps_extract 100 v_EPSratio v_EPSdens 53453
 
 ##############Define IBm Computes##############
 
-##compute # of atoms of each species##
+##compute # of atoms of each type (species)##
 compute myNtypes all ntypes
 
 ##compute biofilm average height##
@@ -102,6 +102,12 @@ compute myHeight all avg_height
 
 ##compute biofilm surface roughness##
 compute myRough all roughness
+
+##compute total biomass of each type##
+compute myMass all biomass
+
+##compute average concentration of each nutrient##
+compute myCon all avg_con
 
 ##############Simulation Output##############
 
@@ -114,11 +120,11 @@ dump		du1 all vtk 1000 atom_*.vtu id type diameter x y z
 ##output field state (concentration) every 1000x10sec in vtk format##
 dump		du2 all grid 1000 grid_%_*.vti con
 
-##output biofilm property every 100x10sec to \Result dirctory
-dump            du3 all bio 1000 avg_height roughness
+##output system properties every 100x10sec to \Result dirctory
+dump            du3 all bio 1000 avg_height roughness biomass ntypes avg_con
 
-##screen output: current timestep; cpu time, # of atoms, # of atoms of HET and EPS##
-thermo_style    custom step cpu atoms c_myNtypes[2] c_myNtypes[3] 
+##screen output: current timestep; cpu time, # of atoms, # of atoms of HET and EPS, total biomass of HET and EPS, average concentration of sub and o2##
+thermo_style    custom step cpu atoms c_myNtypes[*] c_myMass[*] c_myCon[*]
 
 ##screent output every 100x10sec##
 thermo		100

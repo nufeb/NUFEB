@@ -29,8 +29,8 @@ ComputeNufebNtypes::ComputeNufebNtypes(LAMMPS *lmp, int narg, char **arg) :
   vector_flag = 1;
   extvector = 0;
   int ntypes = atom->ntypes;
-  size_vector = ntypes+1;
-  memory->create(vector,ntypes+1,"compute:vector");
+  size_vector = ntypes;
+  memory->create(vector,ntypes,"compute:vector");
 }
 
 /* ---------------------------------------------------------------------- */
@@ -46,7 +46,7 @@ void ComputeNufebNtypes::compute_vector()
 {
   int ntypes = atom->ntypes;
   size_vector = ntypes;
-  memory->grow(vector,ntypes+1,"compute:vector");
+  memory->grow(vector,ntypes,"compute:vector");
 
   invoked_vector = update->ntimestep;
 
@@ -54,16 +54,16 @@ void ComputeNufebNtypes::compute_vector()
   int *mask = atom->mask;
   int nlocal = atom->nlocal;
 
-  for (int i = 0; i <= ntypes; i++) {
+  for (int i = 0; i < ntypes; i++) {
     vector[i] = 0;
   }
 
   for (int i = 0; i < nlocal; i++) {
     if (mask[i] & groupbit) {
       int t = type[i];
-      vector[t]++;
+      vector[t-1]++;
     }
   }
 
-  MPI_Allreduce(MPI_IN_PLACE, vector, ntypes+1, MPI_DOUBLE, MPI_SUM, world);
+  MPI_Allreduce(MPI_IN_PLACE, vector, ntypes, MPI_DOUBLE, MPI_SUM, world);
 }
