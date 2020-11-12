@@ -101,4 +101,3 @@ shell cd Run_${n_cyanos}_${co2}_${light}_${SucRatio}
 run $Timesteps
 shell cd ..
 clear
-jump SELF
