@@ -6,7 +6,7 @@ from SALib.sample import saltelli
 from string import Template
 
 #### Note!! ####
-# The changes below are provisional for now and work only if one chooses the ax-c population.
+# The changes below are provisional for now and work for the ax-c population only.
 ################
 
 parser = argparse.ArgumentParser(description='Create atom definition files for a Saltelli sampling')
@@ -20,7 +20,7 @@ parser = argparse.ArgumentParser(description='Create atom definition files for a
 #Hardwiring the number of replicates, reps, to 1
 reps = 1
 
-parser.add_argument('--c', dest='culture_type', action='store', default='co',
+parser.add_argument('--c', dest='culture_type', action='store', default='ax-c',
                     help='Set culture conditions with --c (co-culture), --ax-c (cyano), --ax-e (e.coli)')
 parser.add_argument('--co2', dest='co2', action='store',
                     default=1e3,
@@ -61,7 +61,7 @@ problem = {
 
 # Generating a sample of input parameters with the Saltelli method.
 # This is the first step needed before performing a Sobol SA analysis
-param_values = saltelli.sample(problem, 10)
+param_values = saltelli.sample(problem, 1)
 np.savetxt("param_values.txt", param_values)
 
 
@@ -120,7 +120,7 @@ for n in range(1,n_cyanos.size+1):
                                  'GrowthParams': {'Yield': 0.43, 'Maintenance': 9.50e-7, 'Decay': 2e-5}},
                          'Nutrients': {
                              'Concentration': {'sub': light[n-1], 'o2': 9e-3, 'suc': float(args.sucrose) * SucMW * 1e-3,
-                                               'co2': co2[n-1] * CO2MW * 1e-3, 'gco2': 2e-2},
+                                               'co2': co2[n-1], 'gco2': 2e-2},
                              'State': {'sub': 'g', 'o2': 'l', 'suc': 'l', 'co2': 'l', 'gco2': 'g'},
                              'xbc': {'sub': 'nn', 'o2': 'nn', 'suc': 'nn', 'co2': 'nn', 'gco2': 'pp'},
                              'ybc': {'sub': 'nn', 'o2': 'nn', 'suc': 'nn', 'co2': 'nn', 'gco2': 'pp'},
@@ -202,7 +202,7 @@ for n in range(1,n_cyanos.size+1):
         L.append('\n\n')
 
         # write atom definition file
-        f = open(f"atom_{n}_{n_cyanos[n-1]}_{co2[n-1]}_{light[n-1]}_{SucRatio}.in", "w+")
+        f = open(f"atom_{n_cyanos[n-1]}_{co2[n-1]}_{light[n-1]}_{SucRatio}.in", "w+")
         f.writelines(L)
     if args.dump == 'hdf5':
         DumpText = 'dump        du1 all bio/hdf5 100 dump_*.h5 id type radius x y z con upt act yie'
@@ -212,7 +212,7 @@ for n in range(1,n_cyanos.size+1):
         DumpText = ''
 
     # write initial conditions pickle file
-    dumpfile = open(f"run_{n}.pkl", 'wb')
+    dumpfile = open(f"run_{n_cyanos[n-1]}_{co2[n-1]}_{light[n-1]}_{SucRatio}.pkl", 'wb')
     pickle.dump(InitialConditions, dumpfile)
     dumpfile.close()
     # write Inputscript
@@ -238,6 +238,8 @@ for n in range(1,n_cyanos.size+1):
     # read it
     src = Template(filein.read())
     # do the substitution
-    result = src.safe_substitute({'n': n, 'job': f"NUFEB_cyano{n}", 'USER': 'm96', 'Reps': reps})
+    result = src.safe_substitute({'n': n, 'job': f"NUFEB_cyano{n}", 'USER': 'm96', 'Reps': reps,
+                                  'SucRatio': SucRatio, 'n_cyanos': n_cyanos[n-1],'light': light[n-1],
+                                  'co2': co2[n-1]})
     f = open(f"Inputscript_{n}.slurm", "w+")
     f.writelines(result)
