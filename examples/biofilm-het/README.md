@@ -3,9 +3,10 @@ The biofilm is grown from 40 initial HETs inoculated on the substratum for ~9.25
 
 <pre>       
 Inputscript-vtk.lammps           Simulation inputscript (with VTK outputs) 
-Inputscript.lammps               Simulation inputscript (without VTK outputs) 
+Inputscript-hdf5.lammps          Simulation inputscript (with HDF5 outputs) 
+Inputscript.lammps               Simulation inputscript (with standard lammps outputs only) 
 Inputscript-comments.lammps      Simulation inputscript (with command explanation) 
-atom.in                          Data file defining initial microbes, species, nutrients, etc 
+atom.in                          Data file defining initial microbes, species, nutrients, their kinetic parameters, etc
 Allclean.sh                      Script for cleanup
 </pre>
 

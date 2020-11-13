@@ -43,6 +43,7 @@ protected:
   void pack(tagint *) {}
   void write_data(int, double *) {}
   int parse_fields(int narg, char **arg);
+  void create_one_file();
 
   hid_t create_filespace_atom(bool oneperproc);
   hid_t create_filespace_grid(bool oneperproc);

@@ -123,6 +123,9 @@ dump		du2 all grid 1000 grid_%_*.vti con
 ##output system properties every 100x10sec to \Result dirctory
 dump            du3 all bio 1000 avg_height roughness biomass ntypes avg_con
 
+##output system state in hdf5 format
+dump            du4 all bio/hdf5 1000 dump.h5 id type x y z vx vy vz fx fy fz radius con upt yie
+
 ##screen output: current timestep; cpu time, # of atoms, # of atoms of HET and EPS, total biomass of HET and EPS, average concentration of sub and o2##
 thermo_style    custom step cpu atoms c_myNtypes[*] c_myMass[*] c_myCon[*]
 

@@ -174,68 +174,66 @@ void DumpBio::init_style()
   while (i < nkeywords) {
     if (strcmp(keywords[i],"con") == 0) {
       nus_flag = 1;
-      if (stat("./Results/S", &st) == -1) {
-          mkdir("./Results/S", 0700);
+      if (stat("./Results/con", &st) == -1) {
+	mkdir("./Results/con", 0700);
       }
       for (int j = 1; j < nnus + 1; j++) {
-        if (bio->nustate[j] == 0 && strcmp(bio->nuname[j], "h") != 0 && strcmp(bio->nuname[j], "h2o") != 0) {
-          char *name = bio->nuname[j];
-          int len = 13;
-          len += strlen(name);
-          char path[len];
-          strcpy(path, "./Results/S/");
-          strcat(path, name);
+	char *name = bio->nuname[j];
+	int len = 13;
+	len += strlen(name);
+	char path[len];
+	strcpy(path, "./Results/con/");
+	strcat(path, name);
 
-          if (stat(path, &st) == -1) {
-              mkdir(path, 0700);
-          }
-        }
+	if (stat(path, &st) == -1) {
+	    mkdir(path, 0700);
+	}
       }
-    } else if (strcmp(keywords[i],"DGRAn") == 0) {
+    } else if (strcmp(keywords[i],"ana") == 0) {
       anab_flag = 1;
-      if (stat("./Results/DGRAn", &st) == -1) {
-          mkdir("./Results/DGRAn", 0700);
+      if (stat("./Results/ana", &st) == -1) {
+	mkdir("./Results/ana", 0700);
       }
       for (int j = 1; j < ntypes + 1; j++) {
         char *name = bio->tname[j];
         int len = 17;
         len += strlen(name);
         char path[len];
-        strcpy(path, "./Results/DGRAn/");
+        strcpy(path, "./Results/ana/");
         strcat(path, name);
 
         if (stat(path, &st) == -1) {
             mkdir(path, 0700);
         }
       }
-    } else if (strcmp(keywords[i],"DGRCat") == 0) {
+    } else if (strcmp(keywords[i],"cat") == 0) {
       cata_flag = 1;
-      if (stat("./Results/DGRCat", &st) == -1) {
-          mkdir("./Results/DGRCat", 0700);
+      if (stat("./Results/cat", &st) == -1) {
+	mkdir("./Results/cat", 0700);
       }
       for (int j = 1; j < ntypes + 1; j++) {
         char *name = bio->tname[j];
         int len = 18;
         len += strlen(name);
         char path[len];
-        strcpy(path, "./Results/DGRCat/");
+        strcpy(path, "./Results/cat/");
         strcat(path, name);
 
         if (stat(path, &st) == -1) {
             mkdir(path, 0700);
         }
       }
-    } else if (strcmp(keywords[i],"yield") == 0) {
+    } else if (strcmp(keywords[i],"yie") == 0) {
       yield_flag = 1;
       if (stat("./Results/yield", &st) == -1) {
-          mkdir("./Results/yield", 0700);
+	mkdir("./Results/yield", 0700);
       }
       for (int j = 1; j < ntypes + 1; j++) {
         char *name = bio->tname[j];
         int len = 17;
         len += strlen(name);
         char path[len];
-        strcpy(path, "./Results/yield/");
+        strcpy(path, "./Results/yie/");
         strcat(path, name);
 
         if (stat(path, &st) == -1) {
@@ -244,8 +242,8 @@ void DumpBio::init_style()
       }
     } else if (strcmp(keywords[i],"ph") == 0) {
       ph_flag = 1;
-      if (stat("./Results/pH", &st) == -1) {
-          mkdir("./Results/pH", 0700);
+      if (stat("./Results/ph", &st) == -1) {
+	mkdir("./Results/ph", 0700);
       }
     } else if (strcmp(keywords[i],"biomass") == 0) {
       mass_flag = 1;
@@ -320,6 +318,7 @@ void DumpBio::init_style()
 
 void DumpBio::write()
 {
+
   if (ntypes_flag == 1) ctype->compute_vector();
   if (mass_flag == 1) cmass->compute_vector();
   if (dia_flag == 1)  cdia->compute_scalar();
@@ -474,7 +473,7 @@ void DumpBio::write()
         int len = 30;
         len += strlen(name);
         char path[len];
-        strcpy(path, "./Results/S/");
+        strcpy(path, "./Results/con/");
         strcat(path, name);
         strcat(path, "/r*.csv");
 
