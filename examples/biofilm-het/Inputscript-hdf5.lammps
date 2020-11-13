@@ -68,9 +68,9 @@ compute myRough all roughness
 ##############Simulation Output##############
 
 dump		id all custom 1000 output.lammps id type diameter x y z
-dump		du1 all vtk 1000 atom_*.vtu id type diameter x y z
-dump		du2 all grid 1000 grid_%_*.vti con
-dump           du3 all bio 1000 avg_height roughness biomass ntypes avg_con 
+dump            du4 all bio/hdf5 1000 dump.h5 id type x y z vx vy vz fx fy fz radius con upt yie
+#dump            du4 all bio/hdf5 1000 dump_%.h5 id type x y z vx vy vz fx fy fz radius con upt yie
+#dump            du4 all bio/hdf5 1000 dump_*_%.h5 id type x y z vx vy vz fx fy fz radius con upt yie
 thermo_style    custom step cpu atoms c_myNtypes[*] c_myMass[*] c_myCon[*]
 thermo		100
 thermo_modify	lost ignore
