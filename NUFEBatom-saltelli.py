@@ -20,6 +20,9 @@ parser = argparse.ArgumentParser(description='Create atom definition files for a
 #Hardwiring the number of replicates, reps, to 1
 reps = 1
 
+parser.add_argument('--s',dest='ns',action='store',default=1,
+                    help='Number value when running param_values = saltelli.sample(problem, s) ')
+
 parser.add_argument('--c', dest='culture_type', action='store', default='ax-c',
                     help='Set culture conditions with --c (co-culture), --ax-c (cyano), --ax-e (e.coli)')
 parser.add_argument('--co2', dest='co2', action='store',
@@ -53,22 +56,34 @@ SucMW = 342.3
 problem = {
     'num_vars': 4,
     'names': ['number_of_cyanos', 'co2_c', 'light_amount', 'sucrose_export'],
-    'bounds': [[1, 1000],
+    # The bounds for number_of_cyano are as shown below: [1,1000].
+    # However, Saltelli only works with real numbers. So to ensure that the
+    # limits are between 1,1000, i need to change the bounds to 1.5,1000.5 and
+    # then round that number and make it an integer.
+    # 'bounds': [[1, 1000],
+    #            [1e-3, 1e2],
+    #            [1e-6, 1e0],
+    #            [0, 1]]
+    'bounds': [[1.5, 1000.5],
                [1e-3, 1e2],
                [1e-6, 1e0],
                [0, 1]]
+
 }
 
 # Generating a sample of input parameters with the Saltelli method.
 # This is the first step needed before performing a Sobol SA analysis
-param_values = saltelli.sample(problem, 1)
+
+ng= int(args.ns)
+print('Sampling grid = ',ng)
+param_values = saltelli.sample(problem, ng)
 np.savetxt("param_values.txt", param_values)
 
 
 # Assigning the Nutrient variables to the param_values array
 # Note: still trying to figure out how to get saltelli.sample to create an array made of
 # integer values. Until then, i'm using the trick below to convert n_cyanos to an integer
-n_cyanos = param_values[:, 0].astype(np.int)
+n_cyanos = np.round(param_values[:, 0]).astype(np.int)
 co2 = param_values[:, 1]
 light = param_values[:, 2]
 sucrose_export = param_values[:, 3]
