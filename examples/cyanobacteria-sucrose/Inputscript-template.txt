@@ -79,8 +79,11 @@ compute myNtypes all ntypes
 compute myMass all biomass
 compute myCon all avg_con
 
-##############Simulation Output##############
+##############Simulation exit condition##############
+variable co2 equal c_myCon[5]
+fix 10 all halt 1 v_co2 <= 1e-19
 
+##############Simulation Output##############
 dump		id all custom 100 output.lammmps id type diameter x y z
 ${DumpOutput}
 #dump		du1 all vtk 100 atom_*.vtu id type diameter x y z
