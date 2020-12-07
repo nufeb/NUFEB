@@ -491,6 +491,7 @@ int DumpBioHDF5::parse_fields(int narg, char **arg) {
       fields.push_back(arg[iarg]);
     }
   }
+  return i;
 }
 
 template <class T>
