@@ -16,7 +16,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: vtk
-      run: ./thirdparty/install-vtk.sh
+      run: sh ./thirdparty/install-vtk.sh
 
     - name: hdf5
       run: install-hdf5.sh
