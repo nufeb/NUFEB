@@ -13,18 +13,17 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: NUFEB
     steps:
     - uses: actions/checkout@v2
     - name: vtk
-      run: sh install-vtk.sh
-      working-directory: NUFEB/thirdparty
+      run: ./thirdparty/install-vtk.sh
+
     - name: hdf5
-      run: sh install-hdf5.sh
-      working-directory: NUFEB/thirdparty
+      run: install-hdf5.sh
+      working-directory: ./thirdparty/thirdparty
     - name: make
-      run: sh install.sh --enable.vtk --enable.hdf5
-      working-directory: .
+      run: ./install.sh --enable.vtk --enable.hdf5
+
     - name: make check
       run: make check
     - name: make distcheck
