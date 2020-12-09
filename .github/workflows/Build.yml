@@ -10,7 +10,10 @@ jobs:
   build:
 
     runs-on: ubuntu-18.04
-
+    defaults:
+      run:
+        shell: bash
+        working-directory: NUFEB
     steps:
     - uses: actions/checkout@v2
     - name: vtk
