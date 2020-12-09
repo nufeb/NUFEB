@@ -15,16 +15,10 @@ jobs:
         shell: bash
     steps:
     - uses: actions/checkout@v2
+    - name: hdf5
+      run: ./thirdparty/install-hdf5.sh
     - name: vtk
       run: sh ./thirdparty/install-vtk.sh
-
-    - name: hdf5
-      run: install-hdf5.sh
-      working-directory: ./thirdparty/thirdparty
     - name: make
       run: ./install.sh --enable.vtk --enable.hdf5
 
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
