@@ -18,10 +18,10 @@ jobs:
     - uses: actions/checkout@v2
     - name: vtk
       run: sh install-vtk.sh
-      working-directory: ./thirdparty
+      working-directory: NUFEB/thirdparty
     - name: hdf5
       run: sh install-hdf5.sh
-      working-directory: ./thirdparty
+      working-directory: NUFEB/thirdparty
     - name: make
       run: sh install.sh --enable.vtk --enable.hdf5
       working-directory: .
