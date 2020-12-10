@@ -12,9 +12,15 @@ processors  * * *
 # co2 ${co2}
 # light ${light}
 # SucRatio ${SucRatio}
+# Nsample ${Nsample}
 
 comm_modify	vel yes
-read_data_bio atom_${n_cyanos}_${co2}_${light}_${SucRatio}.in
+read_data_bio atom_${n_cyanos}_${co2}_${light}_${SucRatio}_${Nsample}.in
+
+
+###############Output directories##############################
+shell mkdir Run_${n_cyanos}_${co2}_${light}_${SucRatio}_${Nsample}
+shell cd Run_${n_cyanos}_${co2}_${light}_${SucRatio}_${Nsample}
 
 ##############Define initial particle distribution##############
 
@@ -85,9 +91,18 @@ compute myNtypes all ntypes
 compute myMass all biomass
 compute myCon all avg_con
 
+##############Simulation exit condition##############
+variable co2 equal c_myCon[4]
+fix 10 all halt 1 v_co2 <= 1e-19
+
+variable light equal c_myCon[1]
+fix 11 all halt 1 v_light <= 1e-19
+
+
 ##############Simulation Output##############
 
-dump		id all custom 100 output.lammmps id type diameter x y z
+#dump		id all custom 100 output.lammmps id type diameter x y z
+dump            traj all bio/hdf5 100 trajectory.h5 id type radius x y z con
 #${DumpOutput}
 #dump		du1 all vtk 100 atom_*.vtu id type diameter x y z
 #dump		du2 all grid 100 grid_%_*.vti con
@@ -96,8 +111,6 @@ thermo_style    custom step cpu atoms c_myNtypes[*] c_myMass[*] c_myCon[*]
 thermo		100
 thermo_modify	lost ignore
 
-shell mkdir Run_${n_cyanos}_${co2}_${light}_${SucRatio}
-shell cd Run_${n_cyanos}_${co2}_${light}_${SucRatio}
 run $Timesteps
 shell cd ..
 clear
