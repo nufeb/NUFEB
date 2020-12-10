@@ -8,19 +8,16 @@
 #SBATCH --mem=100g
 #SBATCH -A cnms
 #SBATCH -t 10:00:00
-#SBATCH --mail-type=FAIL
+##SBATCH --mail-type=FAIL
 ##SBATCH --mail-user=${USER}@ornl.gov
 
 module purge
 module load env/cades-cnms
-. $SOFTWARECNMS/spack/share/spack/setup-env.sh
-spack load openmpi/qnfab5m
-spack load vtk%gcc@8.2.0
+module load PE-gnu/3.0
 
-#export OMP_NUM_THREADS=1
 
-export LAMMPS=/lustre/or-hydra/cades-cnms/m96/NUFEB/lammps/src/lmp_mpi
+export LAMMPS=~/NUFEB/lammps/src/lmp_mpi
 
 ldd $LAMMPS
 
-mpirun -np 32 $LAMMPS -in Inputscript_${n}.lammps > Inputscript_${n_cyanos}_${co2}_${light}_${SucRatio}.log
+mpirun -np 32 $LAMMPS -in Inputscript_${n}.lammps > Inputscript_${n_cyanos}_${co2}_${light}_${SucRatio}_${n}.log
