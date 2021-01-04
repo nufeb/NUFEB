@@ -25,7 +25,7 @@ ExportRatio = np.linspace(0,1,len(Run_folders))
 types = ['./Sucrose_%.1f/Results/ntypes.csv'%i for i in ExportRatio]
 biomass = ['./Sucrose_%.1f/Results/biomass.csv'%i for i in ExportRatio]
 Cons = ['./Sucrose_%.1f/Results/avg_concentration.csv'%i for i in ExportRatio]
-ExpPath = 'C:/Users/Jonathan/Documents/sucrose and growth CSCB-SPS.xlsx'
+ExpPath = './sucrose and growth CSCB-SPS.xlsx'
 Control = pd.read_excel(ExpPath,sheet_name='Control')
 Control.Time = Control.Time/24
 IPTG = pd.read_excel(ExpPath,sheet_name='+IPTG')
@@ -49,11 +49,11 @@ K_m_co2 = 5e-2
 colors = ['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a']
 def monod_func(y,t):
     return y*mu_max * (light/(K_m_light + light)) * (co2/( K_m_co2 + co2))
-
+#%%
 # f.savefig('Growth_S9.png',dpi=600)
-f, ax = plt.subplots(figsize=(14,9))
+f, ax = plt.subplots(figsize=(9,6))
 for path,i in zip(types,range(1,len(Run_folders)+1)):
-    df = pd.read_csv(path,usecols=[0,1],names=['Time','Cells'],skiprows=1)
+    df = pd.read_csv(path,usecols=[0,1],names=['Time','Cells'],skiprows=1,delimiter='	')
     df.index = df.Time/60/60/24*10 #convert timesteps (10s) to days
     df.index.name='Days'
     df.iloc[:,1] = df.iloc[:,1]/CellNum2OD
@@ -70,16 +70,25 @@ ax.legend().remove()
     # ax.set_title('90% Sucrose Export')
     # ax.plot(df.Time*tStep2Days,df.Cells/CellNum2OD,label=i)
     # ax.plot(df.Time*tStep2Days,df.Cells*Biomass2OD,label=i)
-    
+ax.yaxis.set_tick_params(labelsize=FontSize-2,which='both',left=False)
+ax.xaxis.set_tick_params(labelsize=FontSize-2,bottom=False)
+ax.set_xlim([0,2.5])
 ax.plot(Control.Time,Control.OD,label='Control',c='k')
 ax.plot(IPTG.Time,IPTG.OD,label='+IPTG',c='grey')
-ax.set_xlabel('Time (days)')
-ax.set_ylabel('OD')
-ax.legend()
+ax.set_xlabel('Time (days)',fontsize=FontSize)
+ax.set_ylabel('OD',fontsize=FontSize)
+ax.legend(frameon=False)
+ax.spines['left'].set_linewidth(LineThickness)
+ax.spines['left'].set_color('black')
+ax.spines['bottom'].set_linewidth(LineThickness)
+ax.spines['bottom'].set_color('black')
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+f.savefig('GrowthCurve.png',dpi=600)
 #%%
-f, ax = plt.subplots(figsize=(14,9))
+f, ax = plt.subplots(figsize=(9,6))
 for path,i in zip(Cons,range(1,len(Run_folders)+1)):
-    df = pd.read_csv(path,usecols=[0,2,3,4],names=['Time','O2','Sucrose','CO2'],skiprows=1,index_col=0)
+    df = pd.read_csv(path,usecols=[0,2,3,4],names=['Time','O2','Sucrose','CO2'],skiprows=1,index_col=0,delimiter='	')
     df.index = df.index*tStep2Days
     df.index.name='Days'
     df.O2 = df.O2/O2MW*1e3
@@ -89,24 +98,33 @@ for path,i in zip(Cons,range(1,len(Run_folders)+1)):
     # t = np.linspace(df.index[0], df.index[-1],1000)
     # sol = odeint(monod_func, y0, t)
     ax.plot(df.Sucrose,label=f'Sucrose Export {ExportRatio[i-1] :.1f}')
-
-
+    ax.set_xlim([0,2.5])
+    ax.set_ylim(top=25)
+    ax.spines['left'].set_linewidth(LineThickness)
+    ax.spines['left'].set_color('black')
+    ax.spines['bottom'].set_linewidth(LineThickness)
+    ax.spines['bottom'].set_color('black')
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.yaxis.set_tick_params(labelsize=FontSize-2,which='both',left=False)
+    ax.xaxis.set_tick_params(labelsize=FontSize-2,bottom=False)
     # ax.plot(t,sol,ls='--',label=f'monod {i:.2e}')
 # ax.set_yscale('log')
     # ax.set_xlabel('Time (D)')
     # ax.set_ylabel('Biomass (g)')
-# ax.legend(frameon=False
+    
 # ax.legend().remove()
     # ax.set_title('90% Sucrose Export')
     # ax.plot(df.Time*tStep2Days,df.Cells/CellNum2OD,label=i)
     # ax.plot(df.Time*tStep2Days,df.Cells*Biomass2OD,label=i)
     
-ax.set_title('Sucrose over time')    
+ax.set_title('Sucrose over time',fontsize=FontSize+2)    
 ax.plot(Control.Time,Control.Sucrose,label='Control',c='k')
 ax.plot(IPTG.Time,IPTG.Sucrose,label='+IPTG',c='red')
-ax.set_xlabel('Time (days)')
-ax.set_ylabel('Concentration (mM)')
-ax.legend()
+ax.set_xlabel('Time (days)',fontsize=FontSize)
+ax.set_ylabel('Concentration (mM)',fontsize=FontSize)
+ax.legend(frameon=False)
+f.savefig('Sucrosevstime.png',dpi=600)
 #%%Carbon mass balance
 # viridis = plt.cm.get_cmap('viridis', 256)
 # color = viridis(np.linspace(0, 1, 20))
@@ -133,9 +151,9 @@ data = pd.DataFrame(columns=['SucroseRatio','Productivity'])
 
 # Suc = pd.DataFrame([],columns=['Time','Sucrose','Induction'])
 for cell_path,path,i in zip(types,Cons,range(1,len(Run_folders)+1)):
-    df = pd.read_csv(cell_path,usecols=[0,1],names=['Time','Cells'],skiprows=1,index_col=0)
+    df = pd.read_csv(cell_path,usecols=[0,1],names=['Time','Cells'],skiprows=1,index_col=0,delimiter='	')
     df.index = df.index*tStep2Days*24
-    df2 = pd.read_csv(path,usecols=[0,2,3,4],names=['Time','O2','Sucrose','CO2'],skiprows=1,index_col=0)
+    df2 = pd.read_csv(path,usecols=[0,2,3,4],names=['Time','O2','Sucrose','CO2'],skiprows=1,index_col=0,delimiter='	')
     df2.index = df2.index*tStep2Days*24
 
     df2.Sucrose = df2.Sucrose*Volume*1e18/df.Cells
@@ -151,12 +169,24 @@ for cell_path,path,i in zip(types,Cons,range(1,len(Run_folders)+1)):
 data.index = data.SucroseRatio
 data.drop('SucroseRatio',axis=1,inplace=True)
 f, ax = plt.subplots()
-data.plot(ax=ax)
-ax.set_ylabel('Sucrose Productivity (fg/cell/hr)')
+ax.scatter(data.reset_index().SucroseRatio,data.reset_index().Productivity,marker='o',edgecolor='k',label='Ratio',lw=LineThickness,color='#bababa')
+ax.set_ylabel('Sucrose Productivity (fg/cell/hr)',fontsize=FontSize)
+ax.set_xlabel('Relative Sucrose Export',fontsize=FontSize)
 ax.legend().remove()
+ax.spines['left'].set_linewidth(LineThickness)
+ax.spines['left'].set_color('black')
+ax.spines['bottom'].set_linewidth(LineThickness)
+ax.spines['bottom'].set_color('black')
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+ax.yaxis.set_tick_params(labelsize=FontSize-2,which='both',left=False)
+ax.xaxis.set_tick_params(labelsize=FontSize-2,bottom=False)
+ax.tick_params(axis='both',which='both',length=0)
+ax.grid(False)
+f.savefig('Productivity.png',dpi=600)
 #%% Nutrients
 for path,i in zip(Cons,range(1,len(Run_folders)+1)):
-    df = pd.read_csv(path,usecols=[0,2,3,4],names=['Time','O2','Sucrose','CO2'],skiprows=1,index_col=0)
+    df = pd.read_csv(path,usecols=[0,2,3,4],names=['Time','O2','Sucrose','CO2'],skiprows=1,index_col=0,delimiter='	')
     df.index = df.index*tStep2Days
     df.O2 = df.O2/O2MW*1e3
     df.Sucrose = df.Sucrose/SucroseMW*1e3
@@ -169,9 +199,9 @@ for path,i in zip(Cons,range(1,len(Run_folders)+1)):
     axes.set_title(f'Sucrose Export {ExportRatio[i-1] :.1f}')
     #%%
 f, ax = plt.subplots()
-df = pd.read_csv(biomass[-1],usecols=[0,1],names=['Time','Cells'],skiprows=1,index_col=0)
+df = pd.read_csv(biomass[-1],usecols=[0,1],names=['Time','Cells'],skiprows=1,index_col=0,delimiter='	')
 df.index = df.index*tStep2Days*24
-df2 = pd.read_csv(Cons[-1],usecols=[0,2,3,4],names=['Time','O2','Sucrose','CO2'],skiprows=1,index_col=0)
+df2 = pd.read_csv(Cons[-1],usecols=[0,2,3,4],names=['Time','O2','Sucrose','CO2'],skiprows=1,index_col=0,delimiter='	')
 df2.index = df2.index*tStep2Days*24
 df2.CO2 = df2.CO2*Volume
 df2.Sucrose = df2.Sucrose*Volume
@@ -184,15 +214,15 @@ ax.plot(df.index, df2.CO2*12/CO2MW + df.Cells*.51 + df2.Sucrose*12*12/SucroseMW,
 ax.set_ylabel('Carbon Mass (kg)')
 ax.set_xlabel('Time (hrs)')
 ax.legend(frameon=False)
-# f.savefig('CO2vsBiomass.png',dpi=600) 
+f.savefig('CO2vsBiomass.png',dpi=600) 
 #%% Relative biomass production
 RelativeBiomass = pd.DataFrame(columns=['Export Ratio','Cell','Sucrose','Total'])
 for cell_path,path,i in zip(biomass,Cons,range(len(Run_folders))):
-    df = pd.read_csv(cell_path,usecols=[0,2],names=['Time','Biomass'],skiprows=1)
+    df = pd.read_csv(cell_path,usecols=[0,1],names=['Time','Biomass'],skiprows=1,delimiter='	')
     df.index = df.Time*tStep2Days*24
     df.Biomass = df.Biomass/Volume
     CellMass = df[df.index <= 24].Biomass.iloc[-1]# - df.Biomass.iloc[0]
-    df2 = pd.read_csv(path,usecols=[0,2,3,4],names=['Time','O2','Sucrose','CO2'],skiprows=1)
+    df2 = pd.read_csv(path,usecols=[0,2,3,4],names=['Time','O2','Sucrose','CO2'],skiprows=1,delimiter='	')
     df2.index = df2.Time*tStep2Days*24
     # df2.Sucrose = df2.Sucrose*Volume
     SucMass = df2[df2.index <= 24].iloc[-1].Sucrose# - df2.Sucrose.iloc[0]
