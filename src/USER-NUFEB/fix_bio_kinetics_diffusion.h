@@ -74,9 +74,8 @@ public:
   int snxx_yy_zz;                         // total # of local + ghost grids
 
   double diff_dt;
-  int close_flag;                        // flag for close system 1 = gradient is negligible (no diffusion)
   int* nuclose;
-  int close_system;
+  int closed_system;
 
   double xlo, xhi, ylo, yhi, zlo, zhi, bzhi;
   double init_nusbc;                     // inlet BC concentrations for dirichlet bc
@@ -93,8 +92,8 @@ public:
   void init();
   void init_setting();
   void init_grid();
-  void closed_avg(int*, double);
-  void closed_res(double, double);
+  void closed_system_init();
+  void closed_system_scaleup(double, double);
   int *diffusion(int*, int, double);
   void update_nus();
   void update_grids();
