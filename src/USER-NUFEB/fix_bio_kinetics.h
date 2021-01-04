@@ -94,7 +94,7 @@ class FixKinetics : public Fix, public DecompGrid<FixKinetics> {
   void integration();
   void grow();
   double get_max_height();
-  void update_nutrient_dist(bool &, int &);
+  void diffusion_solver(bool &, int &);
   void update_bgrids();
   void update_xdensity();
   bool is_inside(int);

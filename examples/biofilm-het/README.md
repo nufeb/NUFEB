@@ -6,6 +6,7 @@ Inputscript-vtk.lammps           Simulation inputscript (with VTK outputs)
 Inputscript-hdf5.lammps          Simulation inputscript (with HDF5 outputs) 
 Inputscript.lammps               Simulation inputscript (with standard lammps outputs only) 
 Inputscript-comments.lammps      Simulation inputscript (with command explanation) 
+Inputscript-jpeg.lammps          Simulation inputscript (with jpeg outputs) 
 atom.in                          Data file defining initial microbes, species, nutrients, their kinetic parameters, etc
 Allclean.sh                      Script for cleanup
 </pre>
