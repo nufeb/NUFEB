@@ -52,7 +52,7 @@ variable sucRatio index 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0
 
 #variables used in fix kinetics
 variable diffT equal 1e-4
-variable tol equal 1e-13
+variable tol equal 1e-11
 variable etaHET equal 0.6
 variable layer equal -1
 
@@ -75,19 +75,28 @@ compute myNtypes all ntypes
 compute myMass all biomass
 compute myCon all avg_con
 
+
+##############Simulation exit condition##############
+variable co2 equal c_myCon[4]
+fix 10 all halt 1 v_co2 <= 1e-19
+
+variable light equal c_myCon[1]
+fix 11 all halt 1 v_light <= 1e-19
+
+
 ##############Simulation Output##############
 
-dump		id all custom 1000 output.lammmps id type diameter x y z
-#dump		du1 all vtk 1000 atom_*.vtu id type diameter x y z
-#dump		du2 all grid 1000 grid_%_*.vti con
-dump            du3 all bio 100 ntypes biomass avg_con
+dump		id all custom 360 output.lammmps id type diameter x y z
+dump		du1 all vtk 360 atom_*.vtu id type diameter x y z
+dump		du2 all grid 360 grid_%_*.vti con
+dump        du3 all bio 360 ntypes biomass avg_con
 thermo_style    custom step cpu atoms c_myNtypes[*] c_myMass[*] c_myCon[*]
-thermo		100
+thermo		360
 thermo_modify	lost ignore
 
 shell mkdir Sucrose_${sucRatio}
 shell cd Sucrose_${sucRatio}
-run 20000
+run 35000
 shell cd ..
 clear
 next sucRatio

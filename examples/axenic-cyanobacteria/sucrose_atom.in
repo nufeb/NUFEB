@@ -1,63 +1,61 @@
  NUFEB Simulation
 
-     10 atoms 
-     1 atom types 
-     5 nutrients 
+     10 atoms
+     1 atom types
+     4 nutrients
 
-  0.0e-4   1.00e-04  xlo xhi 
-  0.0e-4   1.00e-04  ylo yhi 
-  0.0e-4   1.00e-05  zlo zhi 
+  0.0e-4   1.00e-04  xlo xhi
+  0.0e-4   1.00e-04  ylo yhi
+  0.0e-4   1.00e-05  zlo zhi
 
- Atoms 
+ Atoms
 
-     1 1 1.90e-06  357 4.16e-05 8.37e-05 2.78e-06 1.90e-06 
-     2 1 1.89e-06  357 3.37e-05 6.24e-05 4.01e-06 1.89e-06 
-     3 1 1.93e-06  357 4.23e-05 9.16e-05 3.45e-06 1.93e-06 
-     4 1 1.69e-06  357 2.04e-05 6.11e-05 6.00e-06 1.69e-06 
-     5 1 1.89e-06  357 2.03e-05 6.34e-06 2.30e-06 1.89e-06 
-     6 1 1.87e-06  357 6.38e-05 2.52e-05 7.97e-06 1.87e-06 
-     7 1 1.46e-06  357 5.08e-06 5.99e-05 5.37e-06 1.46e-06 
-     8 1 1.72e-06  357 8.57e-05 7.66e-05 4.32e-06 1.72e-06 
-     9 1 1.41e-06  357 7.38e-05 6.45e-05 6.53e-06 1.41e-06 
-     10 1 1.91e-06  357 9.10e-05 4.93e-05 3.04e-06 1.91e-06 
+     1 1 1.90e-06  357 4.16e-05 8.37e-05 2.78e-06 1.90e-06
+     2 1 1.89e-06  357 3.37e-05 6.24e-05 4.01e-06 1.89e-06
+     3 1 1.93e-06  357 4.23e-05 9.16e-05 3.45e-06 1.93e-06
+     4 1 1.69e-06  357 2.04e-05 6.11e-05 6.00e-06 1.69e-06
+     5 1 1.89e-06  357 2.03e-05 6.34e-06 2.30e-06 1.89e-06
+     6 1 1.87e-06  357 6.38e-05 2.52e-05 7.97e-06 1.87e-06
+     7 1 1.46e-06  357 5.08e-06 5.99e-05 5.37e-06 1.46e-06
+     8 1 1.72e-06  357 8.57e-05 7.66e-05 4.32e-06 1.72e-06
+     9 1 1.41e-06  357 7.38e-05 6.45e-05 6.53e-06 1.41e-06
+     10 1 1.91e-06  357 9.10e-05 4.93e-05 3.04e-06 1.91e-06
 
- Nutrients 
+ Nutrients
 
-     1 sub g nn nn nn 1.00e-01 1.00e-01 
-     2 o2 l nn nn nn 9.00e-03 9.00e-03 
-     3 suc l nn nn nn 1.00e-20 1.00e-20 
-     4 co2 l nn nn nn 4.40e+01 4.40e+01 
-     5 gco2 g pp pp pp 2.00e-02 2.00e-02 
+     1 sub g nn nn nn 1.00e-01 1.00e-01
+     2 o2 l nn nn nn 9.00e-03 9.00e-03
+     3 suc l nn nn nn 1.00e-20 1.00e-20
+     4 co2 l nn nn nn 4.40e+01 4.40e+01
 
- Type Name 
+ Type Name
 
-     1 cyano  
+     1 cyano
 
- Diffusion Coeffs 
+ Diffusion Coeffs
 
-     sub 0 
-     o2 2.3e-09 
-     suc 5.2e-10 
-     co2 1.9e-09 
-     gco2 0 
+     sub 0
+     o2 2.3e-09
+     suc 5.2e-10
+     co2 1.9e-09
 
- Growth Rate 
 
-     cyano 1.67e-05 
+ Growth Rate
 
- Ks 
+     cyano 1.67e-05
 
-     cyano 0.00035 0.0002 0.01 0.000138 0 
+ Ks
 
- Yield 
+     cyano 0.00035 0.0002 0.01 0.000138
 
-     cyano 0.55 
+ Yield
 
- Maintenance 
+     cyano 0.55
 
-     cyano 0 
+ Maintenance
 
- Decay 
+     cyano 0
 
-     cyano 0 
+ Decay
 
+     cyano 0
