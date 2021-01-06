@@ -26,9 +26,6 @@ neigh_modify	delay 0 one 5000
 pair_style  gran/hooke/history 1.e-4 NULL 1.e-5 NULL 0.0 1
 pair_coeff  * *
 
-#pair_style brownian 1.5 0 0 1e-6 1e-5 300 5878567
-#pair_coeff * *
-
 timestep 10
 
 fix 1 all nve/limit 1e-8
@@ -38,10 +35,8 @@ fix zw all wall/gran hooke/history 2000 NULL 500.0 NULL 1.5 0 zplane  0.0  ${Zhe
 
 variable kanc equal 50
 
-#fix zwa all walladh v_kanc zplane  0.0  1e-04
-
 variable ke equal 5e+10
-#fix j1 all epsadh 1 v_ke 1
+
 
 ##############Define IBm Variables##############
 
@@ -55,7 +50,7 @@ variable divDia2 equal 1.04e-6
 
 #variables used in fix kinetics
 variable diffT equal 1e-4
-variable tol equal 1e-13
+variable tol equal 1e-11
 variable etaHET equal 0.6
 variable layer equal -1
 
@@ -67,7 +62,7 @@ variable layer equal -1
 
 fix k1 all kinetics 100 ${GridMesh} v_diffT v_layer niter 1000000
 fix kgm all kinetics/growth/monod sucexp $SucRatio
-fix g1 all kinetics/diffusion v_tol closedflag $Closed
+fix g1 all kinetics/diffusion v_tol
 ${CYANODiv}
 ${ECWDiv}
 #fix d2 all death 1 v_deadDia demflag 0
@@ -80,14 +75,15 @@ compute myMass all biomass
 compute myCon all avg_con
 
 ##############Simulation exit condition##############
-variable co2 equal c_myCon[5]
-fix 10 all halt 1 v_co2 <= 1e-19
+variable co2 equal c_myCon[4]
+fix 10 all halt 100 v_co2 <= 1e-19
+
+variable light equal c_myCon[1]
+fix 11 all halt 100 v_light <= 1e-19
 
 ##############Simulation Output##############
 dump		id all custom 100 output.lammmps id type diameter x y z
 ${DumpOutput}
-#dump		du1 all vtk 100 atom_*.vtu id type diameter x y z
-dump		du2 all grid 100 grid_%_*.vti con
 dump            du3 all bio 100 ntypes biomass avg_con
 thermo_style    custom step cpu atoms c_myNtypes[*] c_myMass[*] c_myCon[*]
 thermo		100

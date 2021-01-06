@@ -20,14 +20,11 @@ parser.add_argument('--d', dest='dims', action='store', type=str,
                    default='1e-4,1e-4,1e-5',
                    help='Set simulation box dimensions (m)')
 parser.add_argument('--t', dest='timesteps', action='store',
-                   default=30000,
+                   default=35000,
                    help='Number of timesteps to run')
 parser.add_argument('--suc', dest='sucrose', action='store',
                    default=1e-19,
                    help='Set initial sucrose concentration (mM)')
-parser.add_argument('--diff', dest='diffusion', action='store',
-                   default=0,
-                   help='Turn diffusion calculation off')
 parser.add_argument('--grid', dest='grid', action='store',
                    default=2,
                    help='Diffusion grid density (um/grid)')
@@ -73,18 +70,18 @@ for n in range(1,int(args.num)+1):
 
     InitialConditions = {'cyano': {'StartingCells' : n_cyanos,'GrowthRate' : mu_cyanos,
            'min_size' : 1.37e-6, 'max_size' : 1.94e-6, 'Density' : 370,
-             'K_s' : {'sub' : 3.5e-4,'o2' : 2e-4, 'suc' : 1e-2,'co2' : 1.38e-4,'gco2' : 0},
+             'K_s' : {'sub' : 3.5e-4,'o2' : 2e-4, 'suc' : 1e-2,'co2' : 1.38e-4},
             'GrowthParams' : {'Yield' : 0.55,'Maintenance' : 0,'Decay' : 0}},
              'ecw': {'StartingCells' : n_ecw,'GrowthRate' : mu_ecw,
            'min_size' : 8.8e-7, 'max_size' : 1.04e-6, 'Density' : 236,
-             'K_s' : {'sub' : 0,'o2' : 1e-3, 'suc' : 3.6,'co2' : 5e-2,'gco2' : 0},
+             'K_s' : {'sub' : 0,'o2' : 1e-3, 'suc' : 3.6,'co2' : 5e-2},
             'GrowthParams' : {'Yield' : 0.43,'Maintenance' : 9.50e-7,'Decay' : 2e-5}},
-            'Nutrients' : {'Concentration' :  {'sub' : 1e-1,'o2' : 9e-3, 'suc' : float(args.sucrose)*SucMW*1e-3, 'co2' : float(args.co2)*CO2MW*1e-3,'gco2' : 2e-2},
-            'State' : {'sub' : 'g','o2' : 'l', 'suc' : 'l', 'co2' : 'l','gco2' : 'g'},
-            'xbc' : {'sub' : 'nn','o2' : 'nn', 'suc' : 'nn', 'co2' : 'nn','gco2' : 'pp'},
-            'ybc' : {'sub' : 'nn','o2' : 'nn', 'suc' : 'nn', 'co2' : 'nn','gco2' : 'pp'},
-            'zbc' : {'sub' : 'nn','o2' : 'nn', 'suc' : 'nn', 'co2' : 'nn','gco2' : 'pp'}},
-            'Diff_c' : {'sub' : 0,'o2' : 2.30e-9, 'suc' : 5.2e-10,'co2' : 1.9e-09,'gco2' : 0},
+            'Nutrients' : {'Concentration' :  {'sub' : 1e-1,'o2' : 9e-3, 'suc' : float(args.sucrose)*SucMW*1e-3, 'co2' : float(args.co2)*CO2MW*1e-3},
+            'State' : {'sub' : 'g','o2' : 'l', 'suc' : 'l', 'co2' : 'l'},
+            'xbc' : {'sub' : 'nn','o2' : 'nn', 'suc' : 'nn', 'co2' : 'nn'},
+            'ybc' : {'sub' : 'nn','o2' : 'nn', 'suc' : 'nn', 'co2' : 'nn'},
+            'zbc' : {'sub' : 'nn','o2' : 'nn', 'suc' : 'nn', 'co2' : 'nn'}},
+            'Diff_c' : {'sub' : 0,'o2' : 2.30e-9, 'suc' : 5.2e-10,'co2' : 1.9e-09},
             'Dimensions' : [float(x) for x in args.dims.split(',')],'SucRatio' : SucRatio,'Replicates' : int(args.reps)
 
             }
@@ -156,7 +153,8 @@ for n in range(1,int(args.num)+1):
     if args.dump =='hdf5':
         DumpText = 'dump        du1 all bio/hdf5 100 dump_*.h5 id type radius x y z con upt act yie'
     elif args.dump == 'vtk':
-        DumpText = 'dump		du1 all vtk 100 atom_*.vtu id type diameter x y z'
+        DumpText = 'dump		du1 all vtk 100 atom_*.vtu id type diameter x y z \n'
+        DumpText = DumpText + 'dump		du2 all grid 100 grid_%_*.vti con'
     else:
         DumpText = ''
 
@@ -172,7 +170,7 @@ for n in range(1,int(args.num)+1):
     #do the substitution
     result = src.safe_substitute({'n' : n, 'SucRatio' : SucRatio,
                                   'Replicates' : args.reps,'Timesteps' : args.timesteps,
-                                  'Closed' : args.diffusion,'CYANOGroup' : cyGroup,
+                                  'CYANOGroup' : cyGroup,
                                   'ECWGroup' : ecwGroup,
                                   'Zheight' : InitialConditions["Dimensions"][2],
                                  'CYANODiv'  : cyDiv, 'ECWDiv' : ecwDiv,
