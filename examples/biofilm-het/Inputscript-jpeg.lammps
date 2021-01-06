@@ -70,6 +70,7 @@ compute myRough all roughness
 dump		id all custom 1000 output.lammps id type diameter x y z
 dump            du2 all bio 1000 avg_height roughness biomass ntypes avg_con
 dump            du3 all image 1000 image.*.jpg type diameter size 1280 720
+dump_modify     du3 acolor 1 green acolor 2 red
 thermo_style    custom step cpu atoms c_myNtypes[*] c_myMass[*] c_myCon[*]
 thermo		100
 thermo_modify	lost ignore

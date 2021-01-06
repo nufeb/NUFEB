@@ -262,6 +262,7 @@ void FixKineticsDiffusion::init() {
  ------------------------------------------------------------------------- */
 void FixKineticsDiffusion::init_setting() {
   for (int nu = 1; nu <= bio->nnu; nu++) {
+
     if (bio->nubc[nu][0] == PP)
       xpbcflag = 1;
     if (bio->nubc[nu][1] == PP)
@@ -308,19 +309,21 @@ void FixKineticsDiffusion::init_grid() {
         xgrid[grid][1] = j;
         xgrid[grid][2] = k;
         //Initialise concentration values for ghost, boundary, and regular grids
+        grid_type[grid] = REGULAR;
+        if (i < kinetics->sublo[0] || i > kinetics->subhi[0]
+            || j < kinetics->sublo[1] || j > kinetics->subhi[1]
+            || k < kinetics->sublo[2] || k > kinetics->subhi[2]) {
+          grid_type[grid] = GHOST;
+        }
+        if (i < xlo || i > xhi || j < ylo || j > yhi || k < zlo || k > MIN(bzhi, zhi)) {
+          grid_type[grid] = BOUNDARY;
+        }
+
         for (int nu = 1; nu <= bio->nnu; nu++) {
-          grid_type[grid] = REGULAR;
           nugrid[nu][grid] = init_nus[nu][0];
 
-          if (i < kinetics->sublo[0] || i > kinetics->subhi[0]
-              || j < kinetics->sublo[1] || j > kinetics->subhi[1]
-              || k < kinetics->sublo[2] || k > kinetics->subhi[2]) {
-            grid_type[grid] = GHOST;
-          }
-
-          if (i < xlo || i > xhi || j < ylo || j > yhi || k < zlo || k > MIN(bzhi, zhi)) {
-            grid_type[grid] = BOUNDARY;
-            nugrid[nu][grid] = init_nus[nu][1];
+          if (grid_type[grid] == BOUNDARY) {
+	    nugrid[nu][grid] = init_nus[nu][1];
           }
 
           if (unit == MOL)
@@ -358,38 +361,37 @@ int *FixKineticsDiffusion::diffusion(int *nuconv, int iter, double diff_dt) {
   DecompGrid<FixKineticsDiffusion>::exchange();
 
   for (int nu = 1; nu <= nnu; nu++) {
-    if (bio->nustate[nu] == 0 && !nuconv[nu]) {
+    if (bio->nustate[nu] || nuconv[nu]) continue;
       // copy current concentrations
-      for (int grid = 0; grid < snxx_yy_zz; grid++) {
-	if (nuclose[nu] && iter > 1) nupenult[nu][grid] = nuprev[nu][grid];
-        nuprev[nu][grid] = nugrid[nu][grid];
-      }
+    for (int grid = 0; grid < snxx_yy_zz; grid++) {
+      if (nuclose[nu] && iter > 1) nupenult[nu][grid] = nuprev[nu][grid];
+      nuprev[nu][grid] = nugrid[nu][grid];
+    }
 
-      // solve diffusion and reaction
-      for (int grid = 0; grid < snxx_yy_zz; grid++) {
-        // transform nXYZ index to nuR index
-        if (grid_type[grid] == REGULAR) {
-          int ind = get_index(grid);
-          double nur_grid = (unit == KG) ? nur[nu][ind] : nur[nu][ind] * M2L;
-          double diff_coeff;
+    // solve diffusion and reaction
+    for (int grid = 0; grid < snxx_yy_zz; grid++) {
+      // transform nXYZ index to nuR index
+       if (grid_type[grid] == REGULAR) {
+	int ind = get_index(grid);
+	double nur_grid = (unit == KG) ? nur[nu][ind] : nur[nu][ind] * M2L;
+	double diff_coeff;
 
-          if (dcflag) diff_coeff = grid_diff_coeff[nu][grid];
-          else diff_coeff = bio->diff_coeff[nu];
+	if (dcflag) diff_coeff = grid_diff_coeff[nu][grid];
+	else diff_coeff = bio->diff_coeff[nu];
 
-          compute_flux(diff_coeff, nugrid[nu][grid], nuprev[nu], nur_grid, grid, ind);
+	compute_flux(diff_coeff, nugrid[nu][grid], nuprev[nu], nur_grid, grid, ind);
 
-          if (nugrid[nu][grid] > 0) {
-            (unit == KG) ? (nus[nu][ind] = nugrid[nu][grid]) : (nus[nu][ind] = nugrid[nu][grid] / M2L);
-          } else {
-            nugrid[nu][grid] = MIN_NUS;
-            nus[nu][ind] = MIN_NUS;
-          }
-        } else if (grid_type[grid] == BOUNDARY) {
-          double nubs_ = nubs[nu];
-          
-          if(unit == MOL) nubs_ *= M2L;
-          compute_bc(nugrid[nu][grid], nuprev[nu], grid, nubs_, nubc[nu]);
-        }
+	if (nugrid[nu][grid] > 0) {
+	  (unit == KG) ? (nus[nu][ind] = nugrid[nu][grid]) : (nus[nu][ind] = nugrid[nu][grid] / M2L);
+	} else {
+	  nugrid[nu][grid] = MIN_NUS;
+	  nus[nu][ind] = MIN_NUS;
+	}
+      } else if (grid_type[grid] == BOUNDARY) {
+	double nubs_ = nubs[nu];
+
+	if(unit == MOL) nubs_ *= M2L;
+	compute_bc(nugrid[nu][grid], nuprev[nu], grid, nubs_, nubc[nu]);
       }
     }
   }
@@ -409,34 +411,33 @@ void FixKineticsDiffusion::check_converge(int *nuconv) {
   int nrequests = 0;
   for (int nu = 1; nu <= bio->nnu; nu++) {
     // checking if is liquid
-    if (bio->nustate[nu] == 0 && !nuconv[nu]) {
-      nuconv[nu] = false;
-      double max_residual = 0;
+    if (bio->nustate[nu] || nuconv[nu]) continue;
+    nuconv[nu] = false;
+    double max_residual = 0;
 
-      for (int grid = 0; grid < snxx_yy_zz; grid++) {
-        if (grid_type[grid] == REGULAR) {
-          double residual = 0;
-          if (!nuclose[nu]) {
-            residual = fabs((nugrid[nu][grid] - nuprev[nu][grid]) / nuprev[nu][grid]);
-          } else {
-            double res_n = fabs((nugrid[nu][grid]-nuprev[nu][grid])/nuprev[nu][grid]);
-            double res_n2 = fabs((nuprev[nu][grid]-nupenult[nu][grid])/nupenult[nu][grid]);
-            residual= fabs(res_n-res_n2);
-          }
+    for (int grid = 0; grid < snxx_yy_zz; grid++) {
+      if (grid_type[grid] == REGULAR) {
+	double residual = 0;
+	if (!nuclose[nu]) {
+	  residual = fabs((nugrid[nu][grid] - nuprev[nu][grid]) / nuprev[nu][grid]);
+	} else {
+	  double res_n = fabs((nugrid[nu][grid]-nuprev[nu][grid])/nuprev[nu][grid]);
+	  double res_n2 = fabs((nuprev[nu][grid]-nupenult[nu][grid])/nupenult[nu][grid]);
+	  residual= fabs(res_n-res_n2);
+	}
 
-	  if (residual > max_residual)
-	    max_residual = residual;
-        }
+	if (residual > max_residual)
+	  max_residual = residual;
       }
+    }
 
-      if (max_residual < tol) nuconv[nu] = true;
+    if (max_residual < tol) nuconv[nu] = 1;
 
 #if MPI_VERSION >= 3
       MPI_Iallreduce(MPI_IN_PLACE, &nuconv[nu], 1, MPI_INT, MPI_BAND, world, &requests[nrequests++]);
 #else
       MPI_Allreduce(MPI_IN_PLACE, &nuconv[nu], 1, MPI_INT, MPI_BAND, world);
 #endif
-    }
   }
 
 #if MPI_VERSION >= 3
@@ -452,8 +453,7 @@ void FixKineticsDiffusion::closed_system_init() {
   double **nus = kinetics->nus;
 
   for (int nu = 1; nu < bio->nnu + 1; nu++) {
-    if (bio->nustate[nu] != 0) continue;
-    if (!nuclose[nu]) continue;
+    if (bio->nustate[nu] || !nuclose[nu] || !bio->diff_coeff[nu]) continue;
     double sum = 0;
     for (int grid = 0; grid < snxx_yy_zz; grid++) {
       if (grid_type[grid] == REGULAR) {
@@ -477,8 +477,7 @@ void FixKineticsDiffusion::closed_system_init() {
 void FixKineticsDiffusion::closed_system_scaleup(double dt, double diff_dt) {
   double **nus = kinetics->nus;
   for (int nu = 1; nu <= bio->nnu; nu++) {
-    if (bio->nustate[nu] != 0) continue;
-    if (!nuclose[nu]) continue;
+    if (bio->nustate[nu] || !nuclose[nu] || !bio->diff_coeff[nu]) continue;
 
     for (int grid = 0; grid < snxx_yy_zz; grid++) {
       double residual = nugrid[nu][grid] - nuprev[nu][grid];

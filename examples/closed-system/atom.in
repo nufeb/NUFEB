@@ -2,7 +2,7 @@
 
        0 atoms 
        2 atom types 
-       2 nutrients
+       3 nutrients
 
    0   2e-05  xlo xhi 
    0   2e-05  ylo yhi 
@@ -14,6 +14,7 @@
 
      1 sub l nn nn nn 50 50
      2 o2 l nn nn nd 1e-4 1e-4
+     3 o3 g pp pp pp 1e-4 1e-4
 
  Type Name
 
@@ -24,11 +25,12 @@
     
      sub 1.1574e-9
      o2 2.3148e-9
+     o3 0
 
  Ks
      
-     het 4e-3 2e-4
-     eps 0 0 
+     het 4e-3 2e-4 0
+     eps 0 0 0
 
  Growth Rate
 
