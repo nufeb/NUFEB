@@ -23,3 +23,8 @@ Relative biomass production
 
 <center><IMG SRC="RelativeSucrose.png" WIDTH=100%></IMG></center>
 <br>
+
+Gradient formation with sucrose export = 1
+
+<center><IMG SRC="sucrosegradient.png" WIDTH=100%></IMG></center>
+<br>
