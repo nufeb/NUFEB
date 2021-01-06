@@ -371,15 +371,11 @@ void FixKinetics::integration() {
     if (diffusion->dcflag)
       diffusion->update_diff_coeff();
 
-    if (diffusion->close_system && diffusion->close_flag == 1) {
-      diffusion->closed_avg(nuconv, bio_dt);
-    }
+    diffusion->closed_system_init();
 
-    update_nutrient_dist(converge, iter);
+    diffusion_solver(converge, iter);
 
-    if (diffusion->close_system && diffusion->close_flag == 0) {
-      diffusion->closed_res(bio_dt, diff_dt);
-    }
+    diffusion->closed_system_scaleup(bio_dt, diff_dt);
 
     if (comm->me == 0 && logfile)
       fprintf(logfile, "number of iterations: %i \n", iter);
@@ -414,7 +410,7 @@ void FixKinetics::integration() {
 /* ----------------------------------------------------------------------
  solve diffusion-reaction
  ------------------------------------------------------------------------- */
-void FixKinetics::update_nutrient_dist(bool &converge, int &iter) {
+void FixKinetics::diffusion_solver(bool &converge, int &iter) {
   while (!converge) {
     converge = true;
     // solve for reaction term, no growth happens here unless external growth flag is on
