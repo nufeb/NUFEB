@@ -2,12 +2,12 @@
 
 atom_style	bio
 atom_modify	map array sort 1000 5.0e-7
-boundary	pp pp ff
+boundary	ff ff ff
 newton		off
-processors  * * 1
+processors  * * *
 
 comm_modify	vel yes
-read_data_bio atom_1.in
+read_data_bio atom_1_1.in
 
 ##############Define initial particle distribution##############
 
@@ -38,7 +38,7 @@ variable kanc equal 50
 
 variable ke equal 5e+10
 #fix j1 all epsadh 1 v_ke 1
-
+fix gr all gravity 1 vector 0 0 -1
 ##############Define IBm Variables##############
 
 #variables used in fix eps_extract
@@ -50,11 +50,11 @@ variable divDia1 equal 1.96e-6
 variable divDia2 equal 1.04e-6
 
 #variable used for sucrose export
-variable sucRatio index 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0
+#variable sucRatio index 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0
 
 #variables used in fix kinetics
 variable diffT equal 1e-4
-variable tol equal 1e-13
+variable tol equal 1e-11
 variable etaHET equal 0.6
 variable layer equal -1
 
@@ -65,7 +65,7 @@ variable layer equal -1
 ##############Define IBm Commands##############
 
 fix k1 all kinetics 100 50 50 5 v_diffT v_layer niter 1000000
-fix kgm all kinetics/growth/monod sucexp ${sucRatio}
+fix kgm all kinetics/growth/monod sucexp 1
 fix g1 all kinetics/diffusion v_tol
 fix d1 CYANO divide 100 v_EPSdens v_divDia1 64564
 fix d2 ECW divide 100 v_EPSdens v_divDia2 15384
@@ -78,21 +78,20 @@ compute myNtypes all ntypes
 compute myMass all biomass
 compute myCon all avg_con
 
+##############Simulation exit condition##############
+variable co2 equal c_myCon[4]
+fix 10 all halt 1000 v_co2 <= 1e-19
+
+variable light equal c_myCon[1]
+fix 11 all halt 1000 v_light <= 1e-19
+
 ##############Simulation Output##############
 
-dump		id all custom 100 output.lammmps id type diameter x y z
-dump		du2 all grid 100 grid_%_*.vti con
-dump            du3 all bio 100 ntypes biomass avg_con
-thermo_style    custom step cpu atoms c_myNtypes[2] c_myMass[2] c_myCon[4] c_myCon[5]
-thermo		100
+dump		id all custom 360 output.lammmps id type diameter x y z
+dump        du1 all bio/hdf5 60 dump.h5 id type radius x y z con
+dump            du3 all bio 360 ntypes biomass avg_con
+thermo_style    custom step cpu atoms c_myNtypes[*] c_myMass[*] c_myCon[*]
+thermo		360
 thermo_modify	lost ignore
 
-variable i loop 2
-shell mkdir Run_$i
-shell cd Run_$i
-run 40000
-shell cd ..
-clear
-next i
-next sucRatio
-jump SELF
+run 36000

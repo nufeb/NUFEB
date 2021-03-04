@@ -151,7 +151,7 @@ for n in range(1,int(args.num)+1):
         f= open(f"atom_{n}_{r}.in","w+")
         f.writelines(L)
     if args.dump =='hdf5':
-        DumpText = 'dump        du1 all bio/hdf5 100 dump_*.h5 id type radius x y z con upt act yie'
+        DumpText = 'dump        du1 all bio/hdf5 100 dump*.h5 id type radius x y z con'
     elif args.dump == 'vtk':
         DumpText = 'dump		du1 all vtk 100 atom_*.vtu id type diameter x y z \n'
         DumpText = DumpText + 'dump		du2 all grid 100 grid_%_*.vti con'
