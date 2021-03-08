@@ -1,4 +1,7 @@
 #!/bin/bash
+
+set -euo pipefail
+
 cd ${0%/*} || exit 1 # Run from this directory
 
 echo "Installing NUFEB.."
@@ -11,7 +14,7 @@ cp -rf $rootDir/lib/* $rootDir/lammps/lib/
 
 echo "Configuring Makefile.lammps.."
 
-cd $rootDir/lammps/lib/nufeb
+cd $rootDir/lammps/lib/nufeb || exit 1 
 cp Makefile.lammps_essential Makefile.lammps
 
 declare -i vtk_hdf=0
@@ -43,7 +46,7 @@ fi
 #### Build LAMMPS with NUFEB and VTK packages#####
 echo "Installing required packages.."
 
-cd $rootDir/lammps/src
+cd $rootDir/lammps/src || exit 1
 make yes-user-nufeb
 make yes-granular
 
@@ -70,9 +73,9 @@ echo "Building NUFEB.."
 for var in "$@"
 do 
     if [ $var == "--serial" ]; then
-	cd STUBS
+	cd STUBS || exit 1
         make
-        cd ..
+        cd .. || exit 1;
         make -j4 serial
         write_path
         exit 1
