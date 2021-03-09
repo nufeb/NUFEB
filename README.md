@@ -12,7 +12,7 @@ ssh userID@or-slurm-login.ornl.gov
 ## clone repo into your home directory
 ```shell
 git clone https://github.com/Jsakkos/NUFEB --recursive
-git checkout add_phototroph
+git checkout cyano
 git pull
 ```
 ## To build
