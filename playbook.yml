@@ -1,0 +1,59 @@
+---
+- name: install nufeb
+  hosts: localhost
+
+  pre_tasks:
+
+  -  name: Install prerequisite packages to compile nufeb 
+     become: yes
+     when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == '18.04'
+     apt:
+       pkg:
+       -  cmake
+       -  git-core
+       -  g++
+       -  openmpi-bin
+       -  openmpi-common
+       -  libopenmpi-dev
+  -  name: Install OpenGL
+     become: yes
+     when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == '18.04'
+     apt:
+       pkg:
+       -  libglu1-mesa-dev
+       -  freeglut3-dev
+       -  mesa-common-dev
+  tasks:
+ 
+#  -  name: Check for VTK
+#    stat:
+#       path: "thirdparty/vtk/vtk-build/vtk-8.00"
+#     register: vtk_build
+#  -  name: Report if VTK exists
+#     debug:     
+#       msg: "VTK is installed"
+#     when: vtk_build.stat.isdir
+  -  name:  Install VTK
+     shell: ./install-vtk.sh
+#     when: not vtk_build.stat.isdir
+     args:
+       chdir: thirdparty/
+       executable: /bin/bash
+#  -  name: Check for HDF5
+#     stat:
+#       path: "thirdparty/hdf5/hdf5/"
+#     register: hdf5_build
+#  -  name: Report if HDF5 exists
+#     debug:
+#       msg: "HDF5 is installed"
+#     when: hdf5_build.stat.isdir
+
+  -  name:  Install HDF5
+     shell: ./install-hdf5.sh
+#     when: not hdf5_build.stat.isdir
+     args:
+       chdir: thirdparty/
+       executable: /bin/bash
+  -  name: Install NUFEB
+     shell: ./install.sh --enable-vtk --enable-hdf5
+
