@@ -23,6 +23,13 @@
        -  libglu1-mesa-dev
        -  freeglut3-dev
        -  mesa-common-dev
+  - name: Clear open modules
+    when: ansible_distribution == 'CentOS'
+    shell: "module purge"
+  - name: Load modules PE-gnu
+    when: ansible_distribution == 'CentOS'
+    shell: "module load PE-gnu/3.0"
+
   tasks:
  
 #  -  name: Check for VTK
