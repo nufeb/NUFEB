@@ -16,6 +16,18 @@ git checkout cyano
 git pull
 ```
 ## To build
+
+### With Ansible
+Install Ansible
+```
+module load python/3.6.3
+pip3 install ansible --user
+```
+Run the playbook
+```
+ansible-playbook playbook.yml
+```
+### Manually
 ```shell
 module purge
 module load PE-gnu/3.0
