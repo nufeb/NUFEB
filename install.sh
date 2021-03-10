@@ -97,4 +97,4 @@ done
 
 make -j4 png
 write_path
-exit 1
+exit 0
