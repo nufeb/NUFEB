@@ -19,9 +19,17 @@ git pull
 
 ### With Ansible
 Install Ansible
+#### On CADES
 ```
 module load python/3.6.3
 pip3 install ansible --user
+```
+#### On Ubuntu
+```
+sudo apt update
+sudo apt install software-properties-common
+sudo apt-add-repository --yes --update ppa:ansible/ansible
+sudo apt install ansible
 ```
 Run the playbook
 ```
