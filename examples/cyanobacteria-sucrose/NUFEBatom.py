@@ -28,9 +28,7 @@ parser.add_argument('--suc', dest='sucrose', action='store',
 parser.add_argument('--grid', dest='grid', action='store',
                    default=2,
                    help='Diffusion grid density (um/grid)')
-parser.add_argument('--dump', dest='dump', action='store',
-                   default='vtk',
-                   help='Dump to HDf5 or VTK')
+
 args = parser.parse_args()
 
 mu_cyanos = round(0.06/3600,7)
@@ -150,13 +148,7 @@ for n in range(1,int(args.num)+1):
         #write atom definition file
         f= open(f"atom_{n}_{r}.in","w+")
         f.writelines(L)
-    if args.dump =='hdf5':
-        DumpText = 'dump        du1 all bio/hdf5 100 dump*.h5 id type radius x y z con'
-    elif args.dump == 'vtk':
-        DumpText = 'dump		du1 all vtk 100 atom_*.vtu id type diameter x y z \n'
-        DumpText = DumpText + 'dump		du2 all grid 100 grid_%_*.vti con'
-    else:
-        DumpText = ''
+
 
     #write initial conditions pickle file
     dumpfile = open(f"run_{n}.pkl",'wb')
@@ -174,8 +166,8 @@ for n in range(1,int(args.num)+1):
                                   'ECWGroup' : ecwGroup,
                                   'Zheight' : InitialConditions["Dimensions"][2],
                                  'CYANODiv'  : cyDiv, 'ECWDiv' : ecwDiv,
-                                 'GridMesh' : f'{int(InitialConditions["Dimensions"][0]*1e6/int(args.grid))} {int(InitialConditions["Dimensions"][1]*1e6/int(args.grid))} {int(InitialConditions["Dimensions"][2]*1e6/int(args.grid))}',
-                                 'DumpOutput' : DumpText})
+                                 'GridMesh' : f'{int(InitialConditions["Dimensions"][0]*1e6/int(args.grid))} {int(InitialConditions["Dimensions"][1]*1e6/int(args.grid))} {int(InitialConditions["Dimensions"][2]*1e6/int(args.grid))}'
+                                 })
     f= open(f"Inputscript_{n}.lammps","w+")
     f.writelines(result)
     #write slurm script

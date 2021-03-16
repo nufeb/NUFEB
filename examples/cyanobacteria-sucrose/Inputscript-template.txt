@@ -9,7 +9,8 @@ processors  * * *
 comm_modify	vel yes
 variable reps loop ${Replicates}
 read_data_bio atom_${n}_${reps}.in
-
+shell mkdir Run_${n}_${reps}
+shell cd Run_${n}_${reps}
 ##############Define initial particle distribution##############
 
 lattice sc 1e-6 origin 0 0 0
@@ -82,15 +83,16 @@ variable light equal c_myCon[1]
 fix 11 all halt 100 v_light <= 1e-19
 
 ##############Simulation Output##############
-dump		id all custom 100 output.lammmps id type diameter x y z
-${DumpOutput}
-dump            du3 all bio 100 ntypes biomass avg_con
+dump    id all custom 100 output.lammmps id type diameter x y z
+dump    du1 all vtk 100 atom_*.vtu id type diameter x y z
+dump    du2 all grid 100 grid_%_*.vti con
+dump    du3 all bio 100 ntypes biomass avg_con
+dump    traj all bio/hdf5 100 trajectory.h5 id type radius x y z con
 thermo_style    custom step cpu atoms c_myNtypes[*] c_myMass[*] c_myCon[*]
 thermo		100
 thermo_modify	lost ignore
 
-shell mkdir Run_${n}_${reps}
-shell cd Run_${n}_${reps}
+
 run $Timesteps
 shell cd ..
 clear
