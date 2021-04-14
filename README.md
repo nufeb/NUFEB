@@ -39,6 +39,7 @@ ansible-playbook playbook.yml
 ```shell
 module purge
 module load PE-gnu/3.0
+module load cmake
 cd ~/NUFEB/thirdparty/
 ./install-hdf5.sh
 cd ~/NUFEB/./install.sh --enable-hdf5
@@ -66,4 +67,3 @@ cd ~/NUFEB/examples/cyanobacteria-sucrose
 python NUFEBatom.py --n 3 --r 3
 ./slurmRun.sh
 ```
-

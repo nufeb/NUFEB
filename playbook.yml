@@ -4,7 +4,7 @@
 
   pre_tasks:
 
-  -  name: Install prerequisite packages to compile nufeb 
+  -  name: Install prerequisite packages to compile nufeb
      become: yes
      when: ansible_distribution == 'Ubuntu'
      apt:
@@ -31,14 +31,17 @@
   - name: Load modules PE-gnu
     when: ansible_distribution == 'CentOS'
     shell: "module load PE-gnu/3.0"
+  - name: Load cmake
+    when: ansible_distribution == 'CentOS'
+    shell: "module load cmake"
 
   tasks:
-# todo check for vtk and hdf5 before building 
+# todo check for vtk and hdf5 before building
 #  -  name: Check for VTK
 #     stat:
 #       path: thirdparty/vtk/vtk-build/vtk-8.00
 #     register: vtk_build
-#  -  debug:     
+#  -  debug:
 #       msg: "VTK is already installed"
 #     when: vtk_build.stat.exists and vtk_build.stat.isdir
   -  name:  Install VTK
@@ -66,4 +69,3 @@
      shell: ./install.sh --enable-vtk --enable-hdf5
      args:
        executable: /bin/bash
-

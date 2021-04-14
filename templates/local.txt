@@ -1,29 +1,6 @@
-#!/bin/bash -l
-#SBATCH -J ${job}
-#SBATCH -p batch
-#SBATCH --nodes 1
-#SBATCH --ntasks-per-node 32
-#SBATCH --cpus-per-task 1
-#SBATCH --exclusive
-#SBATCH --mem=100g
-#SBATCH -A cnms
-#SBATCH -t 10:00:00
-#SBATCH --mail-type=FAIL
-#SBATCH --mail-user=${USER}@ornl.gov
+#!/bin/bash
 
-module purge
-module load env/cades-cnms
-. $SOFTWARECNMS/spack/share/spack/setup-env.sh
-spack load openmpi/qnfab5m
-spack load vtk%gcc@8.2.0
-
-#export OMP_NUM_THREADS=1
-
-export LAMMPS=/home/${USER}/NUFEB/lammps/src/lmp_png
-
-ldd $LAMMPS
-
-mpirun -np 32 $LAMMPS -in Inputscript_${n_cyanos}_${n_ecw}_${SucPct}.lammps > Inputscript_${n_cyanos}_${n_ecw}_${SucPct}.log
+mpirun -np 8 lmp_png -in Inputscript_${n_cyanos}_${n_ecw}_${SucPct}.lammps > Inputscript_${n_cyanos}_${n_ecw}_${SucPct}.log
 cd Run_${n_cyanos}_${n_ecw}_${SucPct}_${Reps}
 tar -zcf VTK.tar.gz *.vtr *.vtu *.vti
 python3 ../../tools/Datafedcreate.py --id ${id} --n VTK --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./VTK.tar.gz

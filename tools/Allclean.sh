@@ -11,3 +11,5 @@ rm runs/*.out
 rm runs/output.lammps
 rm runs/log.lammps
 rm runs/*.pkl
+rm runs/*.sh
+rm runs *.tar.gz
