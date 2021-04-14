@@ -194,7 +194,7 @@ for n in range(1,int(args.num)+1):
     #read it
     src = Template( filein.read() )
     #do the substitution
-    result = src.safe_substitute({'n' : n, 'job' : f"NUFEB_cyano{n}",'USER' : 'sakkosjo','Reps'  : args.reps})
+    result = src.safe_substitute({'n' : n, 'job' : f"NUFEB_cyano{n}",'USER' : args.user,'Reps'  : args.reps})
     f= open(f"./runs/Inputscript_{n_cyanos}_{n_ecw}_{SucPct}.slurm","w+")
     f.writelines(result)
 
