@@ -50,9 +50,7 @@ CO2MW = 44.01
 SucMW = 342.3
 
 # check for runs folder
-if os.path.isdir('runs'):
-    break
-else:
+if not os.path.isdir('runs'):
     os.mkdir('runs')
 
 for n in range(1,int(args.num)+1):
