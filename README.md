@@ -54,16 +54,15 @@ module load env/cades-cnms
 module load PE-gnu/3.0
 module load anaconda3
 cd $SCRATCH
-python NUFEBatom.py
+python ./tools/GenerateAtom.py --u your_user_name
 salloc -A cnms -p high_mem --nodes=1 --mem=80G --exclusive -t 00:30:00
-srun --ntasks-per-node 32 -n 32 ~/NUFEB/lammps/src/lmp_png -in ~/NUFEB/examples/cyanobacteria-sucrose/Inputscript_1.lammps
+srun --ntasks-per-node 32 -n 32 ~/NUFEB/lammps/src/lmp_png -in ~/NUFEB/runs/Inputscript*.lammps
 ```
 ### batches
 ```shell
 module load env/cades-cnms
 module load anaconda3
 cd $SCRATCH
-cd ~/NUFEB/examples/cyanobacteria-sucrose
-python NUFEBatom.py --n 3 --r 3
-./slurmRun.sh
+python ./tools/GenerateAtom.py --u your_user_name
+./tools/slurmRun.sh
 ```

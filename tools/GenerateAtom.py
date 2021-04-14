@@ -51,7 +51,7 @@ SucMW = 342.3
 
 # check for runs folder
 if os.path.isdir('runs'):
-    continue
+    break
 else:
     os.mkdir('runs')
 
