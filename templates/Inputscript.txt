@@ -8,9 +8,9 @@ processors  * * *
 
 comm_modify	vel yes
 variable reps loop ${Replicates}
-read_data_bio atom_${n_cyanos}_${n_ecw}_${SucPct}_${reps}.in
-shell mkdir Run_${n_cyanos}_${n_ecw}_${SucPct}_${reps}
-shell cd Run_${n_cyanos}_${n_ecw}_${SucPct}_${reps}
+read_data_bio atom_${n_cyanos}_${n_ecw}_${SucPct}_${Replicates}.in
+shell mkdir Run_${n_cyanos}_${n_ecw}_${SucPct}_${Replicates}
+shell cd Run_${n_cyanos}_${n_ecw}_${SucPct}_${Replicates}
 ##############Define initial particle distribution##############
 
 lattice sc 1e-6 origin 0 0 0
