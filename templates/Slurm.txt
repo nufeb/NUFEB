@@ -33,5 +33,5 @@ python ../../tools/Datafedcreate.py --id ${id} --n Avg_con --m ../run_${n_cyanos
 python ../../tools/Datafedcreate.py --id ${id} --n Biomass --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./Results/biomass.csv
 python ../../tools/Datafedcreate.py --id ${id} --n Ntypes --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./Results/ntypes.csv
 #python ../../tools/Datafedcreate.py --id ${id} --n Trajectory --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./trajectory.h5
-python ../../tools/Datafedcreate.py --id ${id} --n Log --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ../Inputscript_${n_cyanos}_${n_ecw}_${SucPct}.log
+python ../../tools/Datafedcreate.py --id ${id} --n Log --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ../NUFEB_${n_cyanos}_${n_ecw}_${SucPct}.log
 cd ..
