@@ -188,15 +188,7 @@ for n in range(1,int(args.num)+1):
                                  'GridMesh' : f'{int(InitialConditions["Dimensions"][0]*1e6/int(args.grid))} {int(InitialConditions["Dimensions"][1]*1e6/int(args.grid))} {int(InitialConditions["Dimensions"][2]*1e6/int(args.grid))}'})
     f= open(f"./runs/Inputscript_{n_cyanos}_{n_ecw}_{SucPct}.lammps","w+")
     f.writelines(result)
-    #write slurm script
-    #open the file
-    filein = open( './templates/Slurm.txt' )
-    #read it
-    src = Template( filein.read() )
-    #do the substitution
-    result = src.safe_substitute({'n' : n, 'job' : f"NUFEB_cyano{n}",
-                                    'USER' : args.user,'Replicates'  : args.reps,
-                                    'SucPct' : SucPct,'n_cyanos' : n_cyanos, 'n_ecw' : n_ecw})
+
     f= open(f"./runs/Inputscript_{n_cyanos}_{n_ecw}_{SucPct}.slurm","w+")
     f.writelines(result)
 
@@ -211,6 +203,17 @@ for n in range(1,int(args.num)+1):
     coll_msg = df_api.collectionCreate(collectionName,
                                     parent_id=parent_collection)
     global_coll_id = coll_msg[0].coll[0].id
+
+    #write slurm script
+    #open the file
+    filein = open( './templates/Slurm.txt' )
+    #read it
+    src = Template( filein.read() )
+    #do the substitution
+    result = src.safe_substitute({'n' : n, 'job' : f"NUFEB_cyano{n}",
+                                    'USER' : args.user,'Replicates'  : args.reps,
+                                    'SucPct' : SucPct,'n_cyanos' : n_cyanos,
+                                    'n_ecw' : n_ecw,'id': global_coll_id})
 
     #write local run script
     #open the file
