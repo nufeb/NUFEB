@@ -189,8 +189,7 @@ for n in range(1,int(args.num)+1):
     f= open(f"./runs/Inputscript_{n_cyanos}_{n_ecw}_{SucPct}.lammps","w+")
     f.writelines(result)
 
-    f= open(f"./runs/Inputscript_{n_cyanos}_{n_ecw}_{SucPct}.slurm","w+")
-    f.writelines(result)
+
 
     x = int(InitialConditions['Dimensions'][0]*1e6)
     y = int(InitialConditions['Dimensions'][1]*1e6)
@@ -214,7 +213,8 @@ for n in range(1,int(args.num)+1):
                                     'USER' : args.user,'Replicates'  : args.reps,
                                     'SucPct' : SucPct,'n_cyanos' : n_cyanos,
                                     'n_ecw' : n_ecw,'id': global_coll_id})
-
+    f= open(f"./runs/Inputscript_{n_cyanos}_{n_ecw}_{SucPct}.slurm","w+")
+    f.writelines(result)
     #write local run script
     #open the file
     filein = open( './templates/local.txt' )
