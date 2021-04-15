@@ -13,6 +13,8 @@
 
 module purge
 module load env/cades-cnms
+module load cmake
+module load anaconda3
 . $SOFTWARECNMS/spack/share/spack/setup-env.sh
 spack load openmpi/qnfab5m
 spack load vtk%gcc@8.2.0
@@ -26,10 +28,10 @@ ldd $LAMMPS
 mpirun -np 32 $LAMMPS -in Inputscript_${n_cyanos}_${n_ecw}_${SucPct}.lammps > Inputscript_${n_cyanos}_${n_ecw}_${SucPct}.log
 cd Run_${n_cyanos}_${n_ecw}_${SucPct}_${Reps}
 tar -zcf VTK.tar.gz *.vtr *.vtu *.vti
-python3 ../../tools/Datafedcreate.py --id ${id} --n VTK --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./VTK.tar.gz
-python3 ../../tools/Datafedcreate.py --id ${id} --n Avg_con --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./Results/avg_concentration.csv
-python3 ../../tools/Datafedcreate.py --id ${id} --n Biomass --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./Results/biomass.csv
-python3 ../../tools/Datafedcreate.py --id ${id} --n Ntypes --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./Results/ntypes.csv
-python3 ../../tools/Datafedcreate.py --id ${id} --n Trajectory --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./trajectory.h5
-python3 ../../tools/Datafedcreate.py --id ${id} --n Log --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ../Inputscript_${n_cyanos}_${n_ecw}_${SucPct}.log
+python ../../tools/Datafedcreate.py --id ${id} --n VTK --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./VTK.tar.gz
+python ../../tools/Datafedcreate.py --id ${id} --n Avg_con --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./Results/avg_concentration.csv
+python ../../tools/Datafedcreate.py --id ${id} --n Biomass --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./Results/biomass.csv
+python ../../tools/Datafedcreate.py --id ${id} --n Ntypes --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./Results/ntypes.csv
+python ../../tools/Datafedcreate.py --id ${id} --n Trajectory --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./trajectory.h5
+python ../../tools/Datafedcreate.py --id ${id} --n Log --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ../Inputscript_${n_cyanos}_${n_ecw}_${SucPct}.log
 cd ..
