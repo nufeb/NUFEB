@@ -12,9 +12,9 @@
 #SBATCH --mail-user=${USER}@ornl.gov
 
 module purge
-module load env/cades-cnms
+#module load env/cades-cnms
 #module load cmake
-module load anaconda3
+#module load anaconda3
 #. $SOFTWARECNMS/spack/share/spack/setup-env.sh
 #spack load openmpi/qnfab5m
 #spack load vtk%gcc@8.2.0
@@ -32,6 +32,6 @@ python ../../tools/Datafedcreate.py --id ${id} --n VTK --m ../run_${n_cyanos}_${
 python ../../tools/Datafedcreate.py --id ${id} --n Avg_con --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./Results/avg_concentration.csv
 python ../../tools/Datafedcreate.py --id ${id} --n Biomass --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./Results/biomass.csv
 python ../../tools/Datafedcreate.py --id ${id} --n Ntypes --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./Results/ntypes.csv
-#python ../../tools/Datafedcreate.py --id ${id} --n Trajectory --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./trajectory.h5
+python ../../tools/Datafedcreate.py --id ${id} --n Trajectory --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./trajectory.h5
 python ../../tools/Datafedcreate.py --id ${id} --n Log --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ../NUFEB_${n_cyanos}_${n_ecw}_${SucPct}.log
 cd ..
