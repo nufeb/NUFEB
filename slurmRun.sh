@@ -1,5 +1,5 @@
 #!/bin/bash
-python ./tools/DatafedVerify.py
+python3 ./tools/DatafedVerify.py
 retVal=$?
 if [ $retVal -eq 0 ];
 then
