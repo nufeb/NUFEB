@@ -8,8 +8,8 @@ rm -rf runs/Results
 rm -rf runs/Run*
 rm runs/run*
 rm runs/*.out
-rm runs/output.lammps
-rm runs/log.lammps
+rm runs/*.lammps
+rm runs/*.log
 rm runs/*.pkl
 rm runs/*.sh
 rm runs/*.tar.gz
