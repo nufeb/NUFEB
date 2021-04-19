@@ -12,6 +12,7 @@
 #SBATCH --mail-user=${USER}@ornl.gov
 
 module purge
+module load PE-gnu/3.0
 #module load env/cades-cnms
 #module load cmake
 #module load anaconda3
