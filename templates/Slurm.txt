@@ -5,7 +5,7 @@
 #SBATCH --ntasks-per-node 32
 #SBATCH --cpus-per-task 1
 #SBATCH --exclusive
-#SBATCH --mem=100g
+#SBATCH --mem=50g
 #SBATCH -A cnms
 #SBATCH -t 10:00:00
 #SBATCH --mail-type=FAIL
@@ -13,14 +13,6 @@
 
 module purge
 module load PE-gnu/3.0
-#module load env/cades-cnms
-#module load cmake
-#module load anaconda3
-#. $SOFTWARECNMS/spack/share/spack/setup-env.sh
-#spack load openmpi/qnfab5m
-#spack load vtk%gcc@8.2.0
-
-#export OMP_NUM_THREADS=1
 
 export LAMMPS=~/NUFEB/lammps/src/lmp_png
 
@@ -29,10 +21,10 @@ ldd $LAMMPS
 mpirun -np 32 $LAMMPS -in Inputscript_${n_cyanos}_${n_ecw}_${SucPct}.lammps > NUFEB_${n_cyanos}_${n_ecw}_${SucPct}.log
 cd Run_${n_cyanos}_${n_ecw}_${SucPct}_${Replicates}
 tar -zcf VTK.tar.gz *.vtr *.vtu *.vti
-python ../../tools/Datafedcreate.py --id ${id} --n VTK --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./VTK.tar.gz
-python ../../tools/Datafedcreate.py --id ${id} --n Avg_con --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./Results/avg_concentration.csv
-python ../../tools/Datafedcreate.py --id ${id} --n Biomass --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./Results/biomass.csv
-python ../../tools/Datafedcreate.py --id ${id} --n Ntypes --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./Results/ntypes.csv
-python ../../tools/Datafedcreate.py --id ${id} --n Trajectory --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./trajectory.h5
-python ../../tools/Datafedcreate.py --id ${id} --n Log --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ../NUFEB_${n_cyanos}_${n_ecw}_${SucPct}.log
+python3 ../../tools/Datafedcreate.py --id ${id} --n VTK --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./VTK.tar.gz
+python3 ../../tools/Datafedcreate.py --id ${id} --n Avg_con --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./Results/avg_concentration.csv
+python3 ../../tools/Datafedcreate.py --id ${id} --n Biomass --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./Results/biomass.csv
+python3 ../../tools/Datafedcreate.py --id ${id} --n Ntypes --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./Results/ntypes.csv
+python3 ../../tools/Datafedcreate.py --id ${id} --n Trajectory --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ./trajectory.h5
+python3 ../../tools/Datafedcreate.py --id ${id} --n Log --m ../run_${n_cyanos}_${n_ecw}_${SucPct}.pkl --f ../NUFEB_${n_cyanos}_${n_ecw}_${SucPct}.log
 cd ..
