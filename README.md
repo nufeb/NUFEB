@@ -57,6 +57,7 @@ python ./tools/GenerateAtom.py --u your_user_name
 module purge
 module load PE-gnu/3.0
 salloc -A cnms -p batch --nodes=1 --mem=80G --exclusive -t 00:30:00
+cd runs
 srun --ntasks-per-node 32 -n 32 ~/NUFEB/lammps/src/lmp_png -in ~/NUFEB/runs/Inputscript*.lammps
 ```
 ### batches
