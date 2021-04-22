@@ -53,7 +53,7 @@ cd ~/NUFEB/./install.sh --enable-hdf5
 module load env/cades-cnms
 module load anaconda3
 cd $SCRATCH
-python ./tools/GenerateAtom.py --u your_user_name
+python3 ./tools/GenerateAtom.py --u your_user_name
 module purge
 module load PE-gnu/3.0
 salloc -A cnms -p batch --nodes=1 --mem=80G --exclusive -t 00:30:00
@@ -64,6 +64,6 @@ srun --ntasks-per-node 32 -n 32 ~/NUFEB/lammps/src/lmp_png -in ~/NUFEB/runs/Inpu
 ```shell
 module load anaconda3
 cd $SCRATCH
-python ./tools/GenerateAtom.py --u your_user_name
+python3 ./tools/GenerateAtom.py --u your_user_name
 ./tools/slurmRun.sh
 ```
