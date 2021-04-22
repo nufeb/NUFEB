@@ -49,18 +49,18 @@ cd ~/NUFEB/./install.sh --enable-hdf5
 
 ### interactively
 ```shell
-module purge
+
 module load env/cades-cnms
-module load PE-gnu/3.0
 module load anaconda3
 cd $SCRATCH
 python ./tools/GenerateAtom.py --u your_user_name
-salloc -A cnms -p high_mem --nodes=1 --mem=80G --exclusive -t 00:30:00
+module purge
+module load PE-gnu/3.0
+salloc -A cnms -p batch --nodes=1 --mem=80G --exclusive -t 00:30:00
 srun --ntasks-per-node 32 -n 32 ~/NUFEB/lammps/src/lmp_png -in ~/NUFEB/runs/Inputscript*.lammps
 ```
 ### batches
 ```shell
-module load env/cades-cnms
 module load anaconda3
 cd $SCRATCH
 python ./tools/GenerateAtom.py --u your_user_name
