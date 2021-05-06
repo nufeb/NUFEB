@@ -42,8 +42,9 @@ module load PE-gnu/3.0
 module load cmake
 cd ~/NUFEB/thirdparty/
 ./install-hdf5.sh
-cd ~/NUFEB/./install.sh --enable-hdf5
-./install_cades.sh --enable-vtk
+./install-vtk.sh
+cd ~/NUFEB/
+./install.sh --enable-hdf5 --enable-vtk
 ```
 ## To test
 
