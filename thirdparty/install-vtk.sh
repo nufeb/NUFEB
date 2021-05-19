@@ -1,10 +1,13 @@
 #!/bin/bash
+
+set -euo pipefail
+
 cd ${0%/*} || exit 1 # Run from this directory
 
 currentDir=$PWD
-cd vtk
+cd vtk || exit 1
 mkdir vtk-build
-cd vtk-build
+cd vtk-build || exit 1
 mkdir vtk-8.0
 intallpath=$PWD/vtk-8.0
 echo $intallpath

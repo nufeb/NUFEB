@@ -1,10 +1,13 @@
 #!/bin/bash
+
+set -euo pipefail
+
 cd ${0%/*} || exit 1 # Run from this directory
 
 currentDir=$PWD
 tar xvzf openmpi-3.0.6.tar.gz
 
-cd openmpi-3.0.6
+cd openmpi-3.0.6 || exit 1
 mkdir ompi-build
 intallpath=$PWD/ompi-build
 echo $intallpath
