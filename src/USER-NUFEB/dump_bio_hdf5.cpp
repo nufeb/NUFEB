@@ -220,7 +220,7 @@ void DumpBioHDF5::write() {
       } else {
 	hid_t group = H5Gopen(file, "radius", H5P_DEFAULT);
 	std::ostringstream oss;
-	oss << "radius" << std::to_string(update->ntimestep);
+	oss << "radius/" << std::to_string(update->ntimestep);
 	write_atoms_scalar(file, oss.str().c_str(), H5T_NATIVE_DOUBLE, atom->radius, oneperproc, offset);
 	H5Gclose(group);
       }

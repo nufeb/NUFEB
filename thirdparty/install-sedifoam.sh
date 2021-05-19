@@ -1,4 +1,7 @@
 #!/bin/bash
+
+set -euo pipefail
+
 cd ${0%/*} || exit 1 # Run from this directory
 
 # Read the information of current directory.
@@ -25,7 +28,7 @@ case $n in
 esac
 
 sedifoamDir=$PWD/sedifoam
-cd ..
+cd .. || exit 1
 ompiDir=$PWD/thirdparty/openmpi-3.0.6/ompi-build
 nufebDir=$PWD
 lammpsDir=$PWD/lammps
@@ -42,9 +45,9 @@ cp -rf $nufebDir/src/* $lammpsSRC/
 cp -rf $nufebDir/lib/* $lammpsDir/lib/
 
 # Make STUBS 
-cd $lammpsSRC/STUBS
+cd $lammpsSRC/STUBS || exit 1
 make
-cd $lammpsSRC
+cd $lammpsSRC || exit 1
 
 # Make packages
 make yes-GRANULAR
@@ -57,17 +60,17 @@ if [ $n == 4 ]
 then 
     echo "The version you choose is mac version"
     make -j4 shanghaimac mode=shlib
-    cd $FOAM_USER_LIBBIN
+    cd $FOAM_USER_LIBBIN || exit 1
     ln -sf $lammpsDir/src/liblammps_shanghaimac.so .
-    cd $sedifoamDir/lammpsFoam
+    cd $sedifoamDir/lammpsFoam || exit 1
     touch Make/options
     echo "LAMMPS_DIR ="$lammpsSRC > Make/options
     cat Make/options-mac-openmpi >> Make/options
 else
     make -j4 shanghailinux mode=shlib
-    cd $FOAM_USER_LIBBIN
+    cd $FOAM_USER_LIBBIN || exit 1
     ln -sf $lammpsDir/src/liblammps_shanghailinux.so .
-    cd $sedifoamDir/lammpsFoam
+    cd $sedifoamDir/lammpsFoam || exit 1
     touch Make/options
     echo "LAMMPS_DIR ="$lammpsSRC > Make/options
 
