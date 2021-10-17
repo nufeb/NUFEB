@@ -69,6 +69,9 @@ class FixKineticsMonod : public Fix {
   class FixKinetics *kinetics;
   class BIO *bio;
 
+  double gamma_a, gamma_b, ic50_a, ic50_b, nl_a, nl_b;
+  int imut_s, imut_i;
+
   void init_param();
   void update_biomass(double***, double);
 
@@ -79,6 +82,9 @@ class FixKineticsMonod : public Fix {
   void growth_dead(int, int);
   void growth_ana(int, int);
   void growth_com(int, int);
+
+  void growth_muta(int, int);
+  void growth_mutb(int, int);
 };
 
 }

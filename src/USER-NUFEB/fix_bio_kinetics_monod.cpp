@@ -42,7 +42,7 @@ using namespace MathConst;
 
 using namespace std;
 
-enum{HET, AOB, NOB, ANA, COM, EPS, DEAD};
+enum{HET, AOB, NOB, ANA, COM, EPS, DEAD, MUTA, MUTB};
 /* ---------------------------------------------------------------------- */
 
 FixKineticsMonod::FixKineticsMonod(LAMMPS *lmp, int narg, char **arg) :
@@ -78,7 +78,34 @@ FixKineticsMonod::FixKineticsMonod(LAMMPS *lmp, int narg, char **arg) :
 	if (eps_dens <= 0)
 	  error->all(FLERR, "Illegal fix kinetics/growth/monod command: eps_dens cannot be less or equal than zero");
 	iarg += 2;
-    } else if (strcmp(arg[iarg],"etahet") == 0){
+    } else if (strcmp(arg[iarg],"mutate") == 0){
+      if (strcmp(arg[iarg+1],"gamma_a") == 0)
+    	gamma_a = force->numeric(FLERR, arg[iarg+2]);
+      else
+	    error->all(FLERR, "Illegal fix kinetics/growth/monod command");
+      if (strcmp(arg[iarg+3],"gamma_b") == 0)
+    	gamma_b = force->numeric(FLERR, arg[iarg+4]);
+      else
+        error->all(FLERR, "Illegal fix kinetics/growth/monod command");
+      if (strcmp(arg[iarg+5],"ic50_a") == 0)
+    	ic50_a = force->numeric(FLERR, arg[iarg+6]);
+      else
+        error->all(FLERR, "Illegal fix kinetics/growth/monod command");
+      if (strcmp(arg[iarg+7],"ic50_b") == 0)
+    	ic50_b = force->numeric(FLERR, arg[iarg+8]);
+      else
+        error->all(FLERR, "Illegal fix kinetics/growth/monod command");
+      if (strcmp(arg[iarg+9],"nl_a") == 0)
+    	nl_a = force->numeric(FLERR, arg[iarg+10]);
+      else
+        error->all(FLERR, "Illegal fix kinetics/growth/monod command");
+      if (strcmp(arg[iarg+11],"nl_b") == 0)
+    	nl_b = force->numeric(FLERR, arg[iarg+12]);
+      else
+        error->all(FLERR, "Illegal fix kinetics/growth/monod command");
+	  iarg += 13;
+	}
+    else if (strcmp(arg[iarg],"etahet") == 0){
 	eta_het = force->numeric(FLERR, arg[iarg+1]);
 	if (eta_het < 0)
 	  error->all(FLERR, "Illegal fix kinetics/growth/monod command: eta_het cannot be less than zero");
@@ -198,6 +225,10 @@ void FixKineticsMonod::init_param() {
       ino2 = nu;
     else if (strcmp(bio->nuname[nu], "no3") == 0)
       ino3 = nu;
+    else if (strcmp(bio->nuname[nu], "mut_s") == 0)
+	  imut_s = nu;
+    else if (strcmp(bio->nuname[nu], "mut_i") == 0)
+      imut_i = nu;
   }
 
   // initialize species
@@ -235,7 +266,18 @@ void FixKineticsMonod::init_param() {
       if (inh4 == 0) error->all(FLERR, "comammox growth requires nutrient 'nh4' defined in Nutrients section");
       if (ino3 == 0) error->all(FLERR, "comammox growth requires nutrient 'no3' defined in Nutrients section");
       if (io2 == 0) error->all(FLERR, "comammox growth requires nutrient 'o2' defined in Nutrients section");
-    } else if(strcmp(name, "eps") == 0 || strcmp(name, "EPS") == 0) {
+    }
+    else if (strcmp(name, "mta") == 0 ) {
+         species[i] = MUTA;
+         if (imut_s == 0) error->all(FLERR, "comammox growth requires nutrient 'imut_s' defined in Nutrients section");
+         if (imut_i == 0) error->all(FLERR, "comammox growth requires nutrient 'imut_i' defined in Nutrients section");
+       }
+    else if (strcmp(name, "mtb") == 0) {
+         species[i] = MUTB;
+         if (imut_s == 0) error->all(FLERR, "comammox growth requires nutrient 'imut_s' defined in Nutrients section");
+         if (imut_i == 0) error->all(FLERR, "comammox growth requires nutrient 'imut_i' defined in Nutrients section");
+       }
+    else if(strcmp(name, "eps") == 0 || strcmp(name, "EPS") == 0) {
       species[i] = EPS;
       ieps = i;
     } else if(strcmp(name, "dea") == 0 || strcmp(name, "DEA") == 0) {
@@ -293,7 +335,11 @@ void FixKineticsMonod::growth(double dt, int gflag) {
 	growth_eps(i, grid);
       } else if (spec == DEAD) {
 	growth_dead(i, grid);
-      }
+      }else if (spec == MUTA) {
+	growth_muta(i, grid);
+	  } else if (spec == MUTB) {
+	growth_mutb(i, grid);
+	  }
     }
   }
 
@@ -363,6 +409,28 @@ void FixKineticsMonod::growth_aob(int i, int grid) {
 
   //aob overall growth rate
   growrate[i][0][grid] = r1 - r2 - r3;
+}
+
+/* ----------------------------------------------------------------------
+ Monod growth model for mut_a
+ ------------------------------------------------------------------------- */
+void FixKineticsMonod::growth_muta(int i, int grid) {
+  //growth rate
+  double r1 = mu[i] * (nus[imut_s][grid] / (ks[i][imut_s] + nus[imut_s][grid])) / (1 + pow ((imut_i / ic50_a),nl_a));
+  growrate[i][0][grid] = r1;
+  //nutrient utilization
+  nur[imut_s][grid] += - gamma_a * r1;
+}
+
+/* ----------------------------------------------------------------------
+ Monod growth model for mut_b
+ ------------------------------------------------------------------------- */
+void FixKineticsMonod::growth_mutb(int i, int grid) {
+  //growth rate
+  double r1 = mu[i] * (nus[imut_s][grid] / (ks[i][imut_s] + nus[imut_s][grid])) / (1 + pow ((imut_i / ic50_b),nl_b));
+  growrate[i][0][grid] = r1;
+  //nutrient utilization
+  nur[imut_s][grid] += - gamma_b * r1;
 }
 
 /* ----------------------------------------------------------------------
