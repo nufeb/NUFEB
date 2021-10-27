@@ -1,7 +1,7 @@
 Biofilm growth model and removal. 
 
 The biofilm is grown from 40 initial HETs inoculated on the substratum for ~4.5 days (4x10^5s).
-Then shear force is applied with the direction along x axis to remove the particle from the domain.
+Then shear force is applied with the direction along x axis to remove particles (microbes) from the domain.
 
 <pre>       
 Inputscript-vtk.lammps           Simulation inputscript (with VTK outputs) 
