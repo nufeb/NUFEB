@@ -1,0 +1,112 @@
+# NUFEB simulation
+
+units si
+atom_style	bio
+atom_modify	map array sort 100 5.0e-7
+boundary	ff ff ff
+newton		off
+processors  * * 1
+
+comm_modify	vel yes
+read_data_bio atom.in
+
+##############Define initial particle distribution##############
+
+lattice sc 1e-6 origin 0 0 0
+region reg block 0 50 0 40 0 1
+
+create_atoms 1 random 40 6534 reg
+
+set type 1 density 150
+set type 1 diameter 1e-6
+set type 1 mass 7.854e-17
+
+group HET type 1
+group EPS type 2
+
+neighbor	5e-7 bin
+neigh_modify	delay 0 one 5000
+
+##############Define DEM Variables&Commands##############
+
+pair_style  gran/hooke/history 1.e-4 NULL 1.e-5 NULL 0.0 1
+pair_coeff  * *
+
+timestep 10
+
+fix 1 all nve/limit 1e-8
+fix fv all viscous 1e-5
+
+fix zw all wall/gran hooke/history 2000 NULL 500.0 NULL 1.5 0 zplane  0.0  1e-04
+
+variable kanc equal 50
+
+#fix zwa all walladh v_kanc zplane  0.0  1e-04
+
+##############Define IBm Variables##############
+
+#variables used in fix eps_extract
+variable EPSdens equal 30
+variable EPSratio equal 1.3
+
+#variables used in fix division
+variable divDia equal 1.36e-6
+
+#variables used in fix kinetics 
+variable diffT equal 1e-4
+variable tol equal 5e-6
+variable layer equal -1
+
+#variables used in fix death
+variable deadDia equal 9e-7
+
+#variables used in fix shear
+variable viscosity equal 0.001
+variable shearRate equal 0.2
+variable height equal 0.0
+
+variable ke equal 1e+8
+
+##############Define IBm Commands##############
+
+fix j1 all epsadh 1 v_ke 1
+fix k1 all kinetics 100 10 8 10 v_diffT v_layer niter 10000
+fix kgm all kinetics/growth/monod epsdens 30
+fix g1 all kinetics/diffusion v_tol dcflag 2
+fix d1 all divide 100 v_EPSdens v_divDia 64564
+fix e1 HET eps_extract 100 v_EPSratio v_EPSdens 53453
+
+##############Define IBm Computes##############
+
+compute myNtypes all ntypes
+compute myMass all biomass
+compute myCon all avg_con
+compute myHeight all avg_height
+compute myRough all roughness
+
+##############Simulation Output##############
+
+dump		id all custom 1000 output.lammps id type diameter x y z
+dump		du1 all vtk 1000 atom_*.vtu id type diameter x y z
+dump		du2 all grid 1000 grid_%_*.vti con
+dump            du3 all bio 1000 avg_height roughness biomass ntypes avg_con 
+thermo_style    custom step cpu atoms c_myNtypes[*] c_myMass[*] c_myCon[*]
+thermo		100
+thermo_modify	lost ignore
+
+
+run 40000
+
+timestep 2.5
+
+unfix kgm
+unfix g1
+unfix d1
+unfix e1
+
+
+fix s1 all shear 1 v_viscosity v_shearRate v_height zx 40000 80000
+
+run 40000
+
+
