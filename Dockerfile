@@ -1,18 +1,32 @@
 FROM ubuntu:20.04
-MAINTAINER Jonathan Sakkos <sakkosjo@msu.edu>
-RUN apt-get update && apt-get upgrade -y && apt-get install -y \
-    cmake \
-    git-core \
-    g++ \
+#MAINTAINER Jonathan Sakkos <sakkosjo@msu.edu>
+SHELL ["/bin/bash", "-c"]
+#  && apt-get upgrade -y 
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    git \
     openmpi-bin \
     openmpi-common \
     libopenmpi-dev \ 
     libpng-dev \
-    libglu1-mesa-dev \
-    freeglut3-dev \
-    mesa-common-dev \
+    libvtk6-dev \
+    python3-pip
+#WORKDIR /NUFEB
+RUN pip install nufeb-tools -U
 ADD /nufeb /nufeb
-WORKDIR nufeb/thirdparty
-RUN ./install-hdf5.sh && ./install-vtk.sh
-WORKDIR ../
-RUN ./install.sh --enable-vtk --enable-hdf5
+#RUN chmod 755 -R /nufeb
+#WORKDIR /nufeb/thirdparty
+#RUN chmod 755 install-hdf5.sh
+#RUN ./install-hdf5.sh 
+#RUN chmod 755 install-vtk.sh
+#RUN ./install-vtk.sh
+RUN sed -i 's/\r$//' nufeb/install.sh  && \  
+    chmod +x nufeb/install.sh
+WORKDIR /nufeb
+RUN ./install.sh
+
+#ENTRYPOINT ./install.sh
+#RUN chmod +x ./install.sh
+
+
