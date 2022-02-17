@@ -1,0 +1,6 @@
+{
+"name": "NUFEB",
+"build": { "dockerfile": "../Dockerfile" },
+"forwardPorts": [3000]
+
+}
