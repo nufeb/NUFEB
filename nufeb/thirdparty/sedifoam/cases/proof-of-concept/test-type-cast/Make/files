@@ -1,3 +1,0 @@
-Test-type-cast.C
-
-EXE = $(FOAM_USER_APPBIN)/Test-type-cast

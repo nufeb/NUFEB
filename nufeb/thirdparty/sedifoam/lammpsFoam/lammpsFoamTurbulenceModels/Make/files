@@ -1,3 +1,0 @@
-lammpsFoamTurbulenceModels.C
-
-LIB = $(FOAM_USER_LIBBIN)/liblammpsFoamTurbulenceModels

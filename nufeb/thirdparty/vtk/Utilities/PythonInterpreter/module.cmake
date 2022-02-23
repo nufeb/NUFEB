@@ -1,9 +1,0 @@
-vtk_module(vtkPythonInterpreter
-  KIT
-    vtkWrapping
-  DEPENDS
-    vtkCommonCore
-    vtkPython
-    vtksys
-  OPTIONAL_PYTHON_LINK
-)
