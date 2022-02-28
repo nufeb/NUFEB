@@ -14,7 +14,6 @@ RUN apt-get update && apt-get install -y \
     libvtk6-dev \
     python3-pip
 ADD . /nufeb
-RUN echo "Installing NUFEB.."
 RUN useradd --create-home --shell /bin/bash admin
 WORKDIR /nufeb/thirdparty
 RUN chmod +x ./install-hdf5.sh
