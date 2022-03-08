@@ -1,6 +1,5 @@
 FROM ubuntu:20.04
-
-SHELL ["/bin/bash", "-c"]
+RUN useradd --create-home --shell /bin/bash admin
 
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
@@ -13,15 +12,21 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libvtk6-dev \
     python3-pip
-ADD . /nufeb
-RUN useradd --create-home --shell /bin/bash admin
-WORKDIR /nufeb/thirdparty
+
+USER admin
+WORKDIR /home/admin
+RUN git clone https://github.com/Jsakkos/NUFEB nufeb --recursive
+
+WORKDIR /home/admin/nufeb
+RUN git checkout cyano
+
+WORKDIR /home/admin/nufeb/thirdparty
 RUN chmod +x ./install-hdf5.sh
 RUN ./install-hdf5.sh
 RUN chmod +x ./install-vtk.sh
 RUN ./install-vtk.sh
-WORKDIR /nufeb
+
+WORKDIR /home/admin/nufeb
 RUN chmod +x ./install.sh
 RUN ./install.sh --enable-hdf5 --enable-vtk
-USER admin
 RUN pip install nufeb-tools -U
