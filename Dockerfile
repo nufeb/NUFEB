@@ -12,9 +12,7 @@ RUN apt-get update && apt-get install -y \
     libopenmpi-dev \
     libpng-dev \
     python3-pip \
-    libglu1-mesa-dev \
-    freeglut3-dev \
-    mesa-common-dev \
+    bash \
     nano
 
 USER admin
@@ -27,10 +25,10 @@ RUN git checkout cyano
 WORKDIR /home/admin/nufeb/thirdparty
 RUN chmod +x ./install-hdf5.sh
 RUN ./install-hdf5.sh
-RUN chmod +x ./install-vtk.sh
-RUN ./install-vtk.sh
 
 WORKDIR /home/admin/nufeb
 RUN chmod +x ./install.sh
-RUN ./install.sh --enable-hdf5 --enable-vtk
+RUN ./install.sh --enable-hdf5
 RUN pip install nufeb-tools -U --user
+ENV PATH $HOME/.local/bin:$PATH"
+
