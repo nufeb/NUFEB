@@ -30,5 +30,5 @@ WORKDIR /home/admin/nufeb
 RUN chmod +x ./install.sh
 RUN ./install.sh --enable-hdf5
 RUN pip install nufeb-tools -U --user
-ENV PATH $HOME/.local/bin:$PATH"
+ENV PATH $HOME/.local/bin:$PATH
 
