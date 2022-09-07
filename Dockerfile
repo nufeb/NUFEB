@@ -10,7 +10,6 @@ RUN apt-get update && apt-get install -y \
     openmpi-common \
     libopenmpi-dev \
     libpng-dev \
-    libvtk6-dev \
     python3-pip
 
 USER admin
@@ -29,4 +28,4 @@ RUN ./install-vtk.sh
 WORKDIR /home/admin/nufeb
 RUN chmod +x ./install.sh
 RUN ./install.sh --enable-hdf5 --enable-vtk
-RUN pip install nufeb-tools -U
+RUN pip install nufeb-tools -U --user
