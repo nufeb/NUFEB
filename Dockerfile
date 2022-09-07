@@ -4,13 +4,18 @@ RUN useradd --create-home --shell /bin/bash admin
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
     build-essential \
+    g++ \
     cmake \
     git \
     openmpi-bin \
     openmpi-common \
     libopenmpi-dev \
     libpng-dev \
-    python3-pip
+    python3-pip \
+    libglu1-mesa-dev \
+    freeglut3-dev \
+    mesa-common-dev \
+    nano
 
 USER admin
 WORKDIR /home/admin
