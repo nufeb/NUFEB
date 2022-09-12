@@ -93,6 +93,7 @@ double ComputeNufebRough::compute_scalar()
   int nlocal = atom->nlocal;
   int nghost = atom->nghost;
   double **x = atom->x;
+  double area = 0.0;
 
   std::fill(maxh.begin(), maxh.end(), 0);
 
@@ -109,18 +110,22 @@ double ComputeNufebRough::compute_scalar()
   double ave_height = 0;
   if (domain->boxlo[2] == domain->sublo[2]) { // bottom most subdomain
     for (int i = 0; i < maxh.size(); i++) {
-      ave_height += maxh[i] * stepx * stepy;
+      if (maxh[i] > 1e-8) {
+	ave_height += maxh[i] * stepx * stepy;
+	area += stepx * stepy;
+      }
     }
   }
 
-  ave_height = ave_height / (domain->prd[0] * domain->prd[1]);
+  ave_height = ave_height / area;
 
   MPI_Allreduce(MPI_IN_PLACE, &ave_height, 1, MPI_DOUBLE, MPI_SUM, world);
 
   scalar = 0;
   if (domain->boxlo[2] == domain->sublo[2]) { // bottom most subdomain
     for (int i = 0; i < maxh.size(); i++) {
-      scalar += ((maxh[i] - ave_height) * (maxh[i] - ave_height)) * stepx * stepy;
+      if (maxh[i] > 1e-8)
+	scalar += ((maxh[i] - ave_height) * (maxh[i] - ave_height)) * stepx * stepy;
     }
   }
 
