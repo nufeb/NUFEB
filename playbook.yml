@@ -1,0 +1,71 @@
+---
+- name: install nufeb
+  hosts: localhost
+
+  pre_tasks:
+
+  -  name: Install prerequisite packages to compile nufeb
+     become: yes
+     when: ansible_distribution == 'Ubuntu'
+     apt:
+       update_cache: yes
+       pkg:
+       -  cmake
+       -  git-core
+       -  g++
+       -  openmpi-bin
+       -  openmpi-common
+       -  libopenmpi-dev
+       -  libpng-dev
+  -  name: Install OpenGL
+     become: yes
+     when: ansible_distribution == 'Ubuntu'
+     apt:
+       pkg:
+       -  libglu1-mesa-dev
+       -  freeglut3-dev
+       -  mesa-common-dev
+  - name: Clear open modules
+    when: ansible_distribution == 'CentOS'
+    shell: "module purge"
+  - name: Load modules PE-gnu
+    when: ansible_distribution == 'CentOS'
+    shell: "module load PE-gnu/3.0"
+  - name: Load cmake
+    when: ansible_distribution == 'CentOS'
+    shell: "module load cmake"
+
+  tasks:
+# todo check for vtk and hdf5 before building
+#  -  name: Check for VTK
+#     stat:
+#       path: thirdparty/vtk/vtk-build/vtk-8.00
+#     register: vtk_build
+#  -  debug:
+#       msg: "VTK is already installed"
+#     when: vtk_build.stat.exists and vtk_build.stat.isdir
+  -  name:  Install VTK
+     shell: ./install-vtk.sh
+#     when: vtk_build.stat.exists == false and vtk_build.stat.isdir == false
+     args:
+       chdir: thirdparty/
+       executable: /bin/bash
+#  -  name: Check for HDF5
+#     stat:
+#       path: thirdparty/hdf5/hdf5/
+#     register: hdf5_build
+#  -  name: Report if HDF5 exists
+#     debug:
+#       msg: "HDF5 is installed"
+#     when: hdf5_build.stat.isdir and hdf5_build.stat.exists
+
+  -  name:  Install HDF5
+     shell: ./install-hdf5.sh
+#     when: hdf5_build.stat.isdir == false and hdf5_build.stat.exists == false
+     args:
+       chdir: thirdparty/
+       executable: /bin/bash
+  -  name: Install NUFEB
+     shell: ./install.sh --enable-vtk --enable-hdf5
+     args:
+       executable: /bin/bash

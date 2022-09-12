@@ -1,54 +1,70 @@
-NUFEB (Newcastle University Frontier in Engineering Biology) is an open source tool for 3D individual-based simulation of microbial communities.
-The tool is built on top of the molecular dynamic simulator [LAMMPS](https://lammps.sandia.gov), and extended with features for microbial modelling. 
-For more details about NUFEB software and model look at our [paper](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1007125).
+Fork of [NUFEB](https://github.com/nufeb/NUFEB) to simulation sucrose-secreting cyanobacteria with heterotrophic partners.
 
-NUFEB is distributed under the terms of the GNU Public License. The development has been funded by the UK’s EPSRC EP/K039083/1 Frontiers in Engineering Biology project.
+# Instructions for compiling and testing NUFEB phototroph on CADES
 
-Installation guide, tutorial, example videos, and more details can be found in [NUFEB Wiki page](https://github.com/nufeb/NUFEB/wiki) and
-[User Manual](https://github.com/nufeb/NUFEB/tree/master/doc)
+## To login to CADES remotely
+[See CADES Documentation](https://docs.cades.ornl.gov/#external-access-ucams/)
+```shell
+ssh userID@login1.ornl.gov
+ssh userID@or-slurm-login.ornl.gov
+```
 
----------------------------------------------------------------------------
+## clone repo into your home directory
+```shell
+git clone https://github.com/Jsakkos/NUFEB --recursive
+git checkout cyano
+git pull
+```
+## To build
 
-The NUFEB distribution includes the following files and directories:
-<pre>
-README                  this file 
-LICENSE                 the GNU General Public License (GPL)
-install.sh              script for building NUFEB 
-uninstall.sh            script for uninstalling NUFEB 
-doc                     user manual and other documentation 
-examples                test problems and cases used in publications 
-lib                     libraries NUFEB can be linked with 
-lammps                  LAMMPS source code
-post-processing         Povray visualisation routine 
-src                     source files 
-thirdparty              thirdparty tools
-</pre>
+### With Ansible
+Install Ansible
+#### On CADES
+```
+module load python/3.6.3
+pip3 install ansible --user
+```
+#### On Ubuntu
+```
+sudo apt update
+sudo apt install software-properties-common
+sudo apt-add-repository --yes --update ppa:ansible/ansible
+sudo apt install ansible
+```
+Run the playbook
+```
+ansible-playbook playbook.yml
+```
+### Manually
+```shell
+module purge
+module load PE-gnu/3.0
+module load cmake
+cd ~/NUFEB/thirdparty/
+./install-hdf5.sh
+./install-vtk.sh
+cd ~/NUFEB/
+./install.sh --enable-hdf5 --enable-vtk
+```
+## To test
 
-### Getting source
-Get NUFEB source code and submodules for its thirdparty libraries:
-<pre>
-git clone https://github.com/nufeb/NUFEB --recursive
-</pre>
+### interactively
+```shell
 
-### Building
-NUFEB requires gcc/g++ and openmpi for a successful build.
-
-Build NUFEB:
-<pre>
-./install.sh
-</pre>
-
-### Running
-Run a case in /examples after building NUFEB, for example:
-<pre>
-cd examples/simple-growth
-mpirun -np 4 lmp_mpi -in Inputscript.lammps
-</pre>
-
----------------------------------------------------------------------------
-Developers:
-
-Bowen Li: bowen.li2@newcastle.ac.uk
-
-Denis Taniguchi: denis.taniguchi@newcastle.ac.uk
-
+module load env/cades-cnms
+module load anaconda3
+cd $SCRATCH
+python3 ./tools/GenerateAtom.py --u your_user_name
+module purge
+module load PE-gnu/3.0
+salloc -A cnms -p batch --nodes=1 --mem=80G --exclusive -t 00:30:00
+cd runs
+srun --ntasks-per-node 32 -n 32 ~/NUFEB/lammps/src/lmp_png -in ~/NUFEB/runs/Inputscript*.lammps
+```
+### batches
+```shell
+module load anaconda3
+cd $SCRATCH
+python3 ./tools/GenerateAtom.py --u your_user_name
+./tools/slurmRun.sh
+```

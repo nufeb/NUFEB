@@ -20,7 +20,7 @@ cp Makefile.lammps_essential Makefile.lammps
 declare -i vtk_hdf=0
 
 for var in "$@"
-do 
+do
     if [ $var == "--enable-vtk" ] ; then
        cp Makefile.lammps_vtk8.0 Makefile.lammps
        cp ../vtk/Makefile.lammps_vtk8.0 ../vtk/Makefile.lammps
@@ -51,7 +51,7 @@ make yes-user-nufeb
 make yes-granular
 
 for var in "$@"
-do 
+do
     if [ $var == "--enable-vtk" ]; then
 	make yes-user-vtk
     elif [ $var == "--enable-misc" ]; then
@@ -71,7 +71,7 @@ write_path() {
 
 echo "Building NUFEB.."
 for var in "$@"
-do 
+do
     if [ $var == "--serial" ]; then
 	cd STUBS || exit 1
         make
@@ -83,7 +83,7 @@ do
 done
 
 for var in "$@"
-do 
+do
     if [ $var == "--static" ]; then
         make -j4 mpi mode=lib
         exit 1
@@ -91,14 +91,13 @@ do
 done
 
 for var in "$@"
-do 
+do
     if [ $var == "--shared" ]; then
         make -j4 mpi mode=shlib
         exit 1
     fi
 done
 
-make -j4 mpi
+make -j4 png
 write_path
-exit 1
-
+exit 0

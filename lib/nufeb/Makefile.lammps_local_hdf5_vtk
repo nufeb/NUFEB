@@ -1,0 +1,5 @@
+# Settings that the LAMMPS build will import when this package library is used
+#
+nufeb_SYSINC = -std=c++1y -DENABLE_DUMP_GRID -I-I/software/user_tools/centos-7.2.1511/cades-cnms/spack/opt/spack/linux-centos7-x86_64/gcc-8.1.0/vtk-8.2.0-ubcf5v6gpa3245ipgbefjrskqgx4naxm/include/vtk-8.2 -DENABLE_DUMP_BIO_HDF5 -I../../../thirdparty/hdf5/hdf5/include
+nufeb_SYSLIB = -lhdf5 -lvtksys-8.2 -lvtklz4-8.2 -lvtkzlib-8.2 -lvtkexpat-8.2 -lvtkCommonCore-8.2 -lvtkCommonExecutionModel-8.2 -lvtkCommonMisc-8.2 -lvtkCommonMath-8.2 -lvtkCommonSystem-8.2 -lvtkCommonTransforms-8.2 -lvtkIOCore-8.2 -lvtkIOXML-8.2 -lvtkIOXMLParser-8.2 -lvtkIOLegacy-8.2 -lvtkIOParallelXML-8.2 -lvtkCommonDataModel-8.2 -lvtkParallelCore-8.2 -L/software/user_tools/centos-7.2.1511/cades-cnms/spack/opt/spack/linux-centos7-x86_64/gcc-8.1.0/vtk-8.2.0-ubcf5v6gpa3245ipgbefjrskqgx4naxm/lib64 -L../../../thirdparty/hdf5/hdf5/lib
+nufeb_SYSPATH = 
