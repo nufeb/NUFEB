@@ -42,7 +42,7 @@ using namespace MathConst;
 
 using namespace std;
 
-enum{HET, AOB, NOB, ANA, COM, EPS, DEAD};
+enum{HET, AOB, NOB, ANA, COM, EPS, DEAD, CYANO, ECW};
 /* ---------------------------------------------------------------------- */
 
 FixKineticsMonod::FixKineticsMonod(LAMMPS *lmp, int narg, char **arg) :
@@ -57,9 +57,11 @@ FixKineticsMonod::FixKineticsMonod(LAMMPS *lmp, int narg, char **arg) :
 
   species = NULL;
   growrate = NULL;
-  
+
   eps_dens = 30;
   eta_het = 0;
+  suc_exp = 0;
+  gco2_flag = 0;
 
   kinetics = NULL;
 
@@ -83,8 +85,18 @@ FixKineticsMonod::FixKineticsMonod(LAMMPS *lmp, int narg, char **arg) :
 	if (eta_het < 0)
 	  error->all(FLERR, "Illegal fix kinetics/growth/monod command: eta_het cannot be less than zero");
 	iarg += 2;
+    } else if (strcmp(arg[iarg], "sucexp") == 0){
+  suc_exp = force->numeric(FLERR, arg[iarg+1]);//suc_exp = input->variable->compute_equal(arg[iarg+1]);
+  if (suc_exp < 0)
+    error->all(FLERR, "Illegal fix kinetics/growth/monod command: suc_exp cannot be less than zero");
+  iarg += 2;
+    } else if (strcmp(arg[iarg], "gco2flag") == 1){
+  gco2_flag = force->numeric(FLERR, arg[iarg+1]);
+  if (gco2_flag != 0 && gco2_flag != 1)
+    error->all(FLERR, "Illegal fix kinetics/growth/monod command: gco2_flag");
+  iarg += 2;
     } else
-      error->all(FLERR, "Illegal fix kinetics/growth/monod command");
+    error->all(FLERR, "Illegal fix kinetics/growth/monod command");
   }
 }
 
@@ -184,7 +196,7 @@ void FixKineticsMonod::init_param() {
   ks = bio->ks;
   ntypes = atom->ntypes;
 
-  isub = io2 = inh4 = ino2 = ino3 = 0;
+  isub = 0; io2 = 0; inh4 = 0; ino2 = 0; ino3 = 0; isuc = 0; ico2 = 0; igco2 = 0;
 
   // initialize nutrients
   for (int nu = 1; nu <= bio->nnu; nu++) {
@@ -198,6 +210,12 @@ void FixKineticsMonod::init_param() {
       ino2 = nu;
     else if (strcmp(bio->nuname[nu], "no3") == 0)
       ino3 = nu;
+    else if (strcmp(bio->nuname[nu], "suc") == 0)
+      isuc = nu;
+    else if (strcmp(bio->nuname[nu], "co2") == 0)
+      ico2 = nu;
+    else if (strcmp(bio->nuname[nu], "gco2") == 0)
+      igco2 = nu;
   }
 
   // initialize species
@@ -240,6 +258,15 @@ void FixKineticsMonod::init_param() {
       ieps = i;
     } else if(strcmp(name, "dea") == 0 || strcmp(name, "DEA") == 0) {
       species[i] = DEAD;
+    } else if (strcmp(name, "cya") == 0 || strcmp(name, "CYA") == 0) {
+      species[i] = CYANO;
+      if (isub == 0) error->all(FLERR, "cyano growth requires nutrient 'sub' (substrate) to be defined in Nutrients section");
+      if (ico2 == 0) error->all(FLERR, "cyano growth requires nutrient 'co2' to be defined in Nutrients section");
+    } else if (strcmp(name, "ecw") == 0 || strcmp(name, "ECW") == 0) {
+      species[i] = ECW;
+      if (isuc == 0) error->all(FLERR, "E. coli W growth requires nutrient 'suc' (substrate) to be defined in Nutrients section");
+      if (io2 == 0) error->all(FLERR, "E. coli W growth requires nutrient 'o2' to be defined in Nutrients section");
+
     } else {
       species[i] = -1;
       error->warning(FLERR, "unrecognized species found in fix_kinetics/kinetics/monod:");
@@ -293,6 +320,10 @@ void FixKineticsMonod::growth(double dt, int gflag) {
 	growth_eps(i, grid);
       } else if (spec == DEAD) {
 	growth_dead(i, grid);
+      } else if (spec == CYANO) {
+	growth_cyano(i, grid);
+      } else if (spec == ECW) {
+	growth_ecw(i, grid);
       }
     }
   }
@@ -307,7 +338,7 @@ void FixKineticsMonod::growth(double dt, int gflag) {
 void FixKineticsMonod::growth_het(int i, int grid) {
   double yield_eps = 0;
   double r1, r2, r3, r4, r5, r6, r7;
-  r1 = r2 = r3 = r4 = r5 = r6 = r7 = 0;
+  r1 = 0; r2 = 0; r3 = 0; r4 = 0; r5 = 0; r6 =0; r7 = 0;
 
   if (ieps != 0) yield_eps = yield[ieps];
   //het aerobic growth rate
@@ -455,6 +486,69 @@ void FixKineticsMonod::growth_dead(int i, int grid) {
   //eps overall growth rate
   growrate[i][0][grid] = -r1;
 }
+
+/* ----------------------------------------------------------------------
+ Monod growth model for photoautotrophic cyanobacteria
+ ------------------------------------------------------------------------- */
+void FixKineticsMonod::growth_cyano(int i, int grid) {
+  double r1, r2, r3, r4, r5;
+
+  r1 = 0; r2 = 0; r3 = 0; r4 = 0; r5 = 0;
+
+
+  //cyanobacterial growth rate based on light and co2
+  r1 = mu[i] * (nus[isub][grid] / (ks[i][isub] + nus[isub][grid])) * (nus[ico2][grid] / (ks[i][ico2] + nus[ico2][grid]));
+
+  //decay rate
+  r2 = decay[i];
+  //maintenance rate
+  r3 = maintain[i];
+  //r4 = r1 * (1 - 0.13633963365213447 * exp(-suc_exp/0.09204784828477507) - 0.8603043982051631);
+  //sucrose export-induced growth reduction
+  r4 = r1 * (0.13633963365213447 * exp(-suc_exp/0.09204784828477507) + 0.8603043982051631); 
+  r5 = r1 * (-0.3407800184487689 * exp(-suc_exp/0.04716083805871045) + 0.3497009267626362); 
+  //nutrient utilization
+  nur[isub][grid] += (-1 / yield[i]) * (r1 + r5) * xdensity[i][grid];
+  nur[ico2][grid] += (-1 / yield[i]) * (r1 + r5) * xdensity[i][grid];
+
+  nur[io2][grid] += -(0.1 * r3 * xdensity[i][grid]);
+
+  //oxygen evolution
+  nur[io2][grid] +=  (0.727 / yield[i]) * (r1 + r5) * xdensity[i][grid];
+  //sucrose export
+
+  nur[isuc][grid] += 0.65 / yield[i] * r5 * xdensity[i][grid];
+
+  //cyano overall growth rate
+  growrate[i][0][grid] = r4 - r2 - r3;
+}
+
+/* ----------------------------------------------------------------------
+ Monod growth model for heterotrophic E. coli W
+ ------------------------------------------------------------------------- */
+
+void FixKineticsMonod::growth_ecw(int i, int grid) {
+  double r1, r2, r3;
+  r1 = 0; r2 = 0; r3 = 0;
+
+  //het aerobic growth rate
+  r1 = mu[i] * (nus[isuc][grid] / (ks[i][isuc] + nus[isuc][grid])) * (nus[io2][grid] / (ks[i][io2] + nus[io2][grid]));
+
+  //decay rate
+  r2 = decay[i];
+  //maintenance rate
+  r3 = maintain[i] * (nus[io2][grid] / (ks[i][io2] + nus[io2][grid]));
+
+  //nutrient utilization
+  nur[isuc][grid] += (-1 / yield[i]) * r1 * xdensity[i][grid];
+  nur[io2][grid] += (-0.399) * (r1 + r3) * xdensity[i][grid];
+  nur[ico2][grid] += (0.2) * (r1 + r3) * xdensity[i][grid];
+
+
+  //ecw overall growth rate
+  growrate[i][0][grid] = r1 - r2 - r3;
+}
+
 
 /* ----------------------------------------------------------------------
  update particle attributes: biomass, outer mass, radius etc

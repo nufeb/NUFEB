@@ -52,10 +52,10 @@ class FixKineticsMonod : public Fix {
 
   double **xdensity;
 
-  int isub, io2, inh4, ino2, ino3;  // nutrient index
+  int isub, io2, inh4, ino2, ino3, isuc, ico2, igco2;  // nutrient index
   int ieps;			    // eps index
 
-  int *species;                     // species index 0 = unknow, 1 = het, 2 = aob, 3 = nob, 4 = eps, 5 = dead
+  int *species;                     // species index 0 = unknown, 1 = het, 2 = aob, 3 = nob, 4 = eps, 5 = dead, 6 = cyano, 7 = ecw
   double ***growrate;               // growth rate [type][epsflag][grid]
 
   double stepx, stepy, stepz;       // grids size
@@ -64,7 +64,8 @@ class FixKineticsMonod : public Fix {
   double vol;                       // grid volume and gas volume
   double eps_dens;                  // EPS density
   double eta_het;                   // HET reduction factor in anoxic condition
-
+  double suc_exp;                   // Sucrose export rate (0->1)
+  int gco2_flag;                    // flag for gaseous co2 dissolution
   class AtomVecBio *avec;
   class FixKinetics *kinetics;
   class BIO *bio;
@@ -79,10 +80,11 @@ class FixKineticsMonod : public Fix {
   void growth_dead(int, int);
   void growth_ana(int, int);
   void growth_com(int, int);
+  void growth_cyano(int, int);
+  void growth_ecw(int,int);
 };
 
 }
 
 #endif
 #endif
-
