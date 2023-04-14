@@ -1,0 +1,88 @@
+{
+      "cyano": {
+            "GrowthRate": 2.296e-05,
+            "min_size": 1.37e-06,
+            "max_size": 1.94e-06,
+            "Density": 370,
+            "K_s": {
+                  "sub": 0.00035,
+                  "o2": 0.0002,
+                  "suc": 0.01,
+                  "co2": 0.00812672
+            },
+            "GrowthParams": {
+                  "Yield": 0.55,
+                  "Maintenance": 0,
+                  "Decay": 0
+            },
+            "OD": 1.707732689153114,
+            "StartingCells": 50,
+            "initial_biomass": 4.78165152962872e-14
+      },
+      "ecw": {
+            "GrowthRate": 0.000355,
+            "min_size": 8.8e-07,
+            "max_size": 1.39e-06,
+            "Density": 230,
+            "K_s": {
+                  "sub": 0,
+                  "o2": 0.001,
+                  "suc": 3.6,
+                  "co2": 0.05
+            },
+            "GrowthParams": {
+                  "Yield": 0.49,
+                  "Maintenance": 0,
+                  "Decay": 0
+            },
+            "OD": 0.37063167512691997,
+            "StartingCells": 50,
+            "initial_biomass": 1.630779370558448e-14
+      },
+      "Nutrients": {
+            "Concentration": {
+                  "sub": 0.1,
+                  "o2": 0.009,
+                  "suc": 3.4229999999999995e-20,
+                  "co2": 0.0299268
+            },
+            "State": {
+                  "sub": "g",
+                  "o2": "l",
+                  "suc": "l",
+                  "co2": "l"
+            },
+            "xbc": {
+                  "sub": "nn",
+                  "o2": "nn",
+                  "suc": "nn",
+                  "co2": "nn"
+            },
+            "ybc": {
+                  "sub": "nn",
+                  "o2": "nn",
+                  "suc": "nn",
+                  "co2": "nn"
+            },
+            "zbc": {
+                  "sub": "nn",
+                  "o2": "nd",
+                  "suc": "nn",
+                  "co2": "nd"
+            }
+      },
+      "Diff_c": {
+            "sub": 0,
+            "o2": 2.3e-09,
+            "suc": 5.2e-10,
+            "co2": 1.9e-09
+      },
+      "Dimensions": [
+            0.0001,
+            0.0001,
+            1e-05
+      ],
+      "Replicates": 1,
+      "IPTG": 1.0,
+      "SucRatio": 1.0
+}
